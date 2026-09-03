@@ -1,782 +1,622 @@
+```html
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Desafios Matemáticos - Funções</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Sólidos 3D - Educação Interativa</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8fafc;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
-
-        /* Fundo quadriculado de caderno */
-        .bg-grid {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-image: 
-                linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
-            background-size: 30px 30px;
-            z-index: -2;
-        }
-
-        /* Efeito de Vidro (Glassmorphism) */
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
-        }
-
-        /* Animações dos símbolos flutuantes */
-        @keyframes floatUp {
-            0% {
-                transform: translateY(110vh) rotate(0deg) scale(0.8);
-                opacity: 0;
-            }
-            10% { opacity: 0.4; }
-            90% { opacity: 0.4; }
-            100% {
-                transform: translateY(-10vh) rotate(360deg) scale(1.2);
-                opacity: 0;
-            }
-        }
-
-        .math-symbol {
-            position: fixed;
-            font-size: 2.5rem;
+        body { margin: 0; overflow: hidden; background-color: #1a202c; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        #canvas-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
+        #ui-layer { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10; pointer-events: none; display: flex; flex-direction: column; }
+        .pointer-events-auto { pointer-events: auto; }
+        
+        /* Estilos para os rótulos de distância na tela */
+        .label {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.7);
+            color: #4ade80; /* Verde Tailwind */
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
             font-weight: bold;
-            z-index: -1;
-            user-select: none;
             pointer-events: none;
-            animation: floatUp linear infinite;
-        }
-
-        /* Cores temáticas dos símbolos */
-        .text-afim { color: rgba(59, 130, 246, 0.5); } /* Azul */
-        .text-quadratica { color: rgba(16, 185, 129, 0.5); } /* Verde */
-        .text-exponencial { color: rgba(139, 92, 246, 0.5); } /* Roxo */
-        .text-logaritmica { color: rgba(249, 115, 22, 0.5); } /* Laranja */
-        .text-default { color: rgba(156, 163, 175, 0.5); } /* Cinzento para o menu */
-
-        /* Transições suaves */
-        .screen {
+            transform: translate(-50%, -50%);
+            border: 1px solid #4ade80;
             display: none;
-            animation: fadeIn 0.5s ease-in-out;
         }
-        .screen.active {
-            display: flex;
+        
+        .vertex-label {
+            position: absolute;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            text-shadow: 1px 1px 2px black;
+            display: none;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .option-btn {
-            transition: all 0.2s;
-        }
-        .option-btn:hover {
-            transform: translateX(5px);
-        }
-        .correct-anim { animation: pulseGreen 0.5s; background-color: #22c55e !important; color: white !important; border-color: #22c55e !important;}
-        .wrong-anim { animation: shakeRed 0.5s; background-color: #ef4444 !important; color: white !important; border-color: #ef4444 !important;}
-
-        @keyframes pulseGreen { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-        @keyframes shakeRed { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        /* Oculta scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: #4a5568; border-radius: 4px; }
     </style>
 </head>
-<body class="text-slate-800 flex items-center justify-center p-4">
+<body>
 
-    <!-- Fundo base -->
-    <div class="bg-grid"></div>
-    <!-- Recipiente para símbolos matemáticos gerados por JS -->
-    <div id="symbols-container"></div>
+    <!-- Container do WebGL -->
+    <div id="canvas-container"></div>
+    
+    <!-- Rótulos dinâmicos (serão gerados pelo JS) -->
+    <div id="labels-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; pointer-events: none;"></div>
 
-    <div class="w-full max-w-2xl glass-panel rounded-3xl p-8 relative overflow-hidden">
+    <!-- UI Overlay -->
+    <div id="ui-layer" class="p-4 md:p-6 justify-between">
         
-        <!-- TELA 1: MENU PRINCIPAL -->
-        <div id="menu-screen" class="screen active flex-col items-center">
-            <h1 class="text-4xl font-bold mb-2 text-center text-slate-800">Desafios Matemáticos</h1>
-            <p class="text-slate-500 mb-8 text-center">Escolha o conteúdo e teste os seus conhecimentos!</p>
+        <!-- Header -->
+        <header class="flex justify-between items-start pointer-events-auto">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold text-white flex items-center gap-2">
+                    <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                    Sólidos Web
+                </h1>
+                <p class="text-gray-400 text-sm mt-1">Geometria Interativa sem QR Codes</p>
+            </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-                <button onclick="selectTheme('afim')" class="p-6 rounded-2xl bg-blue-50 border-2 border-blue-200 hover:border-blue-500 hover:bg-blue-100 transition-all group relative overflow-hidden text-left">
-                    <div class="text-blue-500 text-3xl mb-2 font-bold group-hover:scale-110 transition-transform">f(x) = ax + b</div>
-                    <h2 class="text-xl font-bold text-blue-900">Função Afim</h2>
-                    <p class="text-sm text-blue-700/70 mt-1">Declives, ordenadas na origem e gráficos retilíneos.</p>
-                </button>
+            <!-- Abas de Navegação -->
+            <div class="flex bg-gray-800 rounded-lg p-1 border border-gray-700">
+                <button onclick="app.setMode('visualizacao')" id="btn-vis" class="px-4 py-2 rounded-md bg-green-600 text-white font-medium text-sm transition-colors">Visualização</button>
+                <button onclick="app.setMode('planificacao')" id="btn-plan" class="px-4 py-2 rounded-md text-gray-400 hover:text-white font-medium text-sm transition-colors">Planificação</button>
+                <button onclick="app.setMode('modelagem')" id="btn-mod" class="px-4 py-2 rounded-md text-gray-400 hover:text-white font-medium text-sm transition-colors">Modelagem</button>
+            </div>
+        </header>
+
+        <!-- Painel de Controles Laterais -->
+        <div class="flex-grow flex items-center justify-end pointer-events-auto">
+            
+            <!-- Painel Visualização -->
+            <div id="panel-visualizacao" class="bg-gray-800/90 backdrop-blur border border-gray-700 p-5 rounded-xl w-64 shadow-xl">
+                <h2 class="text-lg font-bold mb-4 text-green-400 border-b border-gray-700 pb-2">Sólidos Regulares</h2>
+                <div class="space-y-3">
+                    <button onclick="app.loadShape('cube')" class="w-full text-left px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded transition">Cubo / Hexaedro</button>
+                    <button onclick="app.loadShape('pyramid')" class="w-full text-left px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded transition">Pirâmide Quadrangular</button>
+                    <button onclick="app.loadShape('prism')" class="w-full text-left px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded transition">Prisma Triangular</button>
+                    <button onclick="app.loadShape('sphere')" class="w-full text-left px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded transition">Esfera</button>
+                </div>
+                <div class="mt-4 text-xs text-gray-400">Arraste para girar. Role para dar zoom.</div>
+            </div>
+
+            <!-- Painel Planificação -->
+            <div id="panel-planificacao" class="bg-gray-800/90 backdrop-blur border border-gray-700 p-5 rounded-xl w-72 shadow-xl hidden">
+                <h2 class="text-lg font-bold mb-4 text-blue-400 border-b border-gray-700 pb-2">Planificação (Cubo)</h2>
+                <p class="text-sm text-gray-300 mb-4">Observe como as 6 faces quadradas bidimensionais compõem a superfície do sólido 3D.</p>
                 
-                <button onclick="selectTheme('quadratica')" class="p-6 rounded-2xl bg-emerald-50 border-2 border-emerald-200 hover:border-emerald-500 hover:bg-emerald-100 transition-all group relative overflow-hidden text-left">
-                    <div class="text-emerald-500 text-3xl mb-2 font-bold group-hover:scale-110 transition-transform">f(x) = ax² + bx + c</div>
-                    <h2 class="text-xl font-bold text-emerald-900">Função Quadrática</h2>
-                    <p class="text-sm text-emerald-700/70 mt-1">Parábolas, vértices e raízes.</p>
-                </button>
-
-                <button onclick="selectTheme('exponencial')" class="p-6 rounded-2xl bg-purple-50 border-2 border-purple-200 hover:border-purple-500 hover:bg-purple-100 transition-all group relative overflow-hidden text-left">
-                    <div class="text-purple-500 text-3xl mb-2 font-bold group-hover:scale-110 transition-transform">f(x) = a˟</div>
-                    <h2 class="text-xl font-bold text-purple-900">Função Exponencial</h2>
-                    <p class="text-sm text-purple-700/70 mt-1">Crescimento, decaimento e propriedades.</p>
-                </button>
-
-                <button onclick="selectTheme('logaritmica')" class="p-6 rounded-2xl bg-orange-50 border-2 border-orange-200 hover:border-orange-500 hover:bg-orange-100 transition-all group relative overflow-hidden text-left">
-                    <div class="text-orange-500 text-3xl mb-2 font-bold group-hover:scale-110 transition-transform">f(x) = logₐ(x)</div>
-                    <h2 class="text-xl font-bold text-orange-900">Função Logarítmica</h2>
-                    <p class="text-sm text-orange-700/70 mt-1">Logaritmos, propriedades e domínios.</p>
-                </button>
+                <label class="block text-sm font-medium mb-2 text-white">Nível de Abertura:</label>
+                <input type="range" id="unfold-slider" min="0" max="100" value="0" class="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer">
+                <div class="flex justify-between text-xs text-gray-400 mt-1">
+                    <span>Fechado (Sólido)</span>
+                    <span>Aberto (Plano)</span>
+                </div>
             </div>
+
+            <!-- Painel Modelagem -->
+            <div id="panel-modelagem" class="bg-gray-800/90 backdrop-blur border border-gray-700 p-5 rounded-xl w-72 shadow-xl hidden max-h-[80vh] overflow-y-auto">
+                <h2 class="text-lg font-bold mb-4 text-yellow-400 border-b border-gray-700 pb-2">Modelagem de Área</h2>
+                <p class="text-sm text-gray-300 mb-4">Arraste os vértices (esferas vermelhas) para modificar o polígono da base. As medidas são atualizadas em tempo real.</p>
+                
+                <div class="bg-gray-900 p-3 rounded-lg mb-4 border border-gray-700">
+                    <h3 class="font-bold text-sm text-white mb-2">Dados Calculados:</h3>
+                    <div class="text-sm flex justify-between mb-1"><span>Perímetro:</span> <span id="info-perimetro" class="text-yellow-400 font-mono">0.0 cm</span></div>
+                    <div class="text-sm flex justify-between mb-1"><span>Área da Base:</span> <span id="info-areabase" class="text-yellow-400 font-mono">0.0 cm²</span></div>
+                    <div class="text-sm flex justify-between border-t border-gray-700 pt-1 mt-1"><span>Área Total (3D):</span> <span id="info-areatotal" class="text-green-400 font-mono font-bold">0.0 cm²</span></div>
+                </div>
+
+                <label class="block text-sm font-medium mb-2 text-white">Altura do Prisma (Extrusão):</label>
+                <input type="range" id="extrude-slider" min="1" max="10" value="4" step="0.5" class="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer mb-2">
+                <div class="text-xs text-gray-400 text-center mb-4">Altura: <span id="info-altura">4.0</span> cm</div>
+            </div>
+
         </div>
-
-        <!-- TELA 2: NOME DO JOGADOR -->
-        <div id="name-screen" class="screen flex-col items-center w-full">
-            <button onclick="showScreen('menu-screen')" class="self-start text-sm text-slate-500 hover:text-slate-800 mb-4 flex items-center">
-                ← Voltar ao Menu
-            </button>
-            <div id="theme-icon" class="text-5xl mb-4"></div>
-            <h2 id="theme-title" class="text-3xl font-bold text-slate-800 mb-2">Tema</h2>
-            <p class="text-slate-500 mb-8 text-center">10 perguntas sorteadas de um banco de 30.<br>Boa sorte!</p>
-            
-            <div class="w-full max-w-sm">
-                <input type="text" id="playerName" placeholder="O seu nome..." class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-slate-500 focus:outline-none mb-4 text-center text-lg bg-white/50">
-                <button onclick="startGame()" id="start-btn" class="w-full py-3 rounded-xl text-white font-bold text-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1">
-                    Começar Desafio
-                </button>
-                <button onclick="showLeaderboardFromTheme()" class="w-full py-3 mt-3 rounded-xl border-2 border-slate-200 text-slate-600 font-bold hover:bg-slate-100 transition-all">
-                    Ver Top 10
-                </button>
-            </div>
-        </div>
-
-        <!-- TELA 3: QUIZ -->
-        <div id="quiz-screen" class="screen flex-col w-full">
-            <div class="flex justify-between items-center mb-6">
-                <span id="question-counter" class="text-sm font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">Pergunta 1/10</span>
-                <span id="score-display" class="text-sm font-bold px-3 py-1 rounded-full text-white">Pontuação: 0</span>
-            </div>
-            
-            <div class="w-full bg-slate-200 rounded-full h-2 mb-6 overflow-hidden">
-                <div id="progress-bar" class="h-2 rounded-full transition-all duration-300 w-0"></div>
-            </div>
-
-            <h3 id="question-text" class="text-xl md:text-2xl font-bold text-slate-800 mb-8 min-h-[80px]"></h3>
-            
-            <div id="options-container" class="flex flex-col gap-3">
-                <!-- Opções serão injetadas aqui -->
-            </div>
-        </div>
-
-        <!-- TELA 4: RESULTADO -->
-        <div id="result-screen" class="screen flex-col items-center w-full">
-            <div class="text-6xl mb-4" id="result-emoji">🏆</div>
-            <h2 class="text-3xl font-bold text-slate-800 mb-2">Fim de Jogo!</h2>
-            <p id="result-message" class="text-lg text-slate-600 text-center mb-6"></p>
-            
-            <div class="text-5xl font-bold mb-8" id="final-score"></div>
-            
-            <div class="flex gap-4 w-full max-w-sm">
-                <button onclick="showScreen('menu-screen')" class="flex-1 py-3 rounded-xl border-2 border-slate-200 text-slate-700 font-bold hover:bg-slate-50 transition-all">
-                    Menu Inicial
-                </button>
-                <button onclick="showLeaderboardFromTheme()" id="btn-ranking-result" class="flex-1 py-3 rounded-xl text-white font-bold shadow-lg transition-all hover:opacity-90">
-                    Ver Ranking
-                </button>
-            </div>
-        </div>
-
-        <!-- TELA 5: LEADERBOARD -->
-        <div id="leaderboard-screen" class="screen flex-col w-full">
-            <button onclick="showScreen('menu-screen')" class="self-start text-sm text-slate-500 hover:text-slate-800 mb-2">
-                ← Voltar ao Menu
-            </button>
-            <h2 id="leaderboard-title" class="text-2xl font-bold text-center mb-6 pb-4 border-b-2 border-slate-100">Top 10 - Tema</h2>
-            
-            <div id="leaderboard-list" class="flex flex-col gap-2 mb-6 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-                <!-- Ranking injetado aqui -->
-            </div>
-            
-            <button onclick="document.getElementById('name-screen').classList.add('active'); document.getElementById('leaderboard-screen').classList.remove('active');" class="w-full py-3 rounded-xl border-2 border-slate-200 text-slate-700 font-bold hover:bg-slate-50 transition-all">
-                Tentar Novamente
-            </button>
-        </div>
-
     </div>
 
     <script>
-        // --- BASE DE DADOS DE PERGUNTAS (30 por tema) ---
-        const questionBank = {
-            afim: [
-                { q: "Qual é o declive (coeficiente angular) da função f(x) = -3x + 5?", o: ["-3", "5", "2", "-5"], a: 0 },
-                { q: "Em que ponto o gráfico da função f(x) = 2x - 8 interseta o eixo das ordenadas (eixo y)?", o: ["(0, 8)", "(0, -8)", "(4, 0)", "(-4, 0)"], a: 1 },
-                { q: "Qual é o zero (raiz) da função f(x) = 4x - 12?", o: ["x = -3", "x = 4", "x = 3", "x = 12"], a: 2 },
-                { q: "Uma função afim é dada por f(x) = ax + b. Se f(0) = 3 e f(1) = 5, qual é o valor de a?", o: ["2", "3", "5", "8"], a: 0 },
-                { q: "A função f(x) = -x + 4 é estritamente:", o: ["Crescente", "Constante", "Decrescente", "Nula"], a: 2 },
-                { q: "Se f(x) = 5x - 2, qual é o valor de f(3)?", o: ["13", "15", "17", "10"], a: 0 },
-                { q: "O gráfico de uma função afim é sempre uma:", o: ["Parábola", "Hipérbole", "Reta", "Circunferência"], a: 2 },
-                { q: "Qual a equação da reta que passa pela origem e tem declive igual a 4?", o: ["y = 4x + 4", "y = x + 4", "y = 4x", "y = -4x"], a: 2 },
-                { q: "O custo C de uma corrida de táxi é dado por C(x) = 2 + 1.5x, onde x são os km rodados. Qual o custo de 10 km?", o: ["15", "17", "20", "12"], a: 1 },
-                { q: "Em f(x) = ax + b, o parâmetro 'b' é chamado de:", o: ["Coeficiente angular", "Zero da função", "Coeficiente linear (ordenada na origem)", "Vértice"], a: 2 },
-                { q: "Qual é a função cuja raiz é 5 e a ordenada na origem é -10?", o: ["f(x) = 2x - 10", "f(x) = -2x - 10", "f(x) = 5x - 10", "f(x) = -10x + 5"], a: 0 },
-                { q: "Se duas retas y = 2x + 1 e y = ax - 3 são paralelas, o valor de a é:", o: ["-2", "2", "0.5", "-0.5"], a: 1 },
-                { q: "Qual o ponto de interseção das retas y = x + 2 e y = -x + 4?", o: ["(1, 3)", "(2, 4)", "(3, 1)", "(0, 2)"], a: 0 },
-                { q: "A função f(x) = 7 é uma função afim classificada como:", o: ["Crescente", "Decrescente", "Constante", "Identidade"], a: 2 },
-                { q: "Qual o declive da reta que passa pelos pontos A(1, 2) e B(3, 8)?", o: ["2", "3", "4", "6"], a: 1 },
-                { q: "Se f(x) = -2x + b e f(2) = 0, qual o valor de b?", o: ["2", "-4", "4", "0"], a: 2 },
-                { q: "O gráfico de f(x) = 3x - 6 interseta o eixo das abcissas (eixo x) no ponto:", o: ["(2, 0)", "(0, -6)", "(-2, 0)", "(0, 2)"], a: 0 },
-                { q: "Para que valores de x a função f(x) = 2x - 4 é positiva?", o: ["x < 2", "x > 2", "x > -2", "x < -2"], a: 1 },
-                { q: "Dada f(x) = ax + b, se a > 0, o ângulo que a reta faz com o eixo x é:", o: ["Obtuso", "Agudo", "Reto", "Raso"], a: 1 },
-                { q: "Seja f(x) = x/2 + 1. Qual o valor de f(4)?", o: ["3", "4", "2", "5"], a: 0 },
-                { q: "Qual é a função inversa de f(x) = 2x - 4?", o: ["f⁻¹(x) = (x/2) + 2", "f⁻¹(x) = x - 4", "f⁻¹(x) = 2x + 4", "f⁻¹(x) = -2x + 4"], a: 0 },
-                { q: "Uma reta é horizontal. O seu declive é:", o: ["Positivo", "Negativo", "Zero", "Infinito"], a: 2 },
-                { q: "A função f(x) = x é conhecida como:", o: ["Função constante", "Função identidade", "Função quadrática", "Função inversa"], a: 1 },
-                { q: "O gráfico de f(x) = -4x + 8 forma com os eixos coordenados um triângulo. Qual a área desse triângulo?", o: ["8", "16", "4", "32"], a: 0 },
-                { q: "Qual é a equação da reta paralela a y = 3x e que passa pelo ponto (0, 5)?", o: ["y = -3x + 5", "y = 3x - 5", "y = 3x + 5", "y = 5x + 3"], a: 2 },
-                { q: "Seja f(x) = 3x + p. Se o gráfico passa por (2, 10), p é igual a:", o: ["2", "4", "6", "8"], a: 1 },
-                { q: "As funções f(x) = 2x + 1 e g(x) = -0.5x + 3 são retas:", o: ["Coincidentes", "Paralelas", "Perpendiculares", "Nenhuma das anteriores"], a: 2 },
-                { q: "O declive de f(x) = 5 - x é:", o: ["5", "1", "-1", "-5"], a: 2 },
-                { q: "Se o custo fixo é 100€ e o custo variável é 5€ por unidade x, a função custo é:", o: ["C(x) = 100x + 5", "C(x) = 5x + 100", "C(x) = 105x", "C(x) = 100 - 5x"], a: 1 },
-                { q: "Qual a ordenada na origem de f(x) = (3x - 9) / 3?", o: ["-9", "-3", "3", "0"], a: 1 }
-            ],
-            quadratica: [
-                { q: "Na função f(x) = ax² + bx + c, qual parâmetro determina a concavidade da parábola?", o: ["O valor de b", "O valor de c", "O valor de a", "O discriminante (Delta)"], a: 2 },
-                { q: "Quais são as coordenadas do vértice da parábola f(x) = x² - 4x + 3?", o: ["(2, -1)", "(-2, 1)", "(2, 3)", "(4, -1)"], a: 0 },
-                { q: "Se o discriminante (Δ) de uma equação quadrática for negativo (< 0), a função:", o: ["Tem duas raízes reais iguais", "Tem duas raízes reais distintas", "Não interseta o eixo y", "Não tem raízes reais"], a: 3 },
-                { q: "Onde o gráfico de f(x) = 2x² + 5x - 7 interseta o eixo y?", o: ["Em (0, 2)", "Em (0, 5)", "Em (0, -7)", "Em (-7, 0)"], a: 2 },
-                { q: "Quais são as raízes da função f(x) = x² - 5x + 6?", o: ["-2 e -3", "2 e 3", "1 e 6", "-1 e -6"], a: 1 },
-                { q: "Se 'a' for menor que zero (a < 0), o vértice da parábola representa um ponto de:", o: ["Mínimo", "Máximo", "Inflexão", "Raiz"], a: 1 },
-                { q: "A equação do eixo de simetria da parábola f(x) = ax² + bx + c é:", o: ["x = -b / (2a)", "x = -b / a", "x = -Delta / (4a)", "x = c / a"], a: 0 },
-                { q: "Qual o valor mínimo da função f(x) = x² - 6x + 9?", o: ["9", "3", "0", "-9"], a: 2 },
-                { q: "A soma das raízes da função f(x) = 2x² - 8x + 5 é:", o: ["-4", "4", "8", "-8"], a: 1 },
-                { q: "O produto das raízes de f(x) = 3x² - 7x + 12 é:", o: ["4", "12", "-7/3", "-4"], a: 0 },
-                { q: "O gráfico de f(x) = (x - 2)² + 1 tem o vértice no ponto:", o: ["(-2, 1)", "(2, 1)", "(2, -1)", "(0, 1)"], a: 1 },
-                { q: "Se uma parábola tangencia o eixo x, o seu discriminante (Δ) é:", o: ["Positivo", "Negativo", "Igual a zero", "Impossível determinar"], a: 2 },
-                { q: "Qual destas funções é uma função quadrática incompleta?", o: ["f(x) = x² + x + 1", "f(x) = 3x² - 5", "f(x) = 2x + 3", "f(x) = x³ - x²"], a: 1 },
-                { q: "Se f(x) = -x² + 4, as raízes são:", o: ["2 e -2", "4 e -4", "0 e 4", "Não tem raízes"], a: 0 },
-                { q: "A função f(x) = x² - 4 é simétrica em relação ao eixo:", o: ["Das abcissas (x)", "Das ordenadas (y)", "À reta y = x", "À origem"], a: 1 },
-                { q: "O ponto (-1, 0) é raiz de qual destas funções?", o: ["f(x) = x² + 1", "f(x) = x² - x", "f(x) = x² + 2x + 1", "f(x) = x² - 2x + 1"], a: 2 },
-                { q: "Para que f(x) = x² + mx + 9 tenha uma única raiz real, m pode ser:", o: ["3 ou -3", "6 ou -6", "9 ou -9", "0"], a: 1 },
-                { q: "Um objeto é lançado e a sua altura h em função do tempo t é h(t) = -5t² + 20t. Qual a altura máxima?", o: ["15", "20", "25", "30"], a: 1 },
-                { q: "No mesmo lançamento h(t) = -5t² + 20t, em que tempo t atinge a altura máxima?", o: ["2s", "4s", "5s", "10s"], a: 0 },
-                { q: "O gráfico de f(x) = -3x² abre para:", o: ["Cima", "Baixo", "Direita", "Esquerda"], a: 1 },
-                { q: "A área de um quadrado de lado x é A(x) = x². Qual o domínio desta função num contexto real?", o: ["x > 0", "Todos os reais", "x < 0", "x >= 1"], a: 0 },
-                { q: "Qual a equação da parábola com vértice na origem e que passa por (1, 2)?", o: ["y = x²", "y = 2x²", "y = 0.5x²", "y = 4x²"], a: 1 },
-                { q: "A ordenada do vértice é dada por:", o: ["-b / (2a)", "-Delta / (4a)", "c / a", "-b / a"], a: 1 },
-                { q: "Quantas vezes a função f(x) = x² + 4 interseta o eixo x?", o: ["Duas vezes", "Uma vez", "Nenhuma", "Infinitas vezes"], a: 2 },
-                { q: "Se as raízes são -1 e 5, e a = 1, qual é a função?", o: ["f(x) = x² - 4x - 5", "f(x) = x² + 4x - 5", "f(x) = x² - 6x + 5", "f(x) = x² + 6x - 5"], a: 0 },
-                { q: "O ponto (0, c) num gráfico quadrático indica sempre:", o: ["O vértice", "Uma raiz", "A interseção com o eixo y", "A interseção com o eixo x"], a: 2 },
-                { q: "A diferença entre as raízes de f(x) = x² - 7x + 10 é:", o: ["2", "3", "5", "7"], a: 1 },
-                { q: "Se a função f(x) = ax² + bx + c passa pela origem, então:", o: ["a = 0", "b = 0", "c = 0", "Delta = 0"], a: 2 },
-                { q: "Qual o valor de f(2) para f(x) = 2x² - 3x + 1?", o: ["1", "3", "5", "7"], a: 1 },
-                { q: "Se f(x) = x² e g(x) = x² + 3, o gráfico de g(x) é obtido de f(x) por:", o: ["Deslocamento lateral", "Reflexão", "Translação horizontal", "Translação vertical de 3 unidades para cima"], a: 3 }
-            ],
-            exponencial: [
-                { q: "Qual é a base da função exponencial f(x) = 3^x?", o: ["x", "3", "1", "e"], a: 1 },
-                { q: "Uma função exponencial f(x) = a^x é decrescente quando o valor da base 'a' verifica:", o: ["a > 1", "a < 0", "0 < a < 1", "a = 1"], a: 2 },
-                { q: "Qual é o valor de f(0) para qualquer função do tipo f(x) = a^x (com a > 0 e a ≠ 1)?", o: ["0", "a", "1", "Não está definido"], a: 2 },
-                { q: "O gráfico de f(x) = 2^x tem uma assíntota:", o: ["Vertical em x = 0", "Horizontal em y = 0", "Horizontal em y = 1", "Não tem assíntotas"], a: 1 },
-                { q: "Resolva a equação exponencial: 2^x = 16.", o: ["x = 2", "x = 3", "x = 4", "x = 8"], a: 2 },
-                { q: "Qual destas afirmações sobre o domínio da função f(x) = a^x é verdadeira?", o: ["São todos os números reais (ℝ)", "Apenas reais positivos (ℝ+)", "Reais maiores que 1", "Depende de 'a'"], a: 0 },
-                { q: "Se f(x) = (1/2)^x, quando x cresce, f(x) aproxima-se de:", o: ["Infinito", "1", "0", "-Infinito"], a: 2 },
-                { q: "O valor de 5^(-2) é:", o: ["-10", "-25", "1/10", "1/25"], a: 3 },
-                { q: "Uma população de bactérias duplica a cada hora. Sendo inicial 100, a função do tempo t é:", o: ["P(t) = 100 + 2t", "P(t) = 100 * 2^t", "P(t) = 2 * 100^t", "P(t) = 100^2t"], a: 1 },
-                { q: "Qual a relação entre as bases se a^x = b^y e x = y (diferentes de zero)?", o: ["a = b", "a = 1/b", "a = -b", "a = b²"], a: 0 },
-                { q: "A equação 3^(x+1) = 27 tem solução:", o: ["x = 1", "x = 2", "x = 3", "x = 4"], a: 1 },
-                { q: "A função y = e^x tem como base o Número de Euler. Qual o seu valor aproximado?", o: ["3.14", "1.61", "2.71", "0.69"], a: 2 },
-                { q: "Em relação ao eixo y, os gráficos de f(x) = 2^x e g(x) = (1/2)^x são:", o: ["Simétricos", "Coincidentes", "Perpendiculares", "Paralelos"], a: 0 },
-                { q: "Se f(x) = 10^x, qual o valor de f(-1)?", o: ["-10", "1", "0.1", "0"], a: 2 },
-                { q: "Qual é a imagem da função f(x) = a^x ?", o: ["ℝ", "ℝ+", "ℝ-", "[-1, 1]"], a: 1 },
-                { q: "Se 4^x = 2^6, qual o valor de x?", o: ["2", "3", "4", "6"], a: 1 },
-                { q: "A expressão 2^(x+3) é equivalente a:", o: ["2^x + 2^3", "2^x * 2^3", "(2^x)^3", "6^x"], a: 1 },
-                { q: "O que acontece ao gráfico de f(x) = 2^x + 3 em relação a 2^x?", o: ["Sobe 3 unidades", "Desce 3 unidades", "Move 3 para a direita", "Move 3 para a esquerda"], a: 0 },
-                { q: "Se a substância perde metade da massa a cada ano, decaimento é modelado por base:", o: ["a = 2", "a = -2", "a = 0.5", "a = 0"], a: 2 },
-                { q: "Resolva: 5^(2x) = 1", o: ["x = 0.5", "x = 1", "x = 0", "Impossível"], a: 2 },
-                { q: "Se f(x) = (0.1)^x, f(x) é uma função:", o: ["Crescente", "Decrescente", "Constante", "Não exponencial"], a: 1 },
-                { q: "O ponto (1, 7) pertence ao gráfico de f(x) = a^x. O valor de a é:", o: ["1", "7", "1/7", "7/2"], a: 1 },
-                { q: "A solução de 2^x = -4 é:", o: ["x = -2", "x = 2", "x = 0", "Não tem solução real"], a: 3 },
-                { q: "O crescimento composto de dinheiro é um exemplo de função:", o: ["Afim", "Quadrática", "Exponencial", "Trigonométrica"], a: 2 },
-                { q: "Simplifique: (3^x)²", o: ["3^(x+2)", "3^(2x)", "9^x", "Ambas as opções B e C"], a: 3 },
-                { q: "Se 8^x = 1/2, então x vale:", o: ["-1/3", "-3", "1/3", "3"], a: 0 },
-                { q: "O gráfico de f(x) = e^(-x) representa um:", o: ["Crescimento", "Decaimento", "Movimento periódico", "Ponto"], a: 1 },
-                { q: "Numa função f(x) = c * a^x, 'c' representa:", o: ["A base", "A taxa de crescimento", "O valor inicial (quando x=0)", "A assíntota"], a: 2 },
-                { q: "Se 2^(x-1) = 8, x é igual a:", o: ["2", "3", "4", "5"], a: 2 },
-                { q: "A equação a^x = 0 tem solução para algum 'a' válido?", o: ["Sim, x = 0", "Sim, x = 1", "Não", "Sim, a = 0"], a: 2 }
-            ],
-            logaritmica: [
-                { q: "Qual é o domínio da função logarítmica f(x) = log_a(x)?", o: ["Todos os reais", "Reais negativos", "Reais positivos (x > 0)", "Reais maiores ou iguais a zero"], a: 2 },
-                { q: "Qual é a base do logaritmo neperiano (ou natural), denotado por ln(x)?", o: ["10", "1", "e (Número de Euler)", "Pi"], a: 2 },
-                { q: "Pela definição de logaritmo, se log_2(x) = 3, qual é o valor de x?", o: ["6", "8", "9", "5"], a: 1 },
-                { q: "O gráfico da função f(x) = log_a(x) interseta o eixo das abcissas (x) no ponto:", o: ["(0, 1)", "(1, 0)", "(a, 0)", "Não interseta"], a: 1 },
-                { q: "A função logarítmica é a função inversa da função:", o: ["Quadrática", "Afim", "Exponencial", "Modular"], a: 2 },
-                { q: "Seja a propriedade log(A * B). Qual a sua forma expandida?", o: ["log(A) * log(B)", "log(A) + log(B)", "log(A) - log(B)", "B * log(A)"], a: 1 },
-                { q: "Qual o valor de log_5(5)?", o: ["0", "1", "5", "25"], a: 1 },
-                { q: "Qual o valor de log_10(1)?", o: ["10", "1", "0", "Indefinido"], a: 2 },
-                { q: "A função f(x) = log_{1/2}(x) é:", o: ["Estritamente crescente", "Estritamente decrescente", "Constante", "Par"], a: 1 },
-                { q: "Se log_3(x) = 2, então:", o: ["x = 3² = 9", "x = 2³ = 8", "x = 3 * 2 = 6", "x = 3 / 2"], a: 0 },
-                { q: "A propriedade log(A^c) é igual a:", o: ["log(A) + c", "log(A) * log(c)", "c * log(A)", "log(A) / c"], a: 2 },
-                { q: "Qual é a assíntota do gráfico de f(x) = log_2(x)?", o: ["Assíntota horizontal y = 0", "Assíntota vertical x = 0", "Assíntota vertical x = 1", "Não tem"], a: 1 },
-                { q: "Qual o valor de log_2(16)?", o: ["2", "4", "8", "16"], a: 1 },
-                { q: "Se log(x) = -1 (base 10), qual o valor de x?", o: ["-10", "0.1", "1", "-0.1"], a: 1 },
-                { q: "A expressão log_a(M / N) é equivalente a:", o: ["log_a(M) / log_a(N)", "log_a(M) - log_a(N)", "log_a(M) + log_a(N)", "N * log_a(M)"], a: 1 },
-                { q: "O pH de uma solução é calculado com logaritmo na base:", o: ["2", "e", "10", "100"], a: 2 },
-                { q: "Em log_a(b) = c, 'a' chama-se base e 'b' chama-se:", o: ["Logaritmo", "Potência", "Logaritmando", "Mantissa"], a: 2 },
-                { q: "Se log_2(x-1) = 3, o valor de x é:", o: ["7", "8", "9", "10"], a: 2 },
-                { q: "A mudança de base log_b(a) para base 'c' é dada por:", o: ["log_c(b) / log_c(a)", "log_c(a) / log_c(b)", "log_c(a) * log_c(b)", "log_c(a) - log_c(b)"], a: 1 },
-                { q: "Qual o logaritmo de 1 em qualquer base a (a > 0 e a ≠ 1)?", o: ["a", "1", "0", "10"], a: 2 },
-                { q: "Se ln(x) = 1, então x é:", o: ["10", "0", "e", "1"], a: 2 },
-                { q: "Os gráficos de y = 2^x e y = log_2(x) são simétricos em relação:", o: ["Ao eixo x", "Ao eixo y", "À reta y = x", "À origem"], a: 2 },
-                { q: "Resolva log_x(25) = 2 (sendo x > 0 e x ≠ 1).", o: ["x = 5", "x = 10", "x = 12.5", "x = 25"], a: 0 },
-                { q: "A função f(x) = log(x) tem uma imagem (contradomínio) que é:", o: ["Apenas reais positivos", "Apenas reais negativos", "Todos os reais (ℝ)", "Intervalo [0, 1]"], a: 2 },
-                { q: "O valor de 10^(log_10(7)) é:", o: ["10", "7", "70", "1"], a: 1 },
-                { q: "Se log_2(8) = x, e log_3(9) = y, o valor de x + y é:", o: ["5", "6", "7", "17"], a: 0 },
-                { q: "Qual o domínio de f(x) = log(x - 3)?", o: ["x > 0", "x > 3", "x >= 3", "x < 3"], a: 1 },
-                { q: "O logaritmo de uma base negativa:", o: ["É sempre negativo", "É sempre positivo", "Não está definido nos Reais", "É zero"], a: 2 },
-                { q: "O valor de log_4(2) é:", o: ["2", "1/2", "-2", "0"], a: 1 },
-                { q: "Num sismógrafo, a escala Richter utiliza a função:", o: ["Afim", "Quadrática", "Seno", "Logarítmica"], a: 3 }
-            ]
-        };
-
-        // --- CONFIGURAÇÕES DE TEMAS ---
-        const themeConfig = {
-            afim: { title: "Função Afim", icon: "📈", colorClass: "text-afim", bg: "bg-blue-500", btn: "bg-blue-500 hover:bg-blue-600" },
-            quadratica: { title: "Função Quadrática", icon: "🎢", colorClass: "text-quadratica", bg: "bg-emerald-500", btn: "bg-emerald-500 hover:bg-emerald-600" },
-            exponencial: { title: "Função Exponencial", icon: "🚀", colorClass: "text-exponencial", bg: "bg-purple-500", btn: "bg-purple-500 hover:bg-purple-600" },
-            logaritmica: { title: "Função Logarítmica", icon: "📉", colorClass: "text-logaritmica", bg: "bg-orange-500", btn: "bg-orange-500 hover:bg-orange-600" }
-        };
-
-        // --- ESTADO DO JOGO ---
-        let currentTheme = '';
-        let playerName = '';
-        let selectedQuestions = [];
-        let currentQuestionIndex = 0;
-        let score = 0;
-        let intervalId;
-
-        // --- FUNÇÕES DE ANIMAÇÃO DE FUNDO ---
-        function createFloatingSymbols(colorClass) {
-            const container = document.getElementById('symbols-container');
-            container.innerHTML = ''; // Limpar símbolos antigos
+        // Lógica principal encapsulada para organização
+        const app = {
+            mode: 'visualizacao',
+            scene: null, camera: null, renderer: null, controls: null,
+            currentGroup: null, // Grupo que segura os objetos atuais
             
-            const symbols = ['∫', 'π', '∑', '√', '∞', 'Δ', 'θ', 'f(x)'];
-            const numSymbols = 15;
+            // Variáveis específicas da Planificação
+            unfoldObjects: [], // Peças da planificação
 
-            for (let i = 0; i < numSymbols; i++) {
-                const el = document.createElement('div');
-                el.innerText = symbols[Math.floor(Math.random() * symbols.length)];
-                el.className = `math-symbol ${colorClass}`;
+            // Variáveis específicas da Modelagem
+            modPoints: [], // THREE.Vector3
+            modSpheres: [], // Meshes interativos
+            modLines: null,
+            modExtruded: null,
+            modExtrudeHeight: 4,
+            draggedSphere: null,
+            raycaster: new THREE.Raycaster(),
+            mouse: new THREE.Vector2(),
+            planeNormal: new THREE.Vector3(0, 1, 0),
+            plane: new THREE.Plane(new THREE.Vector3(0, 1, 0), 0),
+            labels: [],
+            vertexLabels: [],
+
+            init: function() {
+                // 1. Configuração Básica do Three.js
+                const container = document.getElementById('canvas-container');
+                this.scene = new THREE.Scene();
+                this.scene.background = new THREE.Color('#1a202c');
                 
-                // Posição horizontal aleatória
-                el.style.left = `${Math.random() * 95}vw`;
+                // Adiciona grade (GridHelper)
+                const grid = new THREE.GridHelper(30, 30, 0x4a5568, 0x2d3748);
+                grid.position.y = -0.01; // Levemente abaixo para não piscar
+                this.scene.add(grid);
+
+                this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+                this.camera.position.set(10, 8, 12);
+
+                this.renderer = new THREE.WebGLRenderer({ antialias: true });
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                this.renderer.setPixelRatio(window.devicePixelRatio);
+                container.appendChild(this.renderer.domElement);
+
+                // Controles de Órbita
+                this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+                this.controls.enableDamping = true;
+                this.controls.dampingFactor = 0.05;
+
+                // Iluminação
+                const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+                this.scene.add(ambientLight);
                 
-                // Atraso e duração aleatórios para não subirem todos juntos
-                const delay = Math.random() * 5;
-                const duration = 10 + Math.random() * 10;
+                const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+                dirLight.position.set(10, 20, 10);
+                this.scene.add(dirLight);
+
+                this.currentGroup = new THREE.Group();
+                this.scene.add(this.currentGroup);
+
+                // 2. Eventos
+                window.addEventListener('resize', this.onWindowResize.bind(this));
                 
-                el.style.animationDelay = `${delay}s`;
-                el.style.animationDuration = `${duration}s`;
-                
-                container.appendChild(el);
-            }
-        }
+                // Eventos de Mouse/Touch para Modelagem
+                const canvas = this.renderer.domElement;
+                canvas.addEventListener('pointerdown', this.onPointerDown.bind(this));
+                canvas.addEventListener('pointermove', this.onPointerMove.bind(this));
+                canvas.addEventListener('pointerup', this.onPointerUp.bind(this));
 
-        // Iniciar com símbolos neutros
-        createFloatingSymbols('text-default');
-
-        // --- FUNÇÕES DE NAVEGAÇÃO E JOGO ---
-        function showScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(screenId).classList.add('active');
-            
-            if(screenId === 'menu-screen') {
-                createFloatingSymbols('text-default');
-            }
-        }
-
-        function selectTheme(themeId) {
-            currentTheme = themeId;
-            const theme = themeConfig[themeId];
-            
-            // Atualizar UI da tela de nome
-            document.getElementById('theme-icon').innerText = theme.icon;
-            document.getElementById('theme-title').innerText = theme.title;
-            
-            // Estilizar botões baseado no tema
-            const startBtn = document.getElementById('start-btn');
-            startBtn.className = `w-full py-3 rounded-xl text-white font-bold text-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 ${theme.btn}`;
-            
-            const resultBtn = document.getElementById('btn-ranking-result');
-            resultBtn.className = `flex-1 py-3 rounded-xl text-white font-bold shadow-lg transition-all hover:opacity-90 ${theme.btn}`;
-
-            const progress = document.getElementById('progress-bar');
-            progress.className = `h-2 rounded-full transition-all duration-300 w-0 ${theme.bg}`;
-
-            // Atualizar fundo animado
-            createFloatingSymbols(theme.colorClass);
-
-            showScreen('name-screen');
-        }
-
-        function startGame() {
-            const nameInput = document.getElementById('playerName').value.trim();
-            if (!nameInput) {
-                alert("Por favor, introduza o seu nome para jogar!");
-                return;
-            }
-            
-            playerName = nameInput;
-            score = 0;
-            currentQuestionIndex = 0;
-            
-            // Embaralhar as 30 questões do tema e selecionar as 10 primeiras
-            const allQuestions = [...questionBank[currentTheme]];
-            allQuestions.sort(() => Math.random() - 0.5);
-            selectedQuestions = allQuestions.slice(0, 10);
-            
-            updateScoreDisplay();
-            loadQuestion();
-            showScreen('quiz-screen');
-        }
-
-        function updateScoreDisplay() {
-            const theme = themeConfig[currentTheme];
-            const scoreDisplay = document.getElementById('score-display');
-            scoreDisplay.innerText = `Pontuação: ${score}`;
-            scoreDisplay.className = `text-sm font-bold px-3 py-1 rounded-full text-white ${theme.bg}`;
-        }
-
-        function loadQuestion() {
-            const q = selectedQuestions[currentQuestionIndex];
-            
-            document.getElementById('question-counter').innerText = `Pergunta ${currentQuestionIndex + 1}/10`;
-            document.getElementById('question-text').innerText = q.q;
-            
-            // Atualizar barra de progresso
-            const progress = ((currentQuestionIndex) / 10) * 100;
-            document.getElementById('progress-bar').style.width = `${progress}%`;
-
-            const optionsContainer = document.getElementById('options-container');
-            optionsContainer.innerHTML = '';
-            
-            q.o.forEach((opt, index) => {
-                const btn = document.createElement('button');
-                btn.innerText = opt;
-                btn.className = 'w-full text-left p-4 rounded-xl border-2 border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-400 transition-all text-slate-700 font-medium option-btn';
-                btn.onclick = () => checkAnswer(index, btn);
-                optionsContainer.appendChild(btn);
-            });
-        }
-
-        function checkAnswer(selectedIndex, btnElement) {
-            // Prevenir múltiplos cliques
-            const allBtns = document.getElementById('options-container').querySelectorAll('button');
-            allBtns.forEach(b => b.disabled = true);
-
-            const q = selectedQuestions[currentQuestionIndex];
-            const correctIndex = q.a;
-
-            if (selectedIndex === correctIndex) {
-                btnElement.classList.add('correct-anim');
-                score += 10;
-            } else {
-                btnElement.classList.add('wrong-anim');
-                allBtns[correctIndex].classList.add('correct-anim');
-            }
-
-            updateScoreDisplay();
-
-            setTimeout(() => {
-                currentQuestionIndex++;
-                if (currentQuestionIndex < 10) {
-                    loadQuestion();
-                } else {
-                    endGame();
-                }
-            }, 1200);
-        }
-
-        function endGame() {
-            document.getElementById('progress-bar').style.width = `100%`;
-            saveScore();
-            
-            const finalScoreEl = document.getElementById('final-score');
-            const resultEmoji = document.getElementById('result-emoji');
-            const resultMsg = document.getElementById('result-message');
-            
-            finalScoreEl.innerText = `${score}/100`;
-            finalScoreEl.className = `text-5xl font-bold mb-8 ${themeConfig[currentTheme].colorClass.replace('/50', '')}`; // usa a cor principal
-            
-            if (score === 100) {
-                resultEmoji.innerText = "🏆";
-                resultMsg.innerText = "Perfeito! Você dominou este conteúdo!";
-            } else if (score >= 70) {
-                resultEmoji.innerText = "🌟";
-                resultMsg.innerText = "Excelente trabalho! Ótimo conhecimento.";
-            } else if (score >= 50) {
-                resultEmoji.innerText = "👍";
-                resultMsg.innerText = "Bom esforço! Mas ainda pode melhorar.";
-            } else {
-                resultEmoji.innerText = "📚";
-                resultMsg.innerText = "Continue a estudar. Tente novamente!";
-            }
-            
-            showScreen('result-screen');
-        }
-
-        // --- SISTEMA DE LEADERBOARD (LOCALSTORAGE) ---
-        function getStorageKey() {
-            return `leaderboard_funcoes_${currentTheme}`;
-        }
-
-        function saveScore() {
-            const key = getStorageKey();
-            let leaderboard = JSON.parse(localStorage.getItem(key)) || [];
-            
-            leaderboard.push({ name: playerName, score: score, date: new Date().toLocaleDateString('pt-PT') });
-            
-            // Ordenar por pontuação (decrescente)
-            leaderboard.sort((a, b) => b.score - a.score);
-            
-            // Manter apenas o top 10
-            leaderboard = leaderboard.slice(0, 10);
-            
-            localStorage.setItem(key, JSON.stringify(leaderboard));
-        }
-
-        function showLeaderboardFromTheme() {
-            const theme = themeConfig[currentTheme];
-            document.getElementById('leaderboard-title').innerText = `Top 10 - ${theme.title}`;
-            
-            const list = document.getElementById('leaderboard-list');
-            list.innerHTML = '';
-            
-            const key = getStorageKey();
-            let leaderboard = JSON.parse(localStorage.getItem(key)) || [];
-            
-            if (leaderboard.length === 0) {
-                list.innerHTML = '<p class="text-center text-slate-400 py-4">Ainda não há classificações. Seja o primeiro!</p>';
-            } else {
-                leaderboard.forEach((entry, index) => {
-                    const item = document.createElement('div');
-                    let rankClass = "bg-slate-100 text-slate-600";
-                    let rankIcon = `${index + 1}º`;
-                    
-                    if (index === 0) { rankClass = "bg-yellow-100 text-yellow-700 border border-yellow-300"; rankIcon = "🥇"; }
-                    if (index === 1) { rankClass = "bg-gray-200 text-gray-700 border border-gray-300"; rankIcon = "🥈"; }
-                    if (index === 2) { rankClass = "bg-orange-100 text-orange-700 border border-orange-300"; rankIcon = "🥉"; }
-                    
-                    item.className = `flex justify-between items-center p-3 rounded-lg ${rankClass} mb-1`;
-                    item.innerHTML = `
-                        <div class="flex items-center gap-3">
-                            <span class="font-bold w-6 text-center">${rankIcon}</span>
-                            <span class="font-semibold truncate max-w-[120px] md:max-w-[180px]">${entry.name}</span>
-                        </div>
-                        <div class="flex items-center gap-4 text-sm">
-                            <span class="opacity-70 text-xs hidden md:inline">${entry.date}</span>
-                            <span class="font-bold bg-white/50 px-2 py-1 rounded shadow-sm">${entry.score} pts</span>
-                        </div>
-                    `;
-                    list.appendChild(item);
+                // Eventos de UI
+                document.getElementById('unfold-slider').addEventListener('input', (e) => {
+                    this.updateUnfold(e.target.value);
                 });
-            }
-            
-            showScreen('leaderboard-screen');
-        }
+                document.getElementById('extrude-slider').addEventListener('input', (e) => {
+                    this.modExtrudeHeight = parseFloat(e.target.value);
+                    document.getElementById('info-altura').innerText = this.modExtrudeHeight.toFixed(1);
+                    this.updateModelingShape();
+                });
 
-        // Permitir iniciar o jogo pressionando "Enter" no campo de nome
-        document.getElementById('playerName').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                startGame();
+                // Iniciar
+                this.loadShape('cube'); // Default
+                this.createLabelsHTML();
+                this.animate();
+            },
+
+            clearScene: function() {
+                while(this.currentGroup.children.length > 0){ 
+                    const obj = this.currentGroup.children[0];
+                    if(obj.geometry) obj.geometry.dispose();
+                    if(obj.material) obj.material.dispose();
+                    this.currentGroup.remove(obj); 
+                }
+                this.unfoldObjects = [];
+                this.modSpheres = [];
+                this.modPoints = [];
+                this.hideAllLabels();
+            },
+
+            // ==========================================
+            // MODO 1: VISUALIZAÇÃO
+            // ==========================================
+            loadShape: function(type) {
+                this.clearScene();
+                this.controls.enabled = true; // Garante que a rotação funciona
+
+                let geometry;
+                switch(type) {
+                    case 'cube': geometry = new THREE.BoxGeometry(4, 4, 4); break;
+                    case 'pyramid': geometry = new THREE.ConeGeometry(3, 5, 4); break;
+                    case 'prism': geometry = new THREE.CylinderGeometry(3, 3, 5, 3); break;
+                    case 'sphere': geometry = new THREE.SphereGeometry(3, 32, 32); break;
+                }
+
+                // Material verde transparente (estilo AR)
+                const material = new THREE.MeshPhongMaterial({ 
+                    color: 0x4ade80, 
+                    transparent: true, 
+                    opacity: 0.8,
+                    side: THREE.DoubleSide
+                });
+                
+                const mesh = new THREE.Mesh(geometry, material);
+                
+                // Arestas visíveis (Wireframe)
+                const edgesGeometry = new THREE.EdgesGeometry(geometry);
+                const edgesMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 2 });
+                const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial);
+                mesh.add(edges);
+
+                // Levantar para ficar acima do grid
+                if(type === 'cube') mesh.position.y = 2;
+                else if(type === 'pyramid') mesh.position.y = 2.5;
+                else if(type === 'prism') mesh.position.y = 2.5;
+                else if(type === 'sphere') mesh.position.y = 3;
+
+                this.currentGroup.add(mesh);
+            },
+
+            // ==========================================
+            // MODO 2: PLANIFICAÇÃO (CUBO)
+            // ==========================================
+            setupPlanificacao: function() {
+                this.clearScene();
+                this.controls.enabled = true;
+                
+                const size = 4;
+                const mat = new THREE.MeshPhongMaterial({ color: 0x3b82f6, transparent: true, opacity: 0.8, side: THREE.DoubleSide });
+                const matIn = new THREE.MeshPhongMaterial({ color: 0x1e3a8a, transparent: true, opacity: 0.9, side: THREE.DoubleSide });
+                const matArr = [mat, mat, mat, mat, mat, matIn]; // Interior ligeiramente diferente
+                
+                const planeGeom = new THREE.PlaneGeometry(size, size);
+                const createFace = () => {
+                    const mesh = new THREE.Mesh(planeGeom, matArr);
+                    const edges = new THREE.LineSegments(new THREE.EdgesGeometry(planeGeom), new THREE.LineBasicMaterial({ color: 0xffffff }));
+                    mesh.add(edges);
+                    return mesh;
+                };
+
+                // Base (Fixa no chão)
+                const base = createFace();
+                base.rotation.x = -Math.PI / 2;
+                base.position.y = 0.01; // Levemente acima do grid
+                this.currentGroup.add(base);
+
+                // Função auxiliar para criar dobradiças (pivôs)
+                const createHinge = (parent, posX, posZ, rotY) => {
+                    const hinge = new THREE.Group();
+                    hinge.position.set(posX, 0, posZ);
+                    hinge.rotation.y = rotY;
+                    parent.add(hinge);
+                    
+                    const face = createFace();
+                    // Move a face para que sua base fique no pivô
+                    face.position.set(0, size/2, 0); 
+                    hinge.add(face);
+                    
+                    return { hinge, face };
+                };
+
+                // As 4 paredes conectadas à base
+                const front = createHinge(base, 0, -size/2, 0); // O Plane inicial olha para Z+. Z- é "cima" quando rotacionado X=-90
+                const back = createHinge(base, 0, size/2, Math.PI);
+                const left = createHinge(base, -size/2, 0, Math.PI/2);
+                const right = createHinge(base, size/2, 0, -Math.PI/2);
+
+                // A tampa conectada ao topo da face Traseira
+                const topHinge = new THREE.Group();
+                topHinge.position.set(0, size/2, 0); // No topo da face back
+                back.face.add(topHinge);
+                const topFace = createFace();
+                topFace.position.set(0, size/2, 0);
+                topHinge.add(topFace);
+
+                // Armazenar dobradiças para animar (Front, Back, Left, Right, Top)
+                this.unfoldObjects = [
+                    front.hinge, back.hinge, left.hinge, right.hinge, topHinge
+                ];
+
+                // Forçar estado inicial
+                document.getElementById('unfold-slider').value = 0;
+                this.updateUnfold(0);
+            },
+
+            updateUnfold: function(val) {
+                const percentage = val / 100;
+                const angle = (Math.PI / 2) * (1 - percentage); // 90 graus (fechado) a 0 graus (aberto/plano)
+                
+                // Rotaciona as dobradiças. Como criamos elas viradas para fora, rotacionar em X dobra elas para cima.
+                if(this.unfoldObjects.length > 0) {
+                    this.unfoldObjects[0].rotation.x = angle;
+                    this.unfoldObjects[1].rotation.x = angle;
+                    this.unfoldObjects[2].rotation.x = angle;
+                    this.unfoldObjects[3].rotation.x = angle;
+                    this.unfoldObjects[4].rotation.x = angle; // Tampa dobra em relação às costas
+                }
+            },
+
+            // ==========================================
+            // MODO 3: MODELAGEM (POLÍGONO E ÁREA)
+            // ==========================================
+            setupModelagem: function() {
+                this.clearScene();
+                this.controls.enabled = false; // Desativa órbita para facilitar o drag
+                this.camera.position.set(0, 15, 0); // Vista superior
+                this.camera.lookAt(0, 0, 0);
+
+                // Pontos iniciais (um pentágono no plano XZ)
+                const radius = 5;
+                const sides = 5;
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+                
+                for(let i = 0; i < sides; i++) {
+                    const angle = (i / sides) * Math.PI * 2 - Math.PI/2;
+                    this.modPoints.push(new THREE.Vector3(Math.cos(angle)*radius, 0, Math.sin(angle)*radius));
+                }
+
+                // Criar esferas interativas (Vértices)
+                const sphereGeom = new THREE.SphereGeometry(0.4, 16, 16);
+                const sphereMat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+                
+                this.modPoints.forEach((p, idx) => {
+                    const s = new THREE.Mesh(sphereGeom, sphereMat);
+                    s.position.copy(p);
+                    s.userData.index = idx;
+                    s.userData.letter = letters[idx];
+                    this.currentGroup.add(s);
+                    this.modSpheres.push(s);
+                });
+
+                this.updateModelingShape();
+            },
+
+            updateModelingShape: function() {
+                if(this.mode !== 'modelagem' || this.modPoints.length === 0) return;
+
+                // 1. Atualizar array de pontos com as posições das esferas
+                this.modSpheres.forEach((s, i) => {
+                    this.modPoints[i].copy(s.position);
+                    this.modPoints[i].y = 0; // Travar no eixo Y=0
+                });
+
+                // 2. Limpar geometria antiga (linhas e extrusão)
+                if(this.modLines) { this.currentGroup.remove(this.modLines); this.modLines.geometry.dispose(); }
+                if(this.modExtruded) { this.currentGroup.remove(this.modExtruded); this.modExtruded.geometry.dispose(); }
+
+                // 3. Criar Shape (Polígono 2D) no Three.js
+                const shape = new THREE.Shape();
+                shape.moveTo(this.modPoints[0].x, -this.modPoints[0].z); // Shape usa X,Y. Mapeamos X,Z para X,-Y
+                for(let i = 1; i < this.modPoints.length; i++) {
+                    shape.lineTo(this.modPoints[i].x, -this.modPoints[i].z);
+                }
+                shape.lineTo(this.modPoints[0].x, -this.modPoints[0].z); // Fechar
+
+                // 4. Desenhar Contorno (Linhas)
+                const points = shape.getPoints();
+                const geometryLine = new THREE.BufferGeometry().setFromPoints(points);
+                const materialLine = new THREE.LineBasicMaterial({ color: 0xffff00, linewidth: 3 });
+                this.modLines = new THREE.Line(geometryLine, materialLine);
+                this.modLines.rotation.x = Math.PI / 2; // Deitar no plano XZ
+                this.modLines.position.y = 0.05;
+                this.currentGroup.add(this.modLines);
+
+                // 5. Extrusão (Prisma 3D)
+                const extrudeSettings = {
+                    depth: this.modExtrudeHeight,
+                    bevelEnabled: false
+                };
+                const extrudeGeom = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+                const extrudeMat = new THREE.MeshPhongMaterial({ color: 0xeab308, transparent: true, opacity: 0.6, side: THREE.DoubleSide }); // Amarelo Tailwind
+                this.modExtruded = new THREE.Mesh(extrudeGeom, extrudeMat);
+                
+                // Rotacionar para ficar em pé no eixo Y
+                this.modExtruded.rotation.x = Math.PI / 2;
+                // Como a extrusão vai no eixo Z do Shape (que virou Y do mundo), alinhamos na base
+                this.modExtruded.position.y = this.modExtrudeHeight;
+                this.currentGroup.add(this.modExtruded);
+
+                // 6. Atualizar Labels HTML e Cálculos
+                this.updateMathCalculations();
+            },
+
+            // Lógica de Drag & Drop
+            onPointerDown: function(e) {
+                if(this.mode !== 'modelagem') return;
+                this.mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+                this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+                
+                this.raycaster.setFromCamera(this.mouse, this.camera);
+                const intersects = this.raycaster.intersectObjects(this.modSpheres);
+                
+                if(intersects.length > 0) {
+                    this.draggedSphere = intersects[0].object;
+                    this.controls.enabled = false;
+                }
+            },
+            onPointerMove: function(e) {
+                if(!this.draggedSphere) return;
+                
+                this.mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+                this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+                this.raycaster.setFromCamera(this.mouse, this.camera);
+                
+                this.raycaster.ray.intersectPlane(this.plane, this.draggedSphere.position);
+                this.draggedSphere.position.y = 0; // Forçar Y=0
+                
+                this.updateModelingShape();
+            },
+            onPointerUp: function() {
+                this.draggedSphere = null;
+                // Opcional: restaurar controle de câmera se quiser rodar na modelagem
+                // this.controls.enabled = true; 
+            },
+
+            // ==========================================
+            // UI E CÁLCULOS MATEMÁTICOS
+            // ==========================================
+            setMode: function(newMode) {
+                this.mode = newMode;
+                
+                // Atualiza Botões
+                ['vis', 'plan', 'mod'].forEach(id => {
+                    const btn = document.getElementById(`btn-${id}`);
+                    btn.className = "px-4 py-2 rounded-md font-medium text-sm transition-colors text-gray-400 hover:text-white";
+                });
+                const activeBtnMap = { 'visualizacao': 'vis', 'planificacao': 'plan', 'modelagem': 'mod' };
+                const activeColorMap = { 'visualizacao': 'bg-green-600', 'planificacao': 'bg-blue-600', 'modelagem': 'bg-yellow-600' };
+                
+                const activeBtn = document.getElementById(`btn-${activeBtnMap[newMode]}`);
+                activeBtn.className = `px-4 py-2 rounded-md text-white font-medium text-sm transition-colors ${activeColorMap[newMode]}`;
+
+                // Atualiza Painéis
+                document.getElementById('panel-visualizacao').classList.add('hidden');
+                document.getElementById('panel-planificacao').classList.add('hidden');
+                document.getElementById('panel-modelagem').classList.add('hidden');
+                document.getElementById(`panel-${newMode}`).classList.remove('hidden');
+
+                // Executa Lógica de Setup
+                if(newMode === 'visualizacao') {
+                    this.loadShape('cube');
+                    this.camera.position.set(10, 8, 12);
+                    this.camera.lookAt(0,0,0);
+                } else if(newMode === 'planificacao') {
+                    this.setupPlanificacao();
+                    this.camera.position.set(0, 10, 15);
+                    this.camera.lookAt(0,0,0);
+                } else if(newMode === 'modelagem') {
+                    this.setupModelagem();
+                }
+            },
+
+            createLabelsHTML: function() {
+                const container = document.getElementById('labels-container');
+                // Labels de Distância (Arestas)
+                for(let i=0; i<5; i++) {
+                    const div = document.createElement('div');
+                    div.className = 'label';
+                    container.appendChild(div);
+                    this.labels.push(div);
+                }
+                // Labels de Vértices (Letras)
+                for(let i=0; i<5; i++) {
+                    const div = document.createElement('div');
+                    div.className = 'vertex-label';
+                    container.appendChild(div);
+                    this.vertexLabels.push(div);
+                }
+            },
+
+            hideAllLabels: function() {
+                this.labels.forEach(l => l.style.display = 'none');
+                this.vertexLabels.forEach(l => l.style.display = 'none');
+            },
+
+            updateMathCalculations: function() {
+                if(this.mode !== 'modelagem' || this.modPoints.length < 3) return;
+
+                let perimetro = 0;
+                let areaBase = 0; // Usando fórmula do polígono (Shoelace)
+
+                for(let i = 0; i < this.modPoints.length; i++) {
+                    const p1 = this.modPoints[i];
+                    const p2 = this.modPoints[(i + 1) % this.modPoints.length];
+                    
+                    // 1. Distância entre vértices
+                    const dist = p1.distanceTo(p2);
+                    perimetro += dist;
+
+                    // 2. Área da base (Shoelace usando X e Z)
+                    areaBase += (p1.x * p2.z) - (p2.x * p1.z);
+
+                    // 3. Atualizar Posição dos HTML Labels
+                    // Meio da aresta
+                    const mid = new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5);
+                    // Puxar levemente para cima para não sobrepor a linha
+                    mid.y = 0.5; 
+                    
+                    const projMid = mid.clone().project(this.camera);
+                    const xMid = (projMid.x * .5 + .5) * window.innerWidth;
+                    const yMid = (projMid.y * -.5 + .5) * window.innerHeight;
+                    
+                    if(projMid.z < 1) { // Só mostra se estiver na frente da câmera
+                        this.labels[i].style.display = 'block';
+                        this.labels[i].style.left = `${xMid}px`;
+                        this.labels[i].style.top = `${yMid}px`;
+                        this.labels[i].innerText = dist.toFixed(1);
+                    } else {
+                        this.labels[i].style.display = 'none';
+                    }
+
+                    // Letra do vértice
+                    const vPos = p1.clone();
+                    vPos.y = 1; // Flutuar acima da esfera
+                    const projV = vPos.project(this.camera);
+                    const xV = (projV.x * .5 + .5) * window.innerWidth;
+                    const yV = (projV.y * -.5 + .5) * window.innerHeight;
+                    
+                    if(projV.z < 1) {
+                        this.vertexLabels[i].style.display = 'block';
+                        this.vertexLabels[i].style.left = `${xV}px`;
+                        this.vertexLabels[i].style.top = `${yV}px`;
+                        this.vertexLabels[i].innerText = this.modSpheres[i].userData.letter;
+                    } else {
+                        this.vertexLabels[i].style.display = 'none';
+                    }
+                }
+
+                areaBase = Math.abs(areaBase) / 2;
+
+                // 4. Cálculo da Área Total do Prisma
+                // Área Total = 2 * Área da Base + (Perímetro da Base * Altura)
+                const areaLateral = perimetro * this.modExtrudeHeight;
+                const areaTotal = (2 * areaBase) + areaLateral;
+
+                // 5. Atualizar Painel
+                document.getElementById('info-perimetro').innerText = perimetro.toFixed(1) + " un";
+                document.getElementById('info-areabase').innerText = areaBase.toFixed(1) + " un²";
+                document.getElementById('info-areatotal').innerText = areaTotal.toFixed(1) + " un²";
+            },
+
+            // ==========================================
+            // LOOP PRINCIPAL
+            // ==========================================
+            animate: function() {
+                requestAnimationFrame(this.animate.bind(this));
+                
+                // Rotaciona o grupo na Visualização para ficar dinâmico
+                if(this.mode === 'visualizacao') {
+                    this.currentGroup.rotation.y += 0.005;
+                } else {
+                    this.currentGroup.rotation.y = 0; // Reseta rotação nos outros modos
+                }
+                
+                // Atualiza controles de câmera
+                if(this.controls.enabled) this.controls.update();
+
+                // Atualiza os rótulos HTML se a câmera mexer
+                if(this.mode === 'modelagem' && !this.draggedSphere) {
+                    // Chamamos apenas para reposicionar os labels ao rotacionar/pan
+                    this.updateMathCalculations(); 
+                }
+
+                this.renderer.render(this.scene, this.camera);
+            },
+
+            onWindowResize: function() {
+                this.camera.aspect = window.innerWidth / window.innerHeight;
+                this.camera.updateProjectionMatrix();
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                if(this.mode === 'modelagem') this.updateMathCalculations();
             }
-        });
+        };
+
+        window.onload = function() {
+            app.init();
+        };
     </script>
 </body>
 </html>
-
-
-<!DOCTYPE html>
-<html lang="pt-PT">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Desafios Matemáticos - Funções</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8fafc;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
-
-        /* Fundo quadriculado de caderno */
-        .bg-grid {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-image: 
-                linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
-            background-size: 30px 30px;
-            z-index: -2;
-        }
-
-        /* Efeito de Vidro (Glassmorphism) */
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
-        }
-
-        /* Animações dos símbolos flutuantes */
-        @keyframes floatUp {
-            0% {
-                transform: translateY(110vh) rotate(0deg) scale(0.8);
-                opacity: 0;
-            }
-            10% { opacity: 0.4; }
-            90% { opacity: 0.4; }
-            100% {
-                transform: translateY(-10vh) rotate(360deg) scale(1.2);
-                opacity: 0;
-            }
-        }
-
-        .math-symbol {
-            position: fixed;
-            font-size: 2.5rem;
-            font-weight: bold;
-            z-index: -1;
-            user-select: none;
-            pointer-events: none;
-            animation: floatUp linear infinite;
-        }
-
-        /* Cores temáticas dos símbolos */
-        .text-afim { color: rgba(59, 130, 246, 0.5); } /* Azul */
-        .text-quadratica { color: rgba(16, 185, 129, 0.5); } /* Verde */
-        .text-exponencial { color: rgba(139, 92, 246, 0.5); } /* Roxo */
-        .text-logaritmica { color: rgba(249, 115, 22, 0.5); } /* Laranja */
-        .text-default { color: rgba(156, 163, 175, 0.5); } /* Cinzento para o menu */
-
-        /* Transições suaves */
-        .screen {
-            display: none;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-        .screen.active {
-            display: flex;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .option-btn {
-            transition: all 0.2s;
-        }
-        .option-btn:hover {
-            transform: translateX(5px);
-        }
-        .correct-anim { animation: pulseGreen 0.5s; background-color: #22c55e !important; color: white !important; border-color: #22c55e !important;}
-        .wrong-anim { animation: shakeRed 0.5s; background-color: #ef4444 !important; color: white !important; border-color: #ef4444 !important;}
-
-        @keyframes pulseGreen { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-        @keyframes shakeRed { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-    </style>
-</head>
-<body class="text-slate-800 flex items-center justify-center p-4">
-
-    <!-- Fundo base -->
-    <div class="bg-grid"></div>
-    <!-- Recipiente para símbolos matemáticos gerados por JS -->
-    <div id="symbols-container"></div>
-
-    <div class="w-full max-w-2xl glass-panel rounded-3xl p-8 relative overflow-hidden">
-        
-        <!-- TELA 1: MENU PRINCIPAL -->
-        <div id="menu-screen" class="screen active flex-col items-center">
-            <h1 class="text-4xl font-bold mb-2 text-center text-slate-800">Desafios Matemáticos</h1>
-            <p class="text-slate-500 mb-8 text-center">Escolha o conteúdo e teste os seus conhecimentos!</p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-                <button onclick="selectTheme('afim')" class="p-6 rounded-2xl bg-blue-50 border-2 border-blue-200 hover:border-blue-500 hover:bg-blue-100 transition-all group relative overflow-hidden text-left">
-                    <div class="text-blue-500 text-3xl mb-2 font-bold group-hover:scale-110 transition-transform">f(x) = ax + b</div>
-                    <h2 class="text-xl font-bold text-blue-900">Função Afim</h2>
-                    <p class="text-sm text-blue-700/70 mt-1">Declives, ordenadas na origem e gráficos retilíneos.</p>
-                </button>
-                
-                <button onclick="selectTheme('quadratica')" class="p-6 rounded-2xl bg-emerald-50 border-2 border-emerald-200 hover:border-emerald-500 hover:bg-emerald-100 transition-all group relative overflow-hidden text-left">
-                    <div class="text-emerald-500 text-3xl mb-2 font-bold group-hover:scale-110 transition-transform">f(x) = ax² + bx + c</div>
-                    <h2 class="text-xl font-bold text-emerald-900">Função Quadrática</h2>
-                    <p class="text-sm text-emerald-700/70 mt-1">Parábolas, vértices e raízes.</p>
-                </button>
-
-                <button onclick="selectTheme('exponencial')" class="p-6 rounded-2xl bg-purple-50 border-2 border-purple-200 hover:border-purple-500 hover:bg-purple-100 transition-all group relative overflow-hidden text-left">
-                    <div class="text-purple-500 text-3xl mb-2 font-bold group-hover:scale-110 transition-transform">f(x) = a˟</div>
-                    <h2 class="text-xl font-bold text-purple-900">Função Exponencial</h2>
-                    <p class="text-sm text-purple-700/70 mt-1">Crescimento, decaimento e propriedades.</p>
-                </button>
-
-                <button onclick="selectTheme('logaritmica')" class="p-6 rounded-2xl bg-orange-50 border-2 border-orange-200 hover:border-orange-500 hover:bg-orange-100 transition-all group relative overflow-hidden text-left">
-                    <div class="text-orange-500 text-3xl mb-2 font-bold group-hover:scale-110 transition-transform">f(x) = logₐ(x)</div>
-                    <h2 class="text-xl font-bold text-orange-900">Função Logarítmica</h2>
-                    <p class="text-sm text-orange-700/70 mt-1">Logaritmos, propriedades e domínios.</p>
-                </button>
-            </div>
-        </div>
-
-        <!-- TELA 2: NOME DO JOGADOR -->
-        <div id="name-screen" class="screen flex-col items-center w-full">
-            <button onclick="showScreen('menu-screen')" class="self-start text-sm text-slate-500 hover:text-slate-800 mb-4 flex items-center">
-                ← Voltar ao Menu
-            </button>
-            <div id="theme-icon" class="text-5xl mb-4"></div>
-            <h2 id="theme-title" class="text-3xl font-bold text-slate-800 mb-2">Tema</h2>
-            <p class="text-slate-500 mb-8 text-center">10 perguntas sorteadas de um banco de 30.<br>Boa sorte!</p>
-            
-            <div class="w-full max-w-sm">
-                <input type="text" id="playerName" placeholder="O seu nome..." class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-slate-500 focus:outline-none mb-4 text-center text-lg bg-white/50">
-                <button onclick="startGame()" id="start-btn" class="w-full py-3 rounded-xl text-white font-bold text-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1">
-                    Começar Desafio
-                </button>
-                <button onclick="showLeaderboardFromTheme()" class="w-full py-3 mt-3 rounded-xl border-2 border-slate-200 text-slate-600 font-bold hover:bg-slate-100 transition-all">
-                    Ver Top 10
-                </button>
-            </div>
-        </div>
-
-        <!-- TELA 3: QUIZ -->
-        <div id="quiz-screen" class="screen flex-col w-full">
-            <div class="flex justify-between items-center mb-6">
-                <span id="question-counter" class="text-sm font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">Pergunta 1/10</span>
-                <span id="score-display" class="text-sm font-bold px-3 py-1 rounded-full text-white">Pontuação: 0</span>
-            </div>
-            
-            <div class="w-full bg-slate-200 rounded-full h-2 mb-6 overflow-hidden">
-                <div id="progress-bar" class="h-2 rounded-full transition-all duration-300 w-0"></div>
-            </div>
-
-            <h3 id="question-text" class="text-xl md:text-2xl font-bold text-slate-800 mb-8 min-h-[80px]"></h3>
-            
-            <div id="options-container" class="flex flex-col gap-3">
-                <!-- Opções serão injetadas aqui -->
-            </div>
-        </div>
-
-        <!-- TELA 4: RESULTADO -->
-        <div id="result-screen" class="screen flex-col items-center w-full">
+```
