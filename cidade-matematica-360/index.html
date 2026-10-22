@@ -32,13 +32,13 @@
       <button id="resetBtn" class="secondary" type="button">Reiniciar missão</button>
       <button id="hideHelpBtn" class="secondary" type="button">Ocultar instruções</button>
     </div>
-    <div id="status">Foto esperada: imagens/praca360.jpg. Você também pode carregar uma foto do aparelho para testar.</div>
+    <div id="status">Imagem provisória vinculada ao repositório Amapá Interativo (assets/3d/praca.jpg). Você pode carregar uma foto 360° do aparelho para testar.</div>
   </section>
   <div id="vrHint">No computador: use o mouse para olhar ao redor. Em RV: selecione os alvos com o olhar.</div>
 
   <a-scene renderer="colorManagement: true; antialias: true" background="color: #0f172a" vr-mode-ui="enabled: true">
     <a-assets timeout="10000">
-      <img id="panorama" src="imagens/praca360.jpg" crossorigin="anonymous">
+      <img id="panorama" src="https://raw.githubusercontent.com/Brenner279/amapa-interativo/main/assets/3d/praca.jpg" crossorigin="anonymous">
     </a-assets>
     <a-sky id="sky" src="#panorama" rotation="0 -90 0" color="#263746"></a-sky>
     <a-entity id="cameraRig" position="0 1.6 0">
@@ -191,7 +191,7 @@
         status.textContent = 'Panorama carregado. Olhe ao redor e selecione INICIAR com o olhar.';
       });
       sky.addEventListener('materialtextureerror', () => {
-        status.textContent = 'Não encontramos imagens/praca360.jpg. Use “Escolher foto 360°” para carregar sua fotografia.';
+        status.textContent = 'Não foi possível carregar a imagem do Amapá Interativo. Use “Escolher foto 360°” para carregar uma fotografia.';
       });
       showHome();
     })();
