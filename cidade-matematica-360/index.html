@@ -179,12 +179,13 @@
       $('result').innerHTML = '<strong>Altura estimada do poste: ' + height.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2}) +
         ' m</strong><br>' + detail + '<br>+ altura dos olhos (' + eye.toLocaleString('pt-BR') + ' m).<br><span class="muted">Resultado matemático estimado; compare com uma medição real segura.</span>';
     }
-    $('trigBtn').addEventListener('click', () => setMode('trig'));
-    $('pythBtn').addEventListener('click', () => setMode('pyth'));
+    $('trigBtn').addEventListener('click', () => { $('distance').value = '10'; $('angle').value = '45'; setMode('trig'); calculate(); });
+    $('pythBtn').addEventListener('click', () => { $('distance').value = '8'; $('lineDistance').value = '10'; setMode('pyth'); calculate(); });
     $('calculateBtn').addEventListener('click', calculate);
     $('exampleBtn').addEventListener('click', () => {
-      $('distance').value = '10'; $('eyeHeight').value = '1.60'; $('angle').value = '45'; $('lineDistance').value = '10';
-      calculate();
+      if (mode === 'pyth') { $('distance').value = '8'; $('lineDistance').value = '10'; }
+      else { $('distance').value = '10'; $('angle').value = '45'; }
+      $('eyeHeight').value = '1.60'; calculate();
     });
     $('otherBtn').addEventListener('click', () => {
       $('heightForm').classList.add('hidden');
