@@ -4,197 +4,222 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta name="theme-color" content="#082f49">
-  <title>Cidade Matemática 360°</title>
+  <title>Cidade Matemática 360° | Alturas e Triângulos</title>
   <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
   <style>
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: system-ui, Arial, sans-serif; background: #082f49; color: #f8fafc; }
-    #help { position: fixed; z-index: 5; top: 12px; left: 12px; right: 12px; max-width: 520px; margin: auto; padding: 12px 14px; border: 1px solid #38bdf8; border-radius: 14px; background: rgba(8,47,73,.94); box-shadow: 0 8px 28px #0005; }
-    #help h1 { font-size: 1.05rem; margin: 0 0 4px; }
-    #help p { font-size: .84rem; line-height: 1.4; margin: 4px 0; }
-    #toolbar { display:flex; flex-wrap:wrap; gap:8px; margin-top:9px; align-items:center; }
-    button, .file-label { cursor:pointer; border:0; border-radius:9px; padding:9px 12px; font-weight:700; background:#fbbf24; color:#172554; font-size:.85rem; }
-    .secondary { background:#e0f2fe; }
-    #photoInput { position:absolute; width:1px; height:1px; opacity:0; }
-    #status { color:#bae6fd; font-size:.78rem; margin-top:7px; }
-    #vrHint { position:fixed; z-index:4; bottom:10px; left:10px; right:10px; text-align:center; pointer-events:none; font-size:.75rem; text-shadow:0 2px 4px #000; }
-    a-scene { position:fixed; inset:0; }
-    @media (max-width: 480px) { #help { top:6px; left:6px; right:6px; padding:10px; } #help p {font-size:.78rem;} }
+    :root{--navy:#082f49;--blue:#0e7490;--sky:#bae6fd;--gold:#fbbf24;--ink:#102033}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:var(--navy);color:#f8fafc}
+    a-scene{position:fixed;inset:0}
+    #panel{position:fixed;z-index:5;top:10px;left:10px;width:min(430px,calc(100vw - 20px));max-height:calc(100vh - 20px);overflow:auto;padding:14px;border:1px solid #38bdf8;border-radius:16px;background:rgba(8,47,73,.96);box-shadow:0 8px 28px #0006}
+    h1{font-size:1.08rem;margin:0 0 5px;color:#fde68a}
+    h2{font-size:1rem;margin:12px 0 7px}
+    p{font-size:.86rem;line-height:1.42;margin:6px 0}
+    .muted{color:#bae6fd;font-size:.78rem}
+    .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
+    button,.file-label{border:0;border-radius:9px;padding:10px 12px;font-weight:750;font-size:.86rem;cursor:pointer;background:var(--gold);color:var(--ink)}
+    button.secondary,.file-label{background:#e0f2fe}
+    button.active{outline:2px solid #fbbf24;background:#fff7cc}
+    label.field{display:block;font-size:.82rem;font-weight:650;margin-top:9px}
+    input,select{width:100%;margin-top:4px;border:1px solid #7dd3fc;border-radius:8px;padding:10px;font:inherit;color:#0f172a;background:#fff}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+    #result{margin-top:12px;border:1px solid #38bdf8;border-radius:12px;padding:11px;background:#0c3b56;line-height:1.5}
+    #result strong{color:#fde68a}
+    #photoInput{position:absolute;width:1px;height:1px;opacity:0}
+    #vrHint{position:fixed;z-index:4;bottom:8px;left:10px;right:10px;text-align:center;pointer-events:none;font-size:.75rem;text-shadow:0 2px 4px #000}
+    .hidden{display:none!important}
+    @media(max-width:480px){#panel{top:5px;left:5px;width:calc(100vw - 10px);max-height:62vh;padding:11px}p{font-size:.81rem}button,.file-label{padding:9px;font-size:.81rem}}
   </style>
 </head>
 <body>
-  <section id="help">
+  <section id="panel">
     <h1>🏙️ Cidade Matemática 360°</h1>
-    <p>Explore uma fotografia panorâmica real e resolva desafios das quatro operações. Para selecionar no modo RV, mantenha o olhar no alvo até o cursor completar o círculo.</p>
-    <div id="toolbar">
-      <label class="file-label" for="photoInput">Escolher foto 360°</label>
-      <input id="photoInput" type="file" accept="image/*">
-      <button id="resetBtn" class="secondary" type="button">Reiniciar missão</button>
-      <button id="hideHelpBtn" class="secondary" type="button">Ocultar instruções</button>
+    <p>Missão: descubra a altura de um poste usando trigonometria ou o Teorema de Pitágoras. Os valores iniciais são exemplos didáticos — substitua-os por medidas coletadas em campo.</p>
+    <div class="row">
+      <button id="trigBtn" type="button" class="active">Trigonometria</button>
+      <button id="pythBtn" type="button" class="secondary">Pitágoras</button>
+      <button id="otherBtn" type="button" class="secondary">Operações</button>
     </div>
-    <div id="status">Imagem provisória vinculada ao repositório Amapá Interativo (assets/3d/praca.jpg). Você pode carregar uma foto 360° do aparelho para testar.</div>
+    <div id="heightForm">
+      <h2 id="modeTitle">📐 Desafio trigonométrico</h2>
+      <div class="grid">
+        <label class="field">Distância horizontal (m)
+          <input id="distance" type="number" min="0.1" step="0.1" value="10">
+        </label>
+        <label class="field">Altura dos olhos (m)
+          <input id="eyeHeight" type="number" min="0" step="0.01" value="1.60">
+        </label>
+      </div>
+      <label class="field" id="angleLabel">Ângulo até o topo (graus)
+        <input id="angle" type="number" min="0.1" max="89.9" step="0.1" value="45">
+      </label>
+      <label class="field hidden" id="lineLabel">Distância em linha reta dos olhos ao topo (m)
+        <input id="lineDistance" type="number" min="0.1" step="0.1" value="10">
+      </label>
+      <div class="row">
+        <button id="calculateBtn" type="button">Calcular altura</button>
+        <button id="exampleBtn" type="button" class="secondary">Restaurar exemplo</button>
+      </div>
+      <div id="result" aria-live="polite"><strong>Como começar:</strong><br>Informe as medidas e toque em “Calcular altura”.</div>
+      <p class="muted">Trigonometria: altura = distância × tan(ângulo) + altura dos olhos. Pitágoras: altura = √(hipotenusa² − distância²) + altura dos olhos.</p>
+    </div>
+    <div id="operationsPanel" class="hidden">
+      <h2>➕ Revisão das operações</h2>
+      <label class="field">Escolha um desafio
+        <select id="operationSelect">
+          <option value="0">Poste: 10 × tan(45°) + 1,60</option>
+          <option value="1">Praça: 24 ÷ 6 cadeiras por mesa</option>
+          <option value="2">Árvore: 35 − 12 metros? (exercício numérico)</option>
+          <option value="3">Iluminação: 6 × 4 lâmpadas</option>
+        </select>
+      </label>
+      <div class="row"><button id="checkOperation" type="button">Conferir resposta</button></div>
+      <div id="operationResult" class="muted">Selecione um desafio e confira a resolução.</div>
+    </div>
+    <div class="row">
+      <label class="file-label" for="photoInput">Carregar foto 360°</label>
+      <input id="photoInput" type="file" accept="image/*">
+      <button id="resetBtn" class="secondary" type="button">Reiniciar</button>
+      <button id="hideBtn" class="secondary" type="button">Ocultar painel</button>
+    </div>
+    <p id="status" class="muted">Panorama de demonstração vinculado ao repositório Amapá Interativo. Você pode carregar uma foto 360° do aparelho.</p>
   </section>
-  <div id="vrHint">No computador: use o mouse para olhar ao redor. Em RV: selecione os alvos com o olhar.</div>
+  <button id="showBtn" class="hidden" style="position:fixed;z-index:6;top:10px;left:10px" type="button">Mostrar painel</button>
+  <div id="vrHint">No computador, arraste para olhar ao redor. Em RV, use o cursor de olhar para selecionar os alvos.</div>
 
-  <a-scene renderer="colorManagement: true; antialias: true" background="color: #0f172a" vr-mode-ui="enabled: true">
-    <a-assets timeout="10000">
+  <a-scene renderer="colorManagement:true;antialias:true" background="color:#0f172a" vr-mode-ui="enabled:true">
+    <a-assets timeout="12000">
       <img id="panorama" src="https://raw.githubusercontent.com/Brenner279/amapa-interativo/main/assets/3d/praca.jpg" crossorigin="anonymous">
     </a-assets>
     <a-sky id="sky" src="#panorama" rotation="0 -90 0" color="#263746"></a-sky>
-    <a-entity id="cameraRig" position="0 1.6 0">
-      <a-camera look-controls="magicWindowTrackingEnabled: true">
-        <a-entity id="gazeCursor" cursor="fuse: true; fuseTimeout: 1400"
-          raycaster="objects: .gazeTarget; far: 20" position="0 0 -1"
-          geometry="primitive: ring; radiusInner: 0.012; radiusOuter: 0.022"
-          material="color: #ffffff; shader: flat">
-        </a-entity>
+    <!-- Ilustração geométrica flutuante: poste, solo e linha de visão -->
+    <a-entity id="geometry" position="0 1.55 -4">
+      <a-plane position="0 -0.95 0" rotation="-90 0 0" width="3.6" height="2.3" color="#14532d" material="shader:flat;opacity:0.88"></a-plane>
+      <a-cylinder id="pole" position="0 0.05 0" radius="0.065" height="2.0" color="#e2e8f0"></a-cylinder>
+      <a-sphere position="0 1.08 0" radius="0.13" color="#fbbf24"></a-sphere>
+      <a-cylinder position="-1.15 -0.05 0" radius="0.045" height="0.16" rotation="0 0 90" color="#38bdf8"></a-cylinder>
+      <a-cylinder position="-0.58 -0.05 0" radius="0.045" height="0.16" rotation="0 0 90" color="#38bdf8"></a-cylinder>
+      <a-cylinder position="-0.86 -0.05 0" radius="0.025" height="0.65" rotation="0 0 90" color="#38bdf8"></a-cylinder>
+      <a-entity position="0 0.05 0.08">
+        <a-text value="POSTE" position="0.35 0.5 0" color="#ffffff" width="2.2" align="left"></a-text>
+        <a-text value="Altura h" position="0.35 0.25 0" color="#fde68a" width="2.2" align="left"></a-text>
+        <a-text value="Solo" position="-1.4 -0.35 0" color="#ffffff" width="1.5" align="center"></a-text>
+      </a-entity>
+      <a-entity id="triangleVisual">
+        <a-cylinder position="-0.8 0.05 0.04" radius="0.018" height="1.6" rotation="0 0 90" color="#38bdf8"></a-cylinder>
+        <a-cylinder position="-0.8 0.5 0.04" radius="0.018" height="1.0" color="#38bdf8"></a-cylinder>
+        <a-cylinder position="-0.8 0.5 0.04" radius="0.018" height="1.9" rotation="0 0 -31" color="#f97316"></a-cylinder>
+      </a-entity>
+    </a-entity>
+    <a-entity position="0 1.6 0">
+      <a-camera look-controls="magicWindowTrackingEnabled:true">
+        <a-entity cursor="fuse:true;fuseTimeout:1400" raycaster="objects:.gazeTarget;far:20"
+          position="0 0 -1" geometry="primitive:ring;radiusInner:0.012;radiusOuter:0.022"
+          material="color:#ffffff;shader:flat"></a-entity>
       </a-camera>
     </a-entity>
-    <a-entity id="worldUI" position="0 1.6 -3"></a-entity>
   </a-scene>
 
   <script>
-    (() => {
-      const sky = document.querySelector('#sky');
-      const worldUI = document.querySelector('#worldUI');
-      const photoInput = document.querySelector('#photoInput');
-      const status = document.querySelector('#status');
-      const help = document.querySelector('#help');
-      let oldPhotoUrl = null;
-      let score = 0;
-      let answered = 0;
-      let questionIndex = 0;
-      let currentQuestion = null;
+  (() => {
+    const $ = id => document.getElementById(id);
+    const sky = $('sky');
+    const status = $('status');
+    let oldPhotoUrl = null;
+    let mode = 'trig';
 
-      const questions = {
-        soma: [
-          { text: 'No mercado: R$ 12 + R$ 8 + R$ 5. Qual é o total?', answers: ['25', '20', '30'], correct: 0, explanation: '12 + 8 + 5 = R$ 25.' },
-          { text: 'Na praça chegaram 14 pessoas e depois mais 9. Quantas chegaram?', answers: ['21', '23', '24'], correct: 1, explanation: '14 + 9 = 23 pessoas.' }
-        ],
-        subtracao: [
-          { text: 'Havia 35 cadeiras. Retiraram 12. Quantas sobraram?', answers: ['23', '27', '22'], correct: 0, explanation: '35 - 12 = 23 cadeiras.' },
-          { text: 'A escola tinha 50 livros e emprestou 18. Quantos restaram?', answers: ['32', '38', '28'], correct: 0, explanation: '50 - 18 = 32 livros.' }
-        ],
-        multiplicacao: [
-          { text: 'Há 6 fileiras com 4 cadeiras em cada. Quantas cadeiras?', answers: ['10', '24', '20'], correct: 1, explanation: '6 × 4 = 24 cadeiras.' },
-          { text: 'Cada caixa tem 5 frutas. Quantas frutas há em 7 caixas?', answers: ['30', '35', '40'], correct: 1, explanation: '7 × 5 = 35 frutas.' }
-        ],
-        divisao: [
-          { text: '24 frutas serão divididas igualmente entre 6 mesas. Quantas por mesa?', answers: ['3', '4', '6'], correct: 1, explanation: '24 ÷ 6 = 4 frutas por mesa.' },
-          { text: '32 estudantes formam grupos de 8. Quantos grupos?', answers: ['4', '6', '8'], correct: 0, explanation: '32 ÷ 8 = 4 grupos.' }
-        ]
-      };
-      const operations = [
-        { id: 'soma', label: 'ADIÇÃO (+)', color: '#22c55e' },
-        { id: 'subtracao', label: 'SUBTRAÇÃO (−)', color: '#38bdf8' },
-        { id: 'multiplicacao', label: 'MULTIPLICAÇÃO (×)', color: '#f59e0b' },
-        { id: 'divisao', label: 'DIVISÃO (÷)', color: '#c084fc' }
+    function setMode(next) {
+      mode = next;
+      $('trigBtn').classList.toggle('active', mode === 'trig');
+      $('pythBtn').classList.toggle('active', mode === 'pyth');
+      $('trigBtn').classList.toggle('secondary', mode !== 'trig');
+      $('pythBtn').classList.toggle('secondary', mode !== 'pyth');
+      $('heightForm').classList.remove('hidden');
+      $('operationsPanel').classList.add('hidden');
+      $('modeTitle').textContent = mode === 'trig' ? '📐 Desafio trigonométrico' : '📏 Desafio: Teorema de Pitágoras';
+      $('angleLabel').classList.toggle('hidden', mode !== 'trig');
+      $('lineLabel').classList.toggle('hidden', mode !== 'pyth');
+      $('result').innerHTML = mode === 'trig'
+        ? '<strong>Fórmula:</strong> h = d × tan(θ) + altura dos olhos.'
+        : '<strong>Fórmula:</strong> h = √(L² − d²) + altura dos olhos.';
+    }
+    function calculate() {
+      const d = Number($('distance').value);
+      const eye = Number($('eyeHeight').value);
+      if (!Number.isFinite(d) || d <= 0 || !Number.isFinite(eye) || eye < 0) {
+        $('result').innerHTML = '<strong>Verifique os dados:</strong> a distância deve ser positiva e a altura dos olhos não pode ser negativa.';
+        return;
+      }
+      let height, detail;
+      if (mode === 'trig') {
+        const angle = Number($('angle').value);
+        if (!Number.isFinite(angle) || angle <= 0 || angle >= 90) {
+          $('result').innerHTML = '<strong>Ângulo inválido.</strong> Use um ângulo maior que 0° e menor que 90°.';
+          return;
+        }
+        const radians = angle * Math.PI / 180;
+        const rise = d * Math.tan(radians);
+        height = rise + eye;
+        detail = 'tan(' + angle.toLocaleString('pt-BR') + '°) ≈ ' + Math.tan(radians).toLocaleString('pt-BR', {maximumFractionDigits:4}) +
+          '<br>Altura acima dos olhos = ' + d.toLocaleString('pt-BR') + ' × ' + Math.tan(radians).toLocaleString('pt-BR', {maximumFractionDigits:4}) +
+          ' ≈ ' + rise.toLocaleString('pt-BR', {maximumFractionDigits:2}) + ' m';
+      } else {
+        const line = Number($('lineDistance').value);
+        if (!Number.isFinite(line) || line <= d) {
+          $('result').innerHTML = '<strong>Medidas incompatíveis.</strong> A distância em linha reta até o topo deve ser maior que a distância horizontal.';
+          return;
+        }
+        const rise = Math.sqrt(line * line - d * d);
+        height = rise + eye;
+        detail = 'Altura acima dos olhos = √(' + line + '² − ' + d + '²) = √(' +
+          (line * line).toLocaleString('pt-BR', {maximumFractionDigits:2}) + ' − ' +
+          (d * d).toLocaleString('pt-BR', {maximumFractionDigits:2}) + ') ≈ ' +
+          rise.toLocaleString('pt-BR', {maximumFractionDigits:2}) + ' m';
+      }
+      $('result').innerHTML = '<strong>Altura estimada do poste: ' + height.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2}) +
+        ' m</strong><br>' + detail + '<br>+ altura dos olhos (' + eye.toLocaleString('pt-BR') + ' m).<br><span class="muted">Resultado matemático estimado; compare com uma medição real segura.</span>';
+    }
+    $('trigBtn').addEventListener('click', () => setMode('trig'));
+    $('pythBtn').addEventListener('click', () => setMode('pyth'));
+    $('calculateBtn').addEventListener('click', calculate);
+    $('exampleBtn').addEventListener('click', () => {
+      $('distance').value = '10'; $('eyeHeight').value = '1.60'; $('angle').value = '45'; $('lineDistance').value = '10';
+      calculate();
+    });
+    $('otherBtn').addEventListener('click', () => {
+      $('heightForm').classList.add('hidden');
+      $('operationsPanel').classList.remove('hidden');
+      $('trigBtn').classList.remove('active'); $('pythBtn').classList.remove('active');
+    });
+    $('checkOperation').addEventListener('click', () => {
+      const examples = [
+        'tan(45°) = 1; 10 × 1 + 1,60 = 11,60 m.',
+        '24 ÷ 6 = 4 cadeiras por mesa.',
+        '35 − 12 = 23. Exercício numérico de subtração, não uma medição real.',
+        '6 × 4 = 24 lâmpadas.'
       ];
-
-      function entity(tag, attrs, parent = worldUI) {
-        const el = document.createElement(tag);
-        Object.entries(attrs).forEach(([key, value]) => el.setAttribute(key, value));
-        parent.appendChild(el);
-        return el;
-      }
-      function clearUI() {
-        while (worldUI.firstChild) worldUI.removeChild(worldUI.firstChild);
-      }
-      function text(value, x, y, opts = {}) {
-        return entity('a-text', {
-          value: value, position: x + ' ' + y + ' 0.02',
-          align: opts.align || 'center', width: opts.width || 3.6,
-          color: opts.color || '#ffffff', wrapCount: opts.wrap || 34,
-          baseline: 'center'
-        });
-      }
-      function target(label, x, y, color, action, width = 1.05) {
-        const group = entity('a-entity', { position: x + ' ' + y + ' 0' });
-        const plane = entity('a-plane', {
-          class: 'gazeTarget', width: width, height: 0.48,
-          material: 'color: ' + color + '; shader: flat; side: double',
-          position: '0 0 0'
-        }, group);
-        entity('a-text', {
-          value: label, align: 'center', color: '#102033',
-          width: width * 2.1, position: '0 0 0.02',
-          baseline: 'center', wrapCount: 20
-        }, group);
-        plane.addEventListener('click', action);
-        return group;
-      }
-      function showHome() {
-        clearUI();
-        text('CIDADE MATEMÁTICA 360°', 0, 0.78, { width: 4.4, color: '#fde68a', wrap: 30 });
-        text('Aprenda explorando sua cidade!', 0, 0.4, { width: 3.8 });
-        target('INICIAR', 0, -0.2, '#fbbf24', showOperations, 1.25);
-        text('Pontuação: ' + score + ' / ' + answered, 0, -0.75, { width: 3 });
-      }
-      function showOperations() {
-        clearUI();
-        text('ESCOLHA UMA OPERAÇÃO', 0, 0.78, { width: 4.2, color: '#fde68a' });
-        text('Fixe o olhar em uma opção para selecioná-la.', 0, 0.48, { width: 3.7, wrap: 38 });
-        operations.forEach((op, i) => {
-          const x = (i % 2 === 0) ? -0.72 : 0.72;
-          const y = i < 2 ? 0.05 : -0.58;
-          target(op.label, x, y, op.color, () => startQuestion(op.id), 1.25);
-        });
-        target('VOLTAR', 0, -1.08, '#e2e8f0', showHome, 0.95);
-      }
-      function startQuestion(operation) {
-        const list = questions[operation];
-        currentQuestion = { operation: operation, question: list[questionIndex % list.length] };
-        questionIndex++;
-        showQuestion();
-      }
-      function showQuestion() {
-        clearUI();
-        const q = currentQuestion.question;
-        text(q.text, 0, 0.65, { width: 4.2, color: '#fde68a', wrap: 38 });
-        q.answers.forEach((answer, i) => {
-          target(answer, (i - 1) * 0.9, -0.05, '#bae6fd', () => answerQuestion(i), 0.72);
-        });
-        target('TROCAR OPERAÇÃO', 0, -0.75, '#e2e8f0', showOperations, 1.6);
-      }
-      function answerQuestion(index) {
-        const q = currentQuestion.question;
-        const correct = index === q.correct;
-        answered++;
-        if (correct) score++;
-        clearUI();
-        text(correct ? 'MUITO BEM!' : 'VAMOS APRENDER!', 0, 0.65, {
-          width: 4, color: correct ? '#86efac' : '#fca5a5'
-        });
-        text(q.explanation, 0, 0.22, { width: 4.2, wrap: 38 });
-        text('Acertos: ' + score + ' de ' + answered, 0, -0.22, { width: 3.5 });
-        target('PRÓXIMO DESAFIO', 0, -0.7, '#fbbf24', () => startQuestion(currentQuestion.operation), 1.65);
-        target('MENU', 0, -1.25, '#e2e8f0', showOperations, 0.9);
-      }
-
-      photoInput.addEventListener('change', event => {
-        const file = event.target.files && event.target.files[0];
-        if (!file) return;
-        if (oldPhotoUrl) URL.revokeObjectURL(oldPhotoUrl);
-        oldPhotoUrl = URL.createObjectURL(file);
-        sky.setAttribute('src', oldPhotoUrl);
-        sky.setAttribute('color', '#ffffff');
-        status.textContent = 'Foto carregada: ' + file.name + '. Se a imagem não envolver toda a cena, escolha um panorama 360° completo.';
-      });
-      document.querySelector('#resetBtn').addEventListener('click', () => {
-        score = 0; answered = 0; questionIndex = 0; currentQuestion = null;
-        showHome();
-      });
-      document.querySelector('#hideHelpBtn').addEventListener('click', () => {
-        help.style.display = 'none';
-      });
-      sky.addEventListener('materialtextureloaded', () => {
-        status.textContent = 'Panorama carregado. Olhe ao redor e selecione INICIAR com o olhar.';
-      });
-      sky.addEventListener('materialtextureerror', () => {
-        status.textContent = 'Não foi possível carregar a imagem do Amapá Interativo. Use “Escolher foto 360°” para carregar uma fotografia.';
-      });
-      showHome();
-    })();
+      $('operationResult').textContent = examples[Number($('operationSelect').value)] || '';
+    });
+    $('photoInput').addEventListener('change', event => {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      if (oldPhotoUrl) URL.revokeObjectURL(oldPhotoUrl);
+      oldPhotoUrl = URL.createObjectURL(file);
+      sky.setAttribute('src', oldPhotoUrl);
+      sky.setAttribute('color', '#ffffff');
+      status.textContent = 'Imagem carregada: ' + file.name + '. Para envolver a cena corretamente, use uma imagem panorâmica 360° equiretangular.';
+    });
+    $('resetBtn').addEventListener('click', () => {
+      $('distance').value = '10'; $('eyeHeight').value = '1.60'; $('angle').value = '45'; $('lineDistance').value = '10';
+      setMode('trig'); calculate();
+    });
+    $('hideBtn').addEventListener('click', () => { $('panel').classList.add('hidden'); $('showBtn').classList.remove('hidden'); });
+    $('showBtn').addEventListener('click', () => { $('panel').classList.remove('hidden'); $('showBtn').classList.add('hidden'); });
+    sky.addEventListener('materialtextureloaded', () => { status.textContent = 'Imagem carregada. Os valores de cálculo são exemplos: insira medidas coletadas em campo.'; });
+    sky.addEventListener('materialtextureerror', () => { status.textContent = 'Não foi possível carregar a imagem remota. Use “Carregar foto 360°” para selecionar uma imagem no aparelho.'; });
+    setMode('trig');
+    calculate();
+  })();
   </script>
 </body>
 </html>
