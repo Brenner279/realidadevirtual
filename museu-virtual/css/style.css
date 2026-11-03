@@ -44,3 +44,12 @@ h1 em{color:var(--gold)}
   .move-pad{left:10px;bottom:14px;width:136px;gap:4px}
   .move-key{width:39px;height:36px}
 }
+
+/* Controle direcional com alvos maiores para toque em telas pequenas */
+.move-pad{touch-action:none;pointer-events:auto;z-index:20}
+.move-key{touch-action:none;pointer-events:auto;user-select:none;-webkit-user-select:none}
+.move-pad .move-key{min-width:48px;min-height:46px}
+@media(max-width:650px){
+  .move-pad{z-index:20;left:12px;bottom:18px;width:150px}
+  .move-pad .move-key{width:46px;height:44px;min-width:46px;min-height:44px}
+}
