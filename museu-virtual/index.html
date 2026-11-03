@@ -6,7 +6,8 @@
   <meta name="theme-color" content="#10131c">
   <title>Museu Virtual | Galeria Imersiva</title>
   <link rel="stylesheet" href="css/style.css">
-  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.7.0/dist/aframe-extras.min.js"></script>
 </head>
 <body>
   <div id="intro" class="intro">
@@ -15,13 +16,13 @@
       <h1>Museu <em>Virtual</em></h1>
       <p>Explore a galeria, aproxime-se das obras e descubra histórias em movimento.</p>
       <button id="enter-button">Entrar no museu →</button>
-      <small>Computador: WASD ou setas para caminhar · Mouse para olhar<br>Celular: permita o sensor de movimento e caminhe segurando o aparelho</small>
+      <small>Computador: WASD ou setas para caminhar · Mouse para olhar<br>Celular: joystick à esquerda para caminhar · arraste à direita para olhar</small>
     </div>
   </div>
 
   <header class="hud">
     <a class="brand" href="./"><span class="brand-mark">M</span><span>MUSEU <b>VIRTUAL</b></span></a>
-    <div class="hud-hint" id="hud-hint">Caminhada por passos · Olhe para uma obra</div>
+    <div class="hud-hint" id="hud-hint">MODO WALK · joystick para caminhar</div>
     <button id="help-button" class="help-button" aria-label="Ajuda">?</button>
   </header>
 
@@ -29,23 +30,12 @@
     <button id="close-help" aria-label="Fechar ajuda">×</button>
     <strong>Como visitar</strong>
     <p><b>Computador:</b> use W, A, S, D ou as setas para caminhar. Use o mouse para olhar ao redor.</p>
-    <p><b>Celular:</b> permita o acesso ao sensor de movimento ao entrar. Segure o aparelho e caminhe normalmente na direção da obra; cada passo detectado produz um avanço no museu.</p><p>O direcional na tela permanece disponível como alternativa caso o navegador não ofereça os sensores.</p>
+    <p><b>Celular:</b> use o joystick virtual no canto inferior esquerdo para caminhar. Arraste o lado direito da tela para olhar ao redor. O movimento acompanha a direção para a qual a câmera está apontada.</p><p><b>Computador:</b> use W, A, S, D ou as setas para caminhar e o mouse para olhar.</p>
     <p>Aproxime-se das molduras e mantenha o olhar sobre uma obra. A iluminação e a descrição serão realçadas; quando houver vídeo disponível, ele começará automaticamente.</p>
     <p>O botão VR aparece quando o dispositivo oferece suporte ao WebXR.</p>
   </div>
 
-  <div id="motion-status" class="motion-status" role="status">Ao entrar, permita o sensor e caminhe para avançar</div>
-
-  <nav id="move-pad" class="move-pad" aria-label="Controle alternativo de movimento">
-    <button class="move-key move-up" type="button" data-move="forward" aria-label="Avançar">▲</button>
-    <div class="move-middle">
-      <button class="move-key" type="button" data-move="left" aria-label="Mover para a esquerda">◀</button>
-      <span class="move-center" aria-hidden="true">✦</span>
-      <button class="move-key" type="button" data-move="right" aria-label="Mover para a direita">▶</button>
-    </div>
-    <button class="move-key move-down" type="button" data-move="back" aria-label="Recuar">▼</button>
-    <span class="move-label">MOVIMENTAR</span>
-  </nav>
+  <div id="motion-status" class="motion-status is-ready" role="status">MODO WALK · joystick virtual disponível</div>
 
   <a-scene id="museum-scene"
     background="color: #11141d"
@@ -61,8 +51,12 @@
     </a-assets>
 
     <a-entity id="museum"></a-entity>
-    <a-entity id="player-rig" position="0 0 5.8">
-      <a-entity id="visitor" position="0 1.65 0" camera look-controls>
+    <a-entity id="player-rig"
+      position="0 0 5.8"
+      movement-controls="controls: keyboard,nipple; speed: 0.22"
+      nipple-controls="mode: static; lookJoystickEnabled: false; moveJoystickEnabled: true; moveJoystickPosition: left"
+      >
+      <a-entity id="visitor" position="0 1.65 0" camera look-controls="touchEnabled: true; magicWindowTrackingEnabled: true">
         <a-entity cursor="fuse: true; fuseTimeout: 650"
           raycaster="objects: .art-trigger; far: 30"
           position="0 0 -1"
