@@ -7,19 +7,6 @@
   const hintNode = document.querySelector('#hud-hint');
   const caption = document.querySelector('#art-caption');
   const motionStatusNode = document.querySelector('#motion-status');
-  const movePad = document.querySelector('#move-pad');
-
-  // Três passos reconhecidos disparam uma aproximação automática de 1,5 m.
-  // O deslocamento é suave e segue a direção horizontal da câmera.
-  let approachRemaining = 0;
-  let approachActive = false;
-  let motionListenerEnabled = false;
-  let motionEventCount = 0;
-  let stepCount = 0;
-  let accelerationBaseline = null;
-  let accelerationEnvelope = 0;
-  let stepSignalHigh = false;
-  let lastStepAt = 0;
 
   const artworks = [
     { id: 1, title: 'Movimento das Cores', artist: 'Acervo demonstrativo', year: '2026', description: 'Uma composição abstrata sobre ritmo, cor e transformação. Este espaço receberá o vídeo animado da primeira obra.', wall: 'left', z: 3, color: '#b96b4d', accent: '#e9c17d' },
@@ -47,114 +34,6 @@
       dur: duration,
       easing: 'easeInOutSine'
     });
-  }
-
-  function handleDeviceMotion(event) {
-    const now = performance.now();
-    const linear = event.acceleration;
-    const raw = event.accelerationIncludingGravity;
-    let magnitude = null;
-
-    // Preferimos aceleração linear. Em dispositivos que não a fornecem, retiramos
-    // a gravidade estimada da magnitude do vetor bruto.
-    if (linear && Number.isFinite(linear.x) && Number.isFinite(linear.y) && Number.isFinite(linear.z)) {
-      magnitude = Math.hypot(linear.x, linear.y, linear.z);
-    } else if (raw && Number.isFinite(raw.x) && Number.isFinite(raw.y) && Number.isFinite(raw.z)) {
-      magnitude = Math.abs(Math.hypot(raw.x, raw.y, raw.z) - 9.81);
-    }
-
-    if (magnitude === null) return;
-    motionEventCount += 1;
-
-    // Filtro passa-baixa para estimar a linha de base e suavizar ruído.
-    if (accelerationBaseline === null) accelerationBaseline = magnitude;
-    accelerationBaseline += (magnitude - accelerationBaseline) * 0.045;
-    const dynamicAcceleration = Math.abs(magnitude - accelerationBaseline);
-    accelerationEnvelope += (dynamicAcceleration - accelerationEnvelope) * 0.32;
-
-    const threshold = 1.15; // m/s²; limiar de pico para passos
-    if (accelerationEnvelope >= threshold && !stepSignalHigh) {
-      stepSignalHigh = true;
-      if (now - lastStepAt >= 320) {
-        lastStepAt = now;
-        stepCount += 1;
-        motionStatusNode.textContent = 'PASSO ' + stepCount + ' DE 3 · continue caminhando';
-        motionStatusNode.classList.add('is-walking');
-
-        if (stepCount >= 3) {
-          stepCount = 0;
-          approachRemaining = Math.min(approachRemaining + 1.5, 3);
-          approachActive = true;
-          motionStatusNode.textContent = '3 PASSOS DETECTADOS · aproximando-se da moldura';
-          movePad.classList.add('sensor-active');
-        }
-      }
-    } else if (accelerationEnvelope <= threshold * 0.48) {
-      stepSignalHigh = false;
-    }
-  }
-
-  async function enableMotionWalking() {
-    if (!window.isSecureContext) {
-      motionStatusNode.textContent = 'Abra o museu por HTTPS para liberar os sensores';
-      motionStatusNode.classList.add('is-warning');
-      return;
-    }
-
-    if (!('DeviceMotionEvent' in window)) {
-      motionStatusNode.textContent = 'Sensor de movimento indisponível · use o direcional';
-      motionStatusNode.classList.add('is-warning');
-      return;
-    }
-
-    // iOS/Safari exige solicitação de permissão em resposta direta a um toque.
-    // As duas chamadas são iniciadas no mesmo gesto para não perder a ativação.
-    const permissionRequests = [];
-    let motionPermission = 'granted';
-    let orientationPermission = 'granted';
-
-    try {
-      if (typeof DeviceMotionEvent.requestPermission === 'function') {
-        permissionRequests.push(
-          DeviceMotionEvent.requestPermission().then((value) => { motionPermission = value; })
-        );
-      }
-      if (typeof DeviceOrientationEvent !== 'undefined' &&
-          typeof DeviceOrientationEvent.requestPermission === 'function') {
-        permissionRequests.push(
-          DeviceOrientationEvent.requestPermission().then((value) => { orientationPermission = value; })
-        );
-      }
-      await Promise.all(permissionRequests);
-    } catch (error) {
-      console.warn('Permissão dos sensores não concedida.', error);
-      motionPermission = 'denied';
-    }
-
-    if (motionPermission !== 'granted') {
-      motionStatusNode.textContent = 'Permissão do sensor não concedida · use o direcional';
-      motionStatusNode.classList.add('is-warning');
-      return;
-    }
-
-    if (!motionListenerEnabled) {
-      window.addEventListener('devicemotion', handleDeviceMotion, { passive: true });
-      motionListenerEnabled = true;
-    }
-
-    motionStatusNode.textContent = orientationPermission === 'granted'
-      ? 'Sensor ativo · caminhe segurando o celular para avançar'
-      : 'Sensor de passos ativo · orientação pode estar limitada';
-    motionStatusNode.classList.add('is-ready');
-
-    // Se o navegador não enviar dados, mantém o direcional visível como alternativa.
-    window.setTimeout(() => {
-      if (motionEventCount === 0) {
-        motionStatusNode.textContent = 'Sem dados do sensor · use o direcional';
-        motionStatusNode.classList.remove('is-ready');
-        motionStatusNode.classList.add('is-warning');
-      }
-    }, 3500);
   }
 
   function build() {
@@ -302,7 +181,7 @@
       caption.classList.remove('is-active');
       titleNode.textContent = 'Bem-vindo ao Museu Virtual';
       descriptionNode.textContent = 'Aproxime-se de uma moldura e observe a obra para conhecer sua descrição e iniciar a animação.';
-      hintNode.textContent = 'WASD / setas ou direcional · Olhe para uma obra';
+      hintNode.textContent = 'Joystick para caminhar · arraste para olhar';
     }
 
     trigger.addEventListener('mouseenter', focusArtwork);
@@ -310,155 +189,20 @@
     trigger.addEventListener('click', focusArtwork);
   }
 
-  // Movimentação aplicada a um rig separado da câmera.
-  // A direção é calculada pela câmera 3D real (incluindo mouse, toque e headset),
-  // e não pela rotação do contêiner, que pode permanecer em zero no look-controls.
-  AFRAME.registerComponent('museum-movement', {
-    init() {
-      this.cameraEl = document.querySelector('#visitor');
-      this.keys = new Set();
-      this.touchDirections = new Set();
-      this.forward = new THREE.Vector3();
-      this.right = new THREE.Vector3();
-      this.up = new THREE.Vector3(0, 1, 0);
-      this.speed = 4.2;
-
-      this.onKeyDown = (event) => {
-        const target = event.target;
-        if (target && /INPUT|TEXTAREA|SELECT/.test(target.tagName)) return;
-        const key = event.key.toLowerCase();
-        if (['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(key)) {
-          event.preventDefault();
-          this.keys.add(key);
-        }
-      };
-      this.onKeyUp = (event) => this.keys.delete(event.key.toLowerCase());
-      this.onBlur = () => {
-        this.keys.clear();
-        this.clearTouchDirections();
-      };
-      this.onVisibilityChange = () => {
-        if (document.hidden) this.onBlur();
-      };
-
-      window.addEventListener('keydown', this.onKeyDown, { passive: false });
-      window.addEventListener('keyup', this.onKeyUp);
-      window.addEventListener('blur', this.onBlur);
-      document.addEventListener('visibilitychange', this.onVisibilityChange);
-
-      this.padButtons = Array.from(document.querySelectorAll('[data-move]'));
-      this.padHandlers = [];
-      this.padButtons.forEach((button) => {
-        const direction = button.dataset.move;
-        const start = (event) => {
-          event.preventDefault();
-          this.touchDirections.add(direction);
-          button.classList.add('is-pressed');
-          if (button.setPointerCapture && event.pointerId !== undefined) {
-            try { button.setPointerCapture(event.pointerId); } catch (error) { /* Captura não essencial. */ }
-          }
-        };
-        const stop = (event) => {
-          if (event) event.preventDefault();
-          this.touchDirections.delete(direction);
-          button.classList.remove('is-pressed');
-        };
-        button.addEventListener('pointerdown', start);
-        button.addEventListener('pointerup', stop);
-        button.addEventListener('pointercancel', stop);
-        button.addEventListener('lostpointercapture', stop);
-        this.padHandlers.push({ button, start, stop });
-      });
-    },
-
-    clearTouchDirections() {
-      this.touchDirections.clear();
-      (this.padButtons || []).forEach((button) => button.classList.remove('is-pressed'));
-    },
-
-    tick(time, delta) {
-      if (intro.style.display !== 'none') return;
-
-      const keys = this.keys;
-      const active = this.touchDirections;
-      const forwardPressed = keys.has('w') || keys.has('arrowup') || active.has('forward') || approachRemaining > 0;
-      const backPressed = keys.has('s') || keys.has('arrowdown') || active.has('back');
-      const leftPressed = keys.has('a') || keys.has('arrowleft') || active.has('left');
-      const rightPressed = keys.has('d') || keys.has('arrowright') || active.has('right');
-
-      let forwardAmount = (forwardPressed ? 1 : 0) - (backPressed ? 1 : 0);
-      let rightAmount = (rightPressed ? 1 : 0) - (leftPressed ? 1 : 0);
-      const length = Math.hypot(forwardAmount, rightAmount);
-      if (!length || !this.cameraEl) return;
-
-      // O PerspectiveCamera já incorpora a rotação efetiva de look-controls.
-      const camera = this.cameraEl.getObject3D('camera') || this.cameraEl.object3D;
-      camera.getWorldDirection(this.forward);
-      this.forward.y = 0;
-      if (this.forward.lengthSq() < 0.0001) return;
-      this.forward.normalize();
-
-      // Para a câmera olhando para -Z, o produto vetorial gera a direita em +X.
-      this.right.crossVectors(this.forward, this.up).normalize();
-      forwardAmount /= length;
-      rightAmount /= length;
-
-      const frameSeconds = Math.min(Math.max(delta || 0, 0), 50) / 1000;
-      const manualMovement = keys.has('w') || keys.has('arrowup') || keys.has('s') || keys.has('arrowdown') ||
-        active.has('forward') || active.has('back') || keys.has('a') || keys.has('arrowleft') ||
-        keys.has('d') || keys.has('arrowright') || active.has('left') || active.has('right');
-      const approachStep = approachRemaining > 0 && !manualMovement
-        ? Math.min(approachRemaining, 2.4 * frameSeconds)
-        : 0;
-      const step = approachStep > 0 ? approachStep : this.speed * frameSeconds;
+  // Mantém o visitante dentro da galeria sem interferir no movimento do A-Frame Extras.
+  AFRAME.registerComponent('museum-boundaries', {
+    tick() {
       const position = this.el.object3D.position;
-      const nextX = position.x + this.forward.x * forwardAmount * step + this.right.x * rightAmount * step;
-      const nextZ = position.z + this.forward.z * forwardAmount * step + this.right.z * rightAmount * step;
-
-      // Limites interiores: deixam o visitante chegar a cerca de 25 cm do plano de foco,
-      // sem atravessar as paredes do museu.
-      const boundedX = Math.max(-7.45, Math.min(7.45, nextX));
-      const boundedZ = Math.max(-8.35, Math.min(8.35, nextZ));
-      const movedDistance = Math.hypot(boundedX - position.x, boundedZ - position.z);
-      position.x = boundedX;
-      position.z = boundedZ;
+      position.x = Math.max(-7.35, Math.min(7.35, position.x));
+      position.z = Math.max(-8.35, Math.min(8.35, position.z));
       position.y = 0;
-
-      if (approachStep > 0) {
-        approachRemaining = Math.max(0, approachRemaining - movedDistance);
-        if (approachRemaining <= 0.001) {
-          approachRemaining = 0;
-          approachActive = false;
-          movePad.classList.remove('sensor-active');
-          motionStatusNode.textContent = 'APROXIMAÇÃO CONCLUÍDA · caminhe mais 3 passos para avançar novamente';
-          motionStatusNode.classList.remove('is-walking');
-          motionStatusNode.classList.add('is-ready');
-        }
-      }
-    },
-
-    remove() {
-      window.removeEventListener('keydown', this.onKeyDown);
-      window.removeEventListener('keyup', this.onKeyUp);
-      window.removeEventListener('blur', this.onBlur);
-      document.removeEventListener('visibilitychange', this.onVisibilityChange);
-      this.padHandlers.forEach(({ button, start, stop }) => {
-        button.removeEventListener('pointerdown', start);
-        button.removeEventListener('pointerup', stop);
-        button.removeEventListener('pointercancel', stop);
-        button.removeEventListener('lostpointercapture', stop);
-      });
     }
   });
 
-  // Registra o componente e o anexa explicitamente após o registro.
-  // Assim o A-Frame não precisa interpretar um atributo customizado antes da hora.
-  document.querySelector('#player-rig').setAttribute('museum-movement', '');
-
   document.querySelector('#enter-button').addEventListener('click', () => {
     intro.style.display = 'none';
-    // Solicita permissões diretamente no toque do botão Entrar.
-    enableMotionWalking();
+    motionStatusNode.textContent = 'MODO WALK ATIVO · use o joystick à esquerda';
+    hintNode.textContent = 'Joystick para caminhar · arraste para olhar';
   });
   document.querySelector('#help-button').addEventListener('click', () => { document.querySelector('#help-panel').hidden = false; });
   document.querySelector('#close-help').addEventListener('click', () => { document.querySelector('#help-panel').hidden = true; });
