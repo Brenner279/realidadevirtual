@@ -1,14 +1,82 @@
 <!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#10131c"><title>Museu Virtual | Galeria Imersiva</title><link rel="stylesheet" href="css/style.css"><script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script></head>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#10131c">
+  <title>Museu Virtual | Galeria Imersiva</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+</head>
 <body>
-<div id="intro" class="intro"><div class="intro-card"><span class="eyebrow">EXPERIÊNCIA IMERSIVA · WEBXR</span><h1>Museu <em>Virtual</em></h1><p>Explore a galeria, aproxime seu olhar das obras e descubra histórias em movimento.</p><button id="enter-button">Entrar no museu →</button><small>Computador: WASD ou setas para caminhar · Mouse para olhar<br>Celular: arraste para olhar e use o controle de movimento</small></div></div>
-<header class="hud"><a class="brand" href="./"><span class="brand-mark">M</span><span>MUSEU <b>VIRTUAL</b></span></a><div class="hud-hint" id="hud-hint">Explore livremente · Observe uma obra para iniciar o vídeo</div><button id="help-button" class="help-button">?</button></header>
-<div class="help-panel" id="help-panel" hidden><button id="close-help">×</button><strong>Como visitar</strong><p>Olhe diretamente para a área da obra para iniciar sua animação. Ao desviar o olhar, o vídeo será pausado.</p><p>No computador, use WASD ou as setas. No celular, arraste a tela. O botão VR aparece quando o dispositivo é compatível.</p></div>
-<a-scene id="museum-scene" background="color: #11141d" renderer="colorManagement: true; physicallyCorrectLights: true; antialias: true" vr-mode-ui="enabled: true" device-orientation-permission-ui="enabled: true">
-<a-assets timeout="10000">
-<video id="video-1" src="assets/videos/obra-01.mp4" preload="metadata" loop muted playsinline webkit-playsinline></video><video id="video-2" src="assets/videos/obra-02.mp4" preload="metadata" loop muted playsinline webkit-playsinline></video><video id="video-3" src="assets/videos/obra-03.mp4" preload="metadata" loop muted playsinline webkit-playsinline></video><video id="video-4" src="assets/videos/obra-04.mp4" preload="metadata" loop muted playsinline webkit-playsinline></video><video id="video-5" src="assets/videos/obra-05.mp4" preload="metadata" loop muted playsinline webkit-playsinline></video>
-</a-assets><a-entity id="museum"></a-entity>
-<a-entity id="visitor" position="0 1.65 5.8" camera look-controls wasd-controls="acceleration: 22; fly: false"><a-entity cursor="fuse: true; fuseTimeout: 650" raycaster="objects: .art-trigger; far: 12" position="0 0 -1" geometry="primitive: ring; radiusInner: 0.008; radiusOuter: 0.014" material="color: #e6c98b; shader: flat"></a-entity></a-entity>
-<a-entity light="type: ambient; color: #c9c6bd; intensity: 0.72"></a-entity><a-entity light="type: directional; color: #fff0d4; intensity: 0.55" position="-3 8 4"></a-entity></a-scene>
-<aside id="art-caption" class="art-caption" aria-live="polite"><span class="caption-kicker">GALERIA · OBRA EM DESTAQUE</span><strong id="caption-title">Bem-vindo ao Museu Virtual</strong><p id="caption-description">Observe uma obra para conhecer sua descrição e iniciar a animação.</p></aside>
-<script src="js/museum.js"></script></body></html>
+  <div id="intro" class="intro">
+    <div class="intro-card">
+      <span class="eyebrow">EXPERIÊNCIA IMERSIVA · WEBXR</span>
+      <h1>Museu <em>Virtual</em></h1>
+      <p>Explore a galeria, aproxime-se das obras e descubra histórias em movimento.</p>
+      <button id="enter-button">Entrar no museu →</button>
+      <small>Computador: WASD ou setas para caminhar · Mouse para olhar<br>Celular: arraste para olhar e use o direcional na tela</small>
+    </div>
+  </div>
+
+  <header class="hud">
+    <a class="brand" href="./"><span class="brand-mark">M</span><span>MUSEU <b>VIRTUAL</b></span></a>
+    <div class="hud-hint" id="hud-hint">WASD / setas ou direcional · Olhe para uma obra</div>
+    <button id="help-button" class="help-button" aria-label="Ajuda">?</button>
+  </header>
+
+  <div class="help-panel" id="help-panel" hidden>
+    <button id="close-help" aria-label="Fechar ajuda">×</button>
+    <strong>Como visitar</strong>
+    <p><b>Computador:</b> use W, A, S, D ou as setas para caminhar. Use o mouse para olhar ao redor.</p>
+    <p><b>Celular:</b> arraste a tela para olhar e mantenha pressionado o direcional no canto inferior esquerdo para caminhar.</p>
+    <p>Aproxime-se das molduras e mantenha o olhar sobre uma obra. A iluminação e a descrição serão realçadas; quando houver vídeo disponível, ele começará automaticamente.</p>
+    <p>O botão VR aparece quando o dispositivo oferece suporte ao WebXR.</p>
+  </div>
+
+  <nav id="move-pad" class="move-pad" aria-label="Controle de movimento">
+    <button class="move-key move-up" type="button" data-move="forward" aria-label="Avançar">▲</button>
+    <div class="move-middle">
+      <button class="move-key" type="button" data-move="left" aria-label="Mover para a esquerda">◀</button>
+      <span class="move-center" aria-hidden="true">✦</span>
+      <button class="move-key" type="button" data-move="right" aria-label="Mover para a direita">▶</button>
+    </div>
+    <button class="move-key move-down" type="button" data-move="back" aria-label="Recuar">▼</button>
+    <span class="move-label">MOVIMENTAR</span>
+  </nav>
+
+  <a-scene id="museum-scene"
+    background="color: #11141d"
+    renderer="colorManagement: true; physicallyCorrectLights: true; antialias: true"
+    vr-mode-ui="enabled: true"
+    device-orientation-permission-ui="enabled: true">
+    <a-assets timeout="10000">
+      <video id="video-1" src="assets/videos/obra-01.mp4" preload="metadata" loop muted playsinline webkit-playsinline></video>
+      <video id="video-2" src="assets/videos/obra-02.mp4" preload="metadata" loop muted playsinline webkit-playsinline></video>
+      <video id="video-3" src="assets/videos/obra-03.mp4" preload="metadata" loop muted playsinline webkit-playsinline></video>
+      <video id="video-4" src="assets/videos/obra-04.mp4" preload="metadata" loop muted playsinline webkit-playsinline></video>
+      <video id="video-5" src="assets/videos/obra-05.mp4" preload="metadata" loop muted playsinline webkit-playsinline></video>
+    </a-assets>
+
+    <a-entity id="museum"></a-entity>
+    <a-entity id="visitor" position="0 1.65 5.8" camera look-controls museum-movement>
+      <a-entity cursor="fuse: true; fuseTimeout: 650"
+        raycaster="objects: .art-trigger; far: 20"
+        position="0 0 -1"
+        geometry="primitive: ring; radiusInner: 0.008; radiusOuter: 0.014"
+        material="color: #e6c98b; shader: flat"></a-entity>
+    </a-entity>
+
+    <a-entity light="type: ambient; color: #c9c6bd; intensity: 0.62"></a-entity>
+    <a-entity light="type: directional; color: #fff0d4; intensity: 0.48" position="-3 8 4"></a-entity>
+  </a-scene>
+
+  <aside id="art-caption" class="art-caption" aria-live="polite">
+    <span class="caption-kicker">GALERIA · OBRA EM DESTAQUE</span>
+    <strong id="caption-title">Bem-vindo ao Museu Virtual</strong>
+    <p id="caption-description">Aproxime-se de uma moldura e observe a obra para conhecer sua descrição e iniciar a animação.</p>
+  </aside>
+
+  <script src="js/museum.js"></script>
+</body>
+</html>
