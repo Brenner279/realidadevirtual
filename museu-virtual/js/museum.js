@@ -188,13 +188,22 @@
     trigger.addEventListener('click', focusArtwork);
   }
 
-  // Controles consistentes para desktop e celular. A/D e as setas fazem deslocamento lateral,
-  // permitindo caminhar até as paredes onde estão instaladas as molduras.
+  // Movimentação aplicada a um rig separado da câmera.
+  // A direção é calculada pela câmera 3D real (incluindo mouse, toque e headset),
+  // e não pela rotação do contêiner, que pode permanecer em zero no look-controls.
   AFRAME.registerComponent('museum-movement', {
     init() {
+      this.cameraEl = document.querySelector('#visitor');
       this.keys = new Set();
       this.touchDirections = new Set();
+      this.forward = new THREE.Vector3();
+      this.right = new THREE.Vector3();
+      this.up = new THREE.Vector3(0, 1, 0);
+      this.speed = 4.2;
+
       this.onKeyDown = (event) => {
+        const target = event.target;
+        if (target && /INPUT|TEXTAREA|SELECT/.test(target.tagName)) return;
         const key = event.key.toLowerCase();
         if (['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(key)) {
           event.preventDefault();
@@ -202,10 +211,18 @@
         }
       };
       this.onKeyUp = (event) => this.keys.delete(event.key.toLowerCase());
-      this.onBlur = () => { this.keys.clear(); this.touchDirections.clear(); };
-      window.addEventListener('keydown', this.onKeyDown);
+      this.onBlur = () => {
+        this.keys.clear();
+        this.clearTouchDirections();
+      };
+      this.onVisibilityChange = () => {
+        if (document.hidden) this.onBlur();
+      };
+
+      window.addEventListener('keydown', this.onKeyDown, { passive: false });
       window.addEventListener('keyup', this.onKeyUp);
       window.addEventListener('blur', this.onBlur);
+      document.addEventListener('visibilitychange', this.onVisibilityChange);
 
       this.padButtons = Array.from(document.querySelectorAll('[data-move]'));
       this.padHandlers = [];
@@ -216,11 +233,11 @@
           this.touchDirections.add(direction);
           button.classList.add('is-pressed');
           if (button.setPointerCapture && event.pointerId !== undefined) {
-            try { button.setPointerCapture(event.pointerId); } catch (error) { /* Captura opcional. */ }
+            try { button.setPointerCapture(event.pointerId); } catch (error) { /* Captura não essencial. */ }
           }
         };
         const stop = (event) => {
-          event.preventDefault();
+          if (event) event.preventDefault();
           this.touchDirections.delete(direction);
           button.classList.remove('is-pressed');
         };
@@ -232,40 +249,55 @@
       });
     },
 
+    clearTouchDirections() {
+      this.touchDirections.clear();
+      (this.padButtons || []).forEach((button) => button.classList.remove('is-pressed'));
+    },
+
     tick(time, delta) {
       if (intro.style.display !== 'none') return;
 
       const keys = this.keys;
       const active = this.touchDirections;
-      const forward = keys.has('w') || keys.has('arrowup') || active.has('forward');
-      const back = keys.has('s') || keys.has('arrowdown') || active.has('back');
-      const left = keys.has('a') || keys.has('arrowleft') || active.has('left');
-      const right = keys.has('d') || keys.has('arrowright') || active.has('right');
+      const forwardPressed = keys.has('w') || keys.has('arrowup') || active.has('forward');
+      const backPressed = keys.has('s') || keys.has('arrowdown') || active.has('back');
+      const leftPressed = keys.has('a') || keys.has('arrowleft') || active.has('left');
+      const rightPressed = keys.has('d') || keys.has('arrowright') || active.has('right');
 
-      let forwardAmount = (forward ? 1 : 0) - (back ? 1 : 0);
-      let rightAmount = (right ? 1 : 0) - (left ? 1 : 0);
+      let forwardAmount = (forwardPressed ? 1 : 0) - (backPressed ? 1 : 0);
+      let rightAmount = (rightPressed ? 1 : 0) - (leftPressed ? 1 : 0);
       const length = Math.hypot(forwardAmount, rightAmount);
-      if (!length) return;
+      if (!length || !this.cameraEl) return;
 
+      // O PerspectiveCamera já incorpora a rotação efetiva de look-controls.
+      const camera = this.cameraEl.getObject3D('camera') || this.cameraEl.object3D;
+      camera.getWorldDirection(this.forward);
+      this.forward.y = 0;
+      if (this.forward.lengthSq() < 0.0001) return;
+      this.forward.normalize();
+
+      // Para a câmera olhando para -Z, o produto vetorial gera a direita em +X.
+      this.right.crossVectors(this.forward, this.up).normalize();
       forwardAmount /= length;
       rightAmount /= length;
-      const yaw = this.el.object3D.rotation.y;
-      const forwardX = Math.sin(yaw);
-      const forwardZ = -Math.cos(yaw);
-      const rightX = Math.cos(yaw);
-      const rightZ = Math.sin(yaw);
-      const step = 3.4 * Math.min(delta || 0, 50) / 1000;
-      const position = this.el.object3D.position;
 
-      position.x = Math.max(-7.15, Math.min(7.15, position.x + (forwardX * forwardAmount + rightX * rightAmount) * step));
-      position.z = Math.max(-8.1, Math.min(8.1, position.z + (forwardZ * forwardAmount + rightZ * rightAmount) * step));
-      position.y = 1.65;
+      const step = this.speed * Math.min(Math.max(delta || 0, 0), 50) / 1000;
+      const position = this.el.object3D.position;
+      const nextX = position.x + this.forward.x * forwardAmount * step + this.right.x * rightAmount * step;
+      const nextZ = position.z + this.forward.z * forwardAmount * step + this.right.z * rightAmount * step;
+
+      // Limites interiores: deixam o visitante chegar a cerca de 25 cm do plano de foco,
+      // sem atravessar as paredes do museu.
+      position.x = Math.max(-7.45, Math.min(7.45, nextX));
+      position.z = Math.max(-8.35, Math.min(8.35, nextZ));
+      position.y = 0;
     },
 
     remove() {
       window.removeEventListener('keydown', this.onKeyDown);
       window.removeEventListener('keyup', this.onKeyUp);
       window.removeEventListener('blur', this.onBlur);
+      document.removeEventListener('visibilitychange', this.onVisibilityChange);
       this.padHandlers.forEach(({ button, start, stop }) => {
         button.removeEventListener('pointerdown', start);
         button.removeEventListener('pointerup', stop);
@@ -274,6 +306,10 @@
       });
     }
   });
+
+  // Registra o componente e o anexa explicitamente após o registro.
+  // Assim o A-Frame não precisa interpretar um atributo customizado antes da hora.
+  document.querySelector('#player-rig').setAttribute('museum-movement', '');
 
   document.querySelector('#enter-button').addEventListener('click', () => { intro.style.display = 'none'; });
   document.querySelector('#help-button').addEventListener('click', () => { document.querySelector('#help-panel').hidden = false; });
