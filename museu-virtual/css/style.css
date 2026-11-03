@@ -67,3 +67,12 @@ h1 em{color:var(--gold)}
 @media(max-width:650px){
   .motion-status{top:69px;font-size:9px;padding:8px 11px;max-width:calc(100vw - 24px)}
 }
+
+/* Modo Walk: joystick virtual fornecido pelo A-Frame Extras */
+.nipple{z-index:30!important}
+.nipple .back{background:rgba(18,22,31,.72)!important;border:1px solid rgba(213,180,119,.75)!important}
+.nipple .front{background:rgba(213,180,119,.88)!important;border:1px solid #f2d9a8!important}
+.motion-status{top:78px}
+@media(max-width:650px){
+  .motion-status{top:68px}
+}
