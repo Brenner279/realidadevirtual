@@ -9,8 +9,10 @@
   const motionStatusNode = document.querySelector('#motion-status');
   const movePad = document.querySelector('#move-pad');
 
-  // Cada passo reconhecido gera um pequeno deslocamento virtual.
-  let stepDriveUntil = 0;
+  // Três passos reconhecidos disparam uma aproximação automática de 1,5 m.
+  // O deslocamento é suave e segue a direção horizontal da câmera.
+  let approachRemaining = 0;
+  let approachActive = false;
   let motionListenerEnabled = false;
   let motionEventCount = 0;
   let stepCount = 0;
@@ -75,12 +77,17 @@
       stepSignalHigh = true;
       if (now - lastStepAt >= 320) {
         lastStepAt = now;
-        stepDriveUntil = now + 180;
         stepCount += 1;
-
-        motionStatusNode.textContent = 'PASSOS DETECTADOS · caminhada automática ativa';
+        motionStatusNode.textContent = 'PASSO ' + stepCount + ' DE 3 · continue caminhando';
         motionStatusNode.classList.add('is-walking');
-        movePad.classList.add('sensor-active');
+
+        if (stepCount >= 3) {
+          stepCount = 0;
+          approachRemaining = Math.min(approachRemaining + 1.5, 3);
+          approachActive = true;
+          motionStatusNode.textContent = '3 PASSOS DETECTADOS · aproximando-se da moldura';
+          movePad.classList.add('sensor-active');
+        }
       }
     } else if (accelerationEnvelope <= threshold * 0.48) {
       stepSignalHigh = false;
@@ -374,8 +381,7 @@
 
       const keys = this.keys;
       const active = this.touchDirections;
-      const walkingBySteps = performance.now() < stepDriveUntil;
-      const forwardPressed = keys.has('w') || keys.has('arrowup') || active.has('forward') || walkingBySteps;
+      const forwardPressed = keys.has('w') || keys.has('arrowup') || active.has('forward') || approachRemaining > 0;
       const backPressed = keys.has('s') || keys.has('arrowdown') || active.has('back');
       const leftPressed = keys.has('a') || keys.has('arrowleft') || active.has('left');
       const rightPressed = keys.has('d') || keys.has('arrowright') || active.has('right');
@@ -397,17 +403,38 @@
       forwardAmount /= length;
       rightAmount /= length;
 
-      const movementSpeed = walkingBySteps ? 2.8 : this.speed;
-      const step = movementSpeed * Math.min(Math.max(delta || 0, 0), 50) / 1000;
+      const frameSeconds = Math.min(Math.max(delta || 0, 0), 50) / 1000;
+      const manualMovement = keys.has('w') || keys.has('arrowup') || keys.has('s') || keys.has('arrowdown') ||
+        active.has('forward') || active.has('back') || keys.has('a') || keys.has('arrowleft') ||
+        keys.has('d') || keys.has('arrowright') || active.has('left') || active.has('right');
+      const approachStep = approachRemaining > 0 && !manualMovement
+        ? Math.min(approachRemaining, 2.4 * frameSeconds)
+        : 0;
+      const step = approachStep > 0 ? approachStep : this.speed * frameSeconds;
       const position = this.el.object3D.position;
       const nextX = position.x + this.forward.x * forwardAmount * step + this.right.x * rightAmount * step;
       const nextZ = position.z + this.forward.z * forwardAmount * step + this.right.z * rightAmount * step;
 
       // Limites interiores: deixam o visitante chegar a cerca de 25 cm do plano de foco,
       // sem atravessar as paredes do museu.
-      position.x = Math.max(-7.45, Math.min(7.45, nextX));
-      position.z = Math.max(-8.35, Math.min(8.35, nextZ));
+      const boundedX = Math.max(-7.45, Math.min(7.45, nextX));
+      const boundedZ = Math.max(-8.35, Math.min(8.35, nextZ));
+      const movedDistance = Math.hypot(boundedX - position.x, boundedZ - position.z);
+      position.x = boundedX;
+      position.z = boundedZ;
       position.y = 0;
+
+      if (approachStep > 0) {
+        approachRemaining = Math.max(0, approachRemaining - movedDistance);
+        if (approachRemaining <= 0.001) {
+          approachRemaining = 0;
+          approachActive = false;
+          movePad.classList.remove('sensor-active');
+          motionStatusNode.textContent = 'APROXIMAÇÃO CONCLUÍDA · caminhe mais 3 passos para avançar novamente';
+          motionStatusNode.classList.remove('is-walking');
+          motionStatusNode.classList.add('is-ready');
+        }
+      }
     },
 
     remove() {
