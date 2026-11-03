@@ -199,6 +199,8 @@
     }
   });
 
+  document.querySelector('#player-rig').setAttribute('museum-boundaries', '');
+
   document.querySelector('#enter-button').addEventListener('click', () => {
     intro.style.display = 'none';
     motionStatusNode.textContent = 'MODO WALK ATIVO · use o joystick à esquerda';
