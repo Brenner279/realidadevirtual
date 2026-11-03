@@ -6,6 +6,18 @@
   const descriptionNode = document.querySelector('#caption-description');
   const hintNode = document.querySelector('#hud-hint');
   const caption = document.querySelector('#art-caption');
+  const motionStatusNode = document.querySelector('#motion-status');
+  const movePad = document.querySelector('#move-pad');
+
+  // Cada passo reconhecido gera um pequeno deslocamento virtual.
+  let stepDriveUntil = 0;
+  let motionListenerEnabled = false;
+  let motionEventCount = 0;
+  let stepCount = 0;
+  let accelerationBaseline = null;
+  let accelerationEnvelope = 0;
+  let stepSignalHigh = false;
+  let lastStepAt = 0;
 
   const artworks = [
     { id: 1, title: 'Movimento das Cores', artist: 'Acervo demonstrativo', year: '2026', description: 'Uma composição abstrata sobre ritmo, cor e transformação. Este espaço receberá o vídeo animado da primeira obra.', wall: 'left', z: 3, color: '#b96b4d', accent: '#e9c17d' },
@@ -33,6 +45,109 @@
       dur: duration,
       easing: 'easeInOutSine'
     });
+  }
+
+  function handleDeviceMotion(event) {
+    const now = performance.now();
+    const linear = event.acceleration;
+    const raw = event.accelerationIncludingGravity;
+    let magnitude = null;
+
+    // Preferimos aceleração linear. Em dispositivos que não a fornecem, retiramos
+    // a gravidade estimada da magnitude do vetor bruto.
+    if (linear && Number.isFinite(linear.x) && Number.isFinite(linear.y) && Number.isFinite(linear.z)) {
+      magnitude = Math.hypot(linear.x, linear.y, linear.z);
+    } else if (raw && Number.isFinite(raw.x) && Number.isFinite(raw.y) && Number.isFinite(raw.z)) {
+      magnitude = Math.abs(Math.hypot(raw.x, raw.y, raw.z) - 9.81);
+    }
+
+    if (magnitude === null) return;
+    motionEventCount += 1;
+
+    // Filtro passa-baixa para estimar a linha de base e suavizar ruído.
+    if (accelerationBaseline === null) accelerationBaseline = magnitude;
+    accelerationBaseline += (magnitude - accelerationBaseline) * 0.045;
+    const dynamicAcceleration = Math.abs(magnitude - accelerationBaseline);
+    accelerationEnvelope += (dynamicAcceleration - accelerationEnvelope) * 0.32;
+
+    const threshold = 1.15; // m/s²; limiar de pico para passos
+    if (accelerationEnvelope >= threshold && !stepSignalHigh) {
+      stepSignalHigh = true;
+      if (now - lastStepAt >= 320) {
+        lastStepAt = now;
+        stepDriveUntil = now + 180;
+        stepCount += 1;
+
+        motionStatusNode.textContent = 'PASSOS DETECTADOS · caminhada automática ativa';
+        motionStatusNode.classList.add('is-walking');
+        movePad.classList.add('sensor-active');
+      }
+    } else if (accelerationEnvelope <= threshold * 0.48) {
+      stepSignalHigh = false;
+    }
+  }
+
+  async function enableMotionWalking() {
+    if (!window.isSecureContext) {
+      motionStatusNode.textContent = 'Abra o museu por HTTPS para liberar os sensores';
+      motionStatusNode.classList.add('is-warning');
+      return;
+    }
+
+    if (!('DeviceMotionEvent' in window)) {
+      motionStatusNode.textContent = 'Sensor de movimento indisponível · use o direcional';
+      motionStatusNode.classList.add('is-warning');
+      return;
+    }
+
+    // iOS/Safari exige solicitação de permissão em resposta direta a um toque.
+    // As duas chamadas são iniciadas no mesmo gesto para não perder a ativação.
+    const permissionRequests = [];
+    let motionPermission = 'granted';
+    let orientationPermission = 'granted';
+
+    try {
+      if (typeof DeviceMotionEvent.requestPermission === 'function') {
+        permissionRequests.push(
+          DeviceMotionEvent.requestPermission().then((value) => { motionPermission = value; })
+        );
+      }
+      if (typeof DeviceOrientationEvent !== 'undefined' &&
+          typeof DeviceOrientationEvent.requestPermission === 'function') {
+        permissionRequests.push(
+          DeviceOrientationEvent.requestPermission().then((value) => { orientationPermission = value; })
+        );
+      }
+      await Promise.all(permissionRequests);
+    } catch (error) {
+      console.warn('Permissão dos sensores não concedida.', error);
+      motionPermission = 'denied';
+    }
+
+    if (motionPermission !== 'granted') {
+      motionStatusNode.textContent = 'Permissão do sensor não concedida · use o direcional';
+      motionStatusNode.classList.add('is-warning');
+      return;
+    }
+
+    if (!motionListenerEnabled) {
+      window.addEventListener('devicemotion', handleDeviceMotion, { passive: true });
+      motionListenerEnabled = true;
+    }
+
+    motionStatusNode.textContent = orientationPermission === 'granted'
+      ? 'Sensor ativo · caminhe segurando o celular para avançar'
+      : 'Sensor de passos ativo · orientação pode estar limitada';
+    motionStatusNode.classList.add('is-ready');
+
+    // Se o navegador não enviar dados, mantém o direcional visível como alternativa.
+    window.setTimeout(() => {
+      if (motionEventCount === 0) {
+        motionStatusNode.textContent = 'Sem dados do sensor · use o direcional';
+        motionStatusNode.classList.remove('is-ready');
+        motionStatusNode.classList.add('is-warning');
+      }
+    }, 3500);
   }
 
   function build() {
@@ -259,7 +374,8 @@
 
       const keys = this.keys;
       const active = this.touchDirections;
-      const forwardPressed = keys.has('w') || keys.has('arrowup') || active.has('forward');
+      const walkingBySteps = performance.now() < stepDriveUntil;
+      const forwardPressed = keys.has('w') || keys.has('arrowup') || active.has('forward') || walkingBySteps;
       const backPressed = keys.has('s') || keys.has('arrowdown') || active.has('back');
       const leftPressed = keys.has('a') || keys.has('arrowleft') || active.has('left');
       const rightPressed = keys.has('d') || keys.has('arrowright') || active.has('right');
@@ -281,7 +397,8 @@
       forwardAmount /= length;
       rightAmount /= length;
 
-      const step = this.speed * Math.min(Math.max(delta || 0, 0), 50) / 1000;
+      const movementSpeed = walkingBySteps ? 2.8 : this.speed;
+      const step = movementSpeed * Math.min(Math.max(delta || 0, 0), 50) / 1000;
       const position = this.el.object3D.position;
       const nextX = position.x + this.forward.x * forwardAmount * step + this.right.x * rightAmount * step;
       const nextZ = position.z + this.forward.z * forwardAmount * step + this.right.z * rightAmount * step;
@@ -311,7 +428,11 @@
   // Assim o A-Frame não precisa interpretar um atributo customizado antes da hora.
   document.querySelector('#player-rig').setAttribute('museum-movement', '');
 
-  document.querySelector('#enter-button').addEventListener('click', () => { intro.style.display = 'none'; });
+  document.querySelector('#enter-button').addEventListener('click', () => {
+    intro.style.display = 'none';
+    // Solicita permissões diretamente no toque do botão Entrar.
+    enableMotionWalking();
+  });
   document.querySelector('#help-button').addEventListener('click', () => { document.querySelector('#help-panel').hidden = false; });
   document.querySelector('#close-help').addEventListener('click', () => { document.querySelector('#help-panel').hidden = true; });
 

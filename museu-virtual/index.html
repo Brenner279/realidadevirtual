@@ -15,13 +15,13 @@
       <h1>Museu <em>Virtual</em></h1>
       <p>Explore a galeria, aproxime-se das obras e descubra histórias em movimento.</p>
       <button id="enter-button">Entrar no museu →</button>
-      <small>Computador: WASD ou setas para caminhar · Mouse para olhar<br>Celular: arraste para olhar e use o direcional na tela</small>
+      <small>Computador: WASD ou setas para caminhar · Mouse para olhar<br>Celular: permita o sensor de movimento e caminhe segurando o aparelho</small>
     </div>
   </div>
 
   <header class="hud">
     <a class="brand" href="./"><span class="brand-mark">M</span><span>MUSEU <b>VIRTUAL</b></span></a>
-    <div class="hud-hint" id="hud-hint">WASD / setas ou direcional · Olhe para uma obra</div>
+    <div class="hud-hint" id="hud-hint">Caminhada por passos · Olhe para uma obra</div>
     <button id="help-button" class="help-button" aria-label="Ajuda">?</button>
   </header>
 
@@ -29,12 +29,14 @@
     <button id="close-help" aria-label="Fechar ajuda">×</button>
     <strong>Como visitar</strong>
     <p><b>Computador:</b> use W, A, S, D ou as setas para caminhar. Use o mouse para olhar ao redor.</p>
-    <p><b>Celular:</b> arraste a tela para olhar e mantenha pressionado o direcional no canto inferior esquerdo para caminhar.</p>
+    <p><b>Celular:</b> permita o acesso ao sensor de movimento ao entrar. Segure o aparelho e caminhe normalmente na direção da obra; cada passo detectado produz um avanço no museu.</p><p>O direcional na tela permanece disponível como alternativa caso o navegador não ofereça os sensores.</p>
     <p>Aproxime-se das molduras e mantenha o olhar sobre uma obra. A iluminação e a descrição serão realçadas; quando houver vídeo disponível, ele começará automaticamente.</p>
     <p>O botão VR aparece quando o dispositivo oferece suporte ao WebXR.</p>
   </div>
 
-  <nav id="move-pad" class="move-pad" aria-label="Controle de movimento">
+  <div id="motion-status" class="motion-status" role="status">Ao entrar, permita o sensor e caminhe para avançar</div>
+
+  <nav id="move-pad" class="move-pad" aria-label="Controle alternativo de movimento">
     <button class="move-key move-up" type="button" data-move="forward" aria-label="Avançar">▲</button>
     <div class="move-middle">
       <button class="move-key" type="button" data-move="left" aria-label="Mover para a esquerda">◀</button>
