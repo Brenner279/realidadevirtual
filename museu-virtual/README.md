@@ -5,7 +5,9 @@ Museu de arte em realidade virtual desenvolvido com **A-Frame 1.6.0**, HTML, CSS
 - Galeria 3D com arquitetura de museu, iluminação e cinco pontos de exposição.
 - Cinco molduras tridimensionais com painéis gráficos provisórios e placas informativas.
 - Navegação por teclado (WASD/setas) e direcional de toque na tela para celular.
-- Deslocamento lateral dedicado para caminhar até as obras nas paredes.
+- Movimentação calculada pela orientação real da câmera, em um rig independente, para que W/S acompanhem a direção do olhar.
+- Deslocamento lateral e limites internos ajustados para chegar próximo às molduras sem atravessar as paredes.
+- Direcional de toque com captura de ponteiro e cancelamento seguro para celulares.
 - Ao olhar para uma obra, a iluminação da moldura aumenta suavemente, o halo dourado aparece e a placa e a descrição recebem destaque.
 - O vídeo correspondente começa quando já estiver disponível; ao desviar o olhar, ele é pausado.
 - Entrada em modo VR quando o dispositivo oferece suporte a WebXR.
