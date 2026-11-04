@@ -26,7 +26,8 @@
     .viewer-head strong{font-family:Manrope,sans-serif;font-size:15px}.live{font-size:11px;color:#28714e;background:#eaf4e9;padding:7px 10px;border-radius:30px;font-weight:700}
     .scene-wrap{height:480px;position:relative;background:#b8cbb2} a-scene{width:100%;height:100%;display:block}
     .scene-hint{position:absolute;bottom:14px;left:14px;background:#102b27d9;color:white;padding:9px 12px;border-radius:10px;font-size:11px;pointer-events:none;z-index:2}
-    .viewer-actions{display:flex;gap:9px;padding:14px 18px;flex-wrap:wrap}
+    .panorama-credit{padding:9px 12px;background:#f3f6ef;border-radius:10px;color:#405244;font-size:12px;line-height:1.45;margin-top:8px}.panorama-credit a{color:#245f46;font-weight:700;margin-left:4px}
+        .viewer-actions{display:flex;gap:9px;padding:14px 18px;flex-wrap:wrap}
     .btn{border:0;border-radius:12px;padding:11px 15px;font-weight:700;font-size:13px;transition:.2s}
     .btn-primary{background:var(--green);color:white}.btn-primary:hover{background:#164b38}.btn-soft{background:#edf2eb;color:#254637}.btn:focus-visible,.biome:focus-visible{outline:3px solid #a2c66f;outline-offset:3px}
     .explore-card{padding:22px}.section-title{font:800 20px Manrope,sans-serif;margin:0 0 6px}.section-sub{font-size:13px;color:var(--muted);line-height:1.5;margin:0 0 18px}
@@ -166,6 +167,7 @@
             </div>
             <div class="vr-hint" id="vr-hint">No modo VR, olhe para um ponto dourado para selecioná-lo. Olhe para o chão e acione o seletor para se deslocar.</div>
           </div>
+          <div id="panorama-credit" class="panorama-credit" hidden></div>
           <div class="viewer-actions">
             <button class="btn btn-primary" id="enter-vr">◉ Entrar em modo VR</button>
             <button class="btn btn-soft" id="reset-view">⌖ Voltar ao início</button>
@@ -491,6 +493,33 @@
       if(panoramaUrl){URL.revokeObjectURL(panoramaUrl);panoramaUrl=null;}
       sky.removeAttribute("src");
       sky.setAttribute("color",b.sky);
+      // Panorama 360° real do USGS para a Floresta Nacional do Tapajós.
+      // Demais biomas permanecem no ambiente 3D até haver panoramas com licença validada.
+      const realPanoramas = {
+        amazonia: {
+          src: "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/Copy_of_USGS_Amazon_001.jpg",
+          credit: "Panorama 360° da Floresta Nacional do Tapajós, próximo a Santarém (PA) — U.S. Geological Survey (USGS), domínio público.",
+          source: "https://www.usgs.gov/media/images/panorama-top-amazon-observation-tower"
+        }
+      };
+      const panorama = realPanoramas[id];
+      const credit = document.querySelector("#panorama-credit");
+      if (panorama) {
+        sky.setAttribute("src", panorama.src);
+        sky.setAttribute("rotation", "0 -90 0");
+        credit.innerHTML = "";
+        const label = document.createElement("span");
+        label.textContent = panorama.credit + " ";
+        const link = document.createElement("a");
+        link.href = panorama.source;
+        link.target = "_blank";
+        link.rel = "noopener";
+        link.textContent = "Fonte original";
+        credit.append(label, link);
+        credit.hidden = false;
+      } else {
+        credit.hidden = true;
+      }
       sky.setAttribute("rotation","0 0 0");
       ground.setAttribute("color",b.ground);
       document.querySelector("#clear-panorama").hidden=true;

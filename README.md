@@ -1,75 +1,51 @@
 # Brasil Imersivo — Realidade Virtual Geo
 
-Experiência educativa híbrida para explorar os **seis biomas brasileiros** por meio de ambientes 3D, interações e panoramas fotográficos em 360°.
+Experiência educativa para explorar os **seis biomas brasileiros** por meio de ambientes tridimensionais, panoramas fotográficos em 360° e conteúdos de Geografia.
 
-## Acessar
+## Acessar o projeto
 
-https://brenner279.github.io/realidadevirtual/
+**Publicação pelo GitHub Actions:** abra **Settings → Pages → Build and deployment**, escolha **GitHub Actions** como fonte e salve. Essa primeira ativação precisa ser feita nas configurações do repositório; depois disso, o workflow publica automaticamente a cada atualização da branch `main`. O site ficará disponível em:
 
-## Como funciona a experiência
+`https://brenner279.github.io/realidadevirtual/`
 
-1. **Tela inicial — mapa do Brasil:** o visitante escolhe Amazônia, Cerrado, Caatinga, Mata Atlântica, Pantanal ou Pampa. O mapa é esquemático e serve como navegação temática, não como limite cartográfico oficial dos biomas.
-2. **Entrada no ambiente:** a aplicação carrega a paisagem 3D correspondente e apresenta informações gerais do bioma.
-3. **Exploração:** o visitante se desloca, observa plantas, animais e elementos da paisagem e encontra marcadores dourados.
-4. **Aprendizagem:** ao selecionar um marcador no cenário ou um tópico no painel, abre-se uma ficha com explicação educativa.
-5. **Modo VR:** em dispositivos e navegadores compatíveis com WebXR, o visitante pode entrar no modo imersivo. Em óculos móveis sem controles, a seleção é feita pelo olhar; olhar para o chão e aguardar o foco do cursor permite deslocamento por teleporte.
+## Recursos do protótipo
 
-## Formas de interação
+- Seleção entre Amazônia, Cerrado, Caatinga, Mata Atlântica, Pantanal e Pampa.
+- Cenários 3D construídos proceduralmente com A-Frame.
+- **Amazônia em desenvolvimento avançado:** dossel e sub-bosque, árvores com raízes tabulares, palmeiras, rio, margens, tronco caído, pedras, representação estilizada de uma arara-vermelha e quatro pontos interativos sobre camadas da floresta, ciclo da água, biodiversidade e conservação.
+- Navegação pelo cenário com teclado e mouse.
+- Botão de entrada em realidade virtual, quando o dispositivo e o navegador oferecem suporte a WebXR.
+- Carregamento local de uma fotografia panorâmica 360° para combinar a paisagem real com os elementos 3D.
+- Painéis com informações educativas sobre cada bioma.
+- Interface responsiva para computador e celular.
 
-### Computador
-- **W, A, S, D** ou **setas:** caminhar.
-- **Mouse:** arrastar para olhar ao redor.
-- **Pontos dourados:** apontar e selecionar para abrir informações.
-- **Voltar ao mapa:** retornar à tela inicial para escolher outro bioma.
+## Como testar
 
-### Celular
-- **Toque e arraste na cena:** olhar ao redor; em aparelhos compatíveis, a orientação do telefone também pode acompanhar a visão.
-- **Controles direcionais na tela:** avançar, recuar e deslocar para os lados.
-- **Pontos dourados ou painel de descoberta:** tocar para consultar os conteúdos.
-- **Modo VR:** colocar o celular em um visor compatível e iniciar a experiência imersiva, quando o navegador oferecer suporte.
+1. Abra `index.html` em um servidor local (por exemplo, a extensão Live Server do VS Code).
+2. Escolha um bioma no painel.
+3. No computador, use **W, A, S, D** ou as setas para se deslocar e arraste o mouse para olhar ao redor.
+4. Clique em **Carregar foto 360°** e selecione uma imagem panorâmica equiretangular (proporção recomendada 2:1, por exemplo 4096 × 2048).
+5. Clique em **Entrar em realidade virtual** em um navegador/dispositivo compatível.
 
-### Óculos de realidade virtual
-- **Olhar para um marcador:** o cursor de foco seleciona o ponto após aproximadamente um segundo.
-- **Olhar para o chão:** o cursor pode selecionar uma posição e deslocar o visitante até ela.
-- O funcionamento depende do suporte do navegador a WebXR e das capacidades do aparelho/visor. A versão atual prioriza óculos móveis sem controle manual.
+> Para WebXR, o site precisa ser servido por HTTPS (ou localhost durante o desenvolvimento). O suporte a VR depende do navegador, do dispositivo e de seus recursos.
 
-## Conteúdo dos biomas
+## Adicionar panoramas ao projeto
 
-Cada ambiente apresenta quatro tópicos de descoberta relacionados a espécies, vegetação, paisagem ou funcionamento do ecossistema. A Amazônia inclui árvores de grande porte, palmeiras, rio, raízes tabulares e uma representação estilizada de arara-vermelha. Os demais ambientes apresentam elementos vegetais e animais simplificados, além de pontos interativos próprios.
+O botão **Carregar foto 360°** permite testar uma imagem diretamente no dispositivo, sem enviá-la ao GitHub. Para que um panorama seja carregado automaticamente por bioma em uma próxima versão, adicione os arquivos otimizados em `assets/panoramas/` e registre seus caminhos na configuração dos biomas em `index.html`.
 
-> Os modelos 3D são representações didáticas estilizadas e não reconstruções científicas em escala real. Os pontos de localização no mapa são esquemáticos. O conteúdo pode ser ampliado e revisto conforme a validação pedagógica.
-
-## Fotografias panorâmicas 360°
-
-O botão **Carregar foto 360°** permite selecionar uma imagem local no dispositivo, sem enviá-la ao GitHub. Recomenda-se imagem equiretangular com proporção 2:1 (por exemplo, 4096 × 2048). Utilize imagens próprias, de domínio público ou com licença que permita reutilização, mantendo a atribuição de autoria e licença.
-
-## Desenvolvimento local
-
-1. Clone ou baixe o repositório.
-2. Abra a pasta em um editor como VS Code.
-3. Inicie um servidor local (por exemplo, com a extensão Live Server).
-4. Acesse o endereço local e escolha um bioma no mapa.
-
-Para usar WebXR, acesse por HTTPS ou localhost. O suporte varia conforme navegador, sistema operacional e hardware.
+Use imagens próprias, de domínio público ou com licença que permita reutilização. Registre a fonte e a licença de cada imagem.
 
 ## Tecnologias
 
 - HTML5, CSS3 e JavaScript
-- [A-Frame 1.8.0](https://aframe.io/docs/1.8.0/)
-- WebXR e APIs de entrada do navegador
-- GitHub Pages
+- [A-Frame 1.8.0](https://aframe.io/docs/)
+- WebXR
+- GitHub Pages (hospedagem)
 
-## Publicação
+## Escopo e evolução
 
-O GitHub Actions publica automaticamente as alterações na branch `main`. A configuração do repositório deve usar **Settings → Pages → Build and deployment → GitHub Actions** como origem de publicação.
+Este é um protótipo educativo em evolução. A Amazônia recebeu uma primeira expansão de cenário e conteúdo interativo; os demais biomas continuam com ambientes demonstrativos. Os modelos de árvores e animais são representações didáticas estilizadas, não reconstruções científicas em escala real. A camada de panorama 360° já permite testar fotografias locais; a próxima etapa é selecionar e integrar panoramas específicos e licenciados para cada bioma, além de adicionar modelos 3D de espécies nativas, trilhas e pontos de descoberta.
 
-## Próximas evoluções
+## Licença
 
-- Integrar panoramas 360° licenciados específicos de cada bioma.
-- Substituir modelos demonstrativos por modelos 3D otimizados e com atribuição de licença.
-- Aprimorar colisões, trilhas e pontos de deslocamento.
-- Ampliar acessibilidade, narração e recursos de apoio à aprendizagem.
-
-## Licenças e atribuições
-
-As imagens, panoramas, modelos 3D, bibliotecas e demais recursos de terceiros devem manter suas licenças e atribuições próprias. O conteúdo e os modelos originais deste protótipo podem ser adaptados para fins educativos, preservadas as atribuições de recursos externos.
+A definir. As imagens, panoramas, modelos 3D e áudios incorporados futuramente devem manter suas atribuições e licenças individuais.
