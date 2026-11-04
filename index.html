@@ -225,12 +225,88 @@
         for(let i=0;i<90;i++)entity("a-cone",{position:`${(Math.random()-.5)*48} .35 ${-2-Math.random()*36}`,radiusBottom:.12,radiusTop:.015,height:.7,color:i%3===0?"#9a9c54":"#78924e"});
         for(let i=0;i<8;i++)entity("a-sphere",{position:`${(i-4)*5} .5 ${-12-Math.random()*20}`,radius:2+Math.random()*2,color:"#91a66b",scale:"1 .28 1"});
       }
-      // Nos demais biomas, mantém um ponto geral de observação.
+      // Elementos característicos e pontos de descoberta específicos de cada bioma.
+      const discoveries={
+        savanna:[
+          ["Veredas e nascentes","As veredas são áreas úmidas do Cerrado, frequentemente associadas ao buriti. Elas ajudam a proteger nascentes e funcionam como refúgio para diversas espécies."],
+          ["Adaptação ao fogo","Muitas plantas do Cerrado possuem casca espessa, raízes profundas e capacidade de rebrotar. O fogo faz parte da dinâmica de algumas formações, mas queimadas frequentes e intensas podem causar degradação."],
+          ["Berço das águas","O Cerrado abriga nascentes que alimentam importantes bacias hidrográficas brasileiras. A conservação da vegetação nativa ajuda a proteger o solo e a disponibilidade de água."]
+        ],
+        dry:[
+          ["Plantas resistentes à seca","Cactos e outras plantas da Caatinga apresentam adaptações como armazenamento de água, espinhos e folhas reduzidas, diminuindo a perda de água."],
+          ["Rios temporários","Em muitas áreas semiáridas, cursos d'água podem ser temporários e variar conforme as chuvas. A paisagem muda bastante entre as estações seca e chuvosa."],
+          ["Biodiversidade brasileira","A Caatinga é exclusivamente brasileira e possui espécies adaptadas ao clima semiárido. Proteger a vegetação nativa também ajuda a evitar erosão e desertificação."]
+        ],
+        atlantic:[
+          ["Estratos da floresta","A Mata Atlântica possui diferentes estratos de vegetação, desde árvores emergentes até o sub-bosque, criando muitos micro-habitats."],
+          ["Epífitas e umidade","Bromélias e orquídeas podem crescer sobre troncos e galhos sem retirar alimento da árvore hospedeira. A umidade favorece uma grande diversidade de plantas."],
+          ["Fragmentação e conservação","A Mata Atlântica foi intensamente modificada pela ocupação humana. Corredores ecológicos e recuperação de áreas degradadas ajudam a conectar fragmentos florestais."]
+        ],
+        wetland:[
+          ["Pulso das cheias","O ciclo anual de cheias e vazantes reorganiza os ambientes do Pantanal. A água transporta nutrientes e conecta áreas que ficam isoladas durante a seca."],
+          ["Fauna pantaneira","A planície abriga aves, peixes, répteis e mamíferos. A disponibilidade de água e alimento influencia os deslocamentos e os períodos de reprodução de muitas espécies."],
+          ["Equilíbrio das águas","Incêndios, alterações nos rios e perda de vegetação podem afetar o Pantanal. Proteger nascentes e manter os ciclos naturais da água é essencial."]
+        ],
+        grass:[
+          ["Campos naturais","O Pampa brasileiro é formado principalmente por campos com gramíneas e plantas herbáceas. Esses ambientes possuem grande diversidade, mesmo sem árvores dominantes."],
+          ["Solo e biodiversidade","A vegetação campestre protege o solo, contribui para a infiltração da água e oferece abrigo e alimento para muitos animais."],
+          ["Conservação dos campos","A conversão dos campos naturais e o manejo inadequado ameaçam espécies nativas. A conservação do Pampa depende do uso sustentável da paisagem."]
+        ]
+      };
+      if(type==="savanna"){
+        // Cupinzeiros e árvores de troncos retorcidos reforçam a paisagem de Cerrado.
+        for(let i=0;i<11;i++){
+          const x=(Math.random()-.5)*34,z=-5-Math.random()*27;
+          entity("a-cone",{position:`${x} .55 ${z}`,radiusBottom:.42,radiusTop:.12,height:1.1,color:"#9b7048"});
+        }
+        for(let i=0;i<7;i++){
+          const x=(Math.random()-.5)*30,z=-5-Math.random()*25;
+          entity("a-cylinder",{position:`${x} 1.2 ${z}`,radius:.09,height:2.4,rotation:`0 0 ${(Math.random()-.5)*28}`,color:"#65513a"});
+        }
+      }else if(type==="dry"){
+        // Afloramentos rochosos e arbustos xerófitos da paisagem semiárida.
+        for(let i=0;i<18;i++){
+          const x=(Math.random()-.5)*32,z=-4-Math.random()*28;
+          entity("a-dodecahedron",{position:`${x} .42 ${z}`,radius:.55+Math.random()*.45,color:i%2?"#9b8060":"#79664e",scale:"1 .72 1"});
+        }
+        for(let i=0;i<7;i++)tree((Math.random()-.5)*30,-5-Math.random()*24,2.1,"#777d45","#6a5037");
+      }else if(type==="atlantic"){
+        // Sub-bosque e epífitas estilizadas em diferentes alturas.
+        for(let i=0;i<22;i++){
+          const x=(Math.random()-.5)*30,z=-3-Math.random()*30;
+          entity("a-sphere",{position:`${x} .7 ${z}`,radius:.45+Math.random()*.35,color:i%2?"#4f8a50":"#39764a",scale:"1 .7 1"});
+        }
+        for(let i=0;i<12;i++){
+          const x=(Math.random()-.5)*28,z=-4-Math.random()*28;
+          entity("a-sphere",{position:`${x} 2.2 ${z}`,radius:.22,color:"#d47b9c",scale:"1 .55 1"});
+        }
+      }else if(type==="wetland"){
+        // Vegetação aquática e pequenas ilhas de vegetação emergente.
+        for(let i=0;i<22;i++){
+          const x=(Math.random()-.5)*34,z=-3-Math.random()*27;
+          entity("a-sphere",{position:`${x} .16 ${z}`,radius:.34+Math.random()*.2,color:"#6b914e",scale:"1 .18 1"});
+        }
+        for(let i=0;i<8;i++){
+          const x=(Math.random()-.5)*30,z=-5-Math.random()*25;
+          entity("a-cone",{position:`${x} .75 ${z}`,radiusBottom:.22,radiusTop:.03,height:1.5,color:"#a3a35d"});
+        }
+      }else if(type==="grass"){
+        // Capões e pequenas elevações em meio aos campos naturais.
+        for(let i=0;i<9;i++){
+          const x=(Math.random()-.5)*36,z=-8-Math.random()*25;
+          entity("a-sphere",{position:`${x} .35 ${z}`,radius:2.1+Math.random(),color:"#829b5d",scale:"1 .24 1"});
+        }
+        for(let i=0;i<28;i++){
+          const x=(Math.random()-.5)*36,z=-3-Math.random()*30;
+          entity("a-cone",{position:`${x} .48 ${z}`,radiusBottom:.1,radiusTop:.012,height:.95,color:i%2?"#b1a35c":"#738c4c"});
+        }
+      }
       if(type!=="forest"){
-        const marker=entity("a-sphere",{class:"interactive",position:"0 1.5 -5",radius:.38,color:"#e2c56b",material:"emissive: #5b461b; emissiveIntensity: .25"});
-        marker.addEventListener("click",()=>openInfo());
-        entity("a-text",{value:"PONTO DE DESCOBERTA",position:"-1.35 2.15 -5",color:"#ffffff",width:4,align:"center"});
-        entity("a-text",{value:"Explore a paisagem",position:"-1.05 1.05 -5",color:"#ffffff",width:3,align:"center"});
+        const list=discoveries[type]||[];
+        list.forEach((item,i)=>{
+          const x=[-3.2,0,3.2][i],z=-7-i*3.5,y=1.45+(i%2)*.35;
+          addHotspot(x,y,z,item[0],item[1]);
+        });
       }
     }
     function selectBiome(id){
