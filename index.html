@@ -144,6 +144,9 @@
           <div class="viewer-head"><div><span class="eyebrow">AMBIENTE INTERATIVO</span><strong id="viewer-title">Amazônia · ambiente imersivo</strong></div><span class="live">● 3D ATIVO</span></div>
           <div class="scene-wrap">
             <a-scene embedded vr-mode-ui="enabled: true" renderer="colorManagement: true; physicallyCorrectLights: true" background="color: #b7cbb8">
+              <a-assets timeout="60000">
+                <img id="amazon-panorama" crossorigin="anonymous" src="https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/Copy_of_USGS_Amazon_001.jpg">
+              </a-assets>
               <a-entity id="world">
                 <a-sky id="sky" color="#9fc8b5"></a-sky>
                 <a-plane id="ground" class="walkable" rotation="-90 0 0" width="180" height="180" color="#456c49" position="0 0 0"></a-plane>
@@ -491,40 +494,73 @@
       current=id;
       const b=biomes[id];
       if(panoramaUrl){URL.revokeObjectURL(panoramaUrl);panoramaUrl=null;}
-      sky.removeAttribute("src");
-      sky.setAttribute("color",b.sky);
-      // Panorama 360° real do USGS para a Floresta Nacional do Tapajós.
-      // Demais biomas permanecem no ambiente 3D até haver panoramas com licença validada.
-      const realPanoramas = {
-        amazonia: {
-          src: "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/Copy_of_USGS_Amazon_001.jpg",
-          credit: "Panorama 360° da Floresta Nacional do Tapajós, próximo a Santarém (PA) — U.S. Geological Survey (USGS), domínio público.",
-          source: "https://www.usgs.gov/media/images/panorama-top-amazon-observation-tower"
+      const image=document.querySelector("#amazon-panorama");
+      const credit=document.querySelector("#panorama-credit");
+      const title=document.querySelector("#viewer-title");
+      const realPanoramas={
+        amazonia:{
+          asset:"#amazon-panorama",
+          credit:"Panorama 360° da Floresta Nacional do Tapajós, próximo a Santarém (PA) — U.S. Geological Survey (USGS), domínio público.",
+          source:"https://www.usgs.gov/media/images/panorama-top-amazon-observation-tower"
         }
       };
-      const panorama = realPanoramas[id];
-      const credit = document.querySelector("#panorama-credit");
-      if (panorama) {
-        sky.setAttribute("src", panorama.src);
-        sky.setAttribute("rotation", "0 -90 0");
-        credit.innerHTML = "";
-        const label = document.createElement("span");
-        label.textContent = panorama.credit + " ";
-        const link = document.createElement("a");
-        link.href = panorama.source;
-        link.target = "_blank";
-        link.rel = "noopener";
-        link.textContent = "Fonte original";
-        credit.append(label, link);
-        credit.hidden = false;
-      } else {
-        credit.hidden = true;
-      }
+      const panorama=realPanoramas[id];
+
+      // Limpa a textura anterior antes de selecionar o novo ambiente.
+      sky.removeAttribute("src");
+      sky.setAttribute("color",b.sky);
       sky.setAttribute("rotation","0 0 0");
       ground.setAttribute("color",b.ground);
+      ground.object3D.visible=true;
+      credit.hidden=true;
       document.querySelector("#clear-panorama").hidden=true;
-      build(b.type);
-      document.querySelector("#viewer-title").textContent=b.name+" · ambiente imersivo";
+
+      if(panorama){
+        // No modo panorâmico, a fotografia ocupa toda a esfera. O cenário
+        // procedural e o chão são ocultados para não encobrir a imagem real.
+        env.innerHTML="";
+        ground.object3D.visible=false;
+        title.textContent=b.name+" · carregando panorama 360°…";
+
+        const applyPanorama=()=>{
+          if(current!==id)return;
+          sky.setAttribute("src",panorama.asset);
+          sky.setAttribute("color","#ffffff");
+          sky.setAttribute("rotation","0 -90 0");
+          title.textContent=b.name+" · panorama 360° real";
+          credit.replaceChildren();
+          const label=document.createElement("span");
+          label.textContent=panorama.credit+" ";
+          const link=document.createElement("a");
+          link.href=panorama.source;
+          link.target="_blank";
+          link.rel="noopener";
+          link.textContent="Fonte original";
+          credit.append(label,link);
+          credit.hidden=false;
+        };
+        const panoramaFailed=()=>{
+          if(current!==id)return;
+          sky.removeAttribute("src");
+          sky.setAttribute("color",b.sky);
+          ground.object3D.visible=true;
+          build(b.type);
+          title.textContent=b.name+" · cenário 3D (falha ao carregar a foto 360°)";
+          credit.hidden=true;
+          console.error("Não foi possível carregar o panorama 360° da Amazônia.",image.currentSrc||image.src);
+        };
+        if(image.complete&&image.naturalWidth>0){
+          applyPanorama();
+        }else{
+          image.addEventListener("load",applyPanorama,{once:true});
+          image.addEventListener("error",panoramaFailed,{once:true});
+        }
+      }else{
+        sky.removeAttribute("src");
+        build(b.type);
+        title.textContent=b.name+" · ambiente 3D";
+      }
+
       document.querySelector("#experience-biome-label").textContent=b.name;
       document.querySelector("#biome-heading").textContent=b.title;
       document.querySelector("#biome-description").textContent=b.description;
