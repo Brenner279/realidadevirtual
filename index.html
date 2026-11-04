@@ -198,12 +198,54 @@
   <footer><span>REALIDADE VIRTUAL GEO · BRASIL IMERSIVO</span><span>Projeto educativo • Protótipo inicial</span></footer>
   <script>
     const biomes = {
-      amazonia:{name:"Amazônia",title:"A maior floresta tropical",sky:"#9fc8b5",ground:"#456c49",water:"#397f8b",description:"A Amazônia abriga uma das maiores biodiversidades do planeta. Sua paisagem é marcada por florestas densas, rios extensos e grande variedade de espécies.",facts:["Floresta tropical","Rios extensos","Alta biodiversidade"],detail:"A floresta amazônica influencia o ciclo da água, armazena grandes quantidades de carbono e abriga milhares de espécies. A experiência representa uma clareira próxima a um curso d'água.",type:"forest"},
-      cerrado:{name:"Cerrado",title:"A savana brasileira",sky:"#e7c58b",ground:"#a18a4f",water:"#6f9b9b",description:"O Cerrado apresenta campos, árvores de troncos retorcidos e vegetação adaptada a períodos de seca e fogo natural.",facts:["Savana tropical","Estação seca e chuvosa","Nascentes"],detail:"O Cerrado é conhecido como berço das águas por abrigar nascentes de importantes bacias hidrográficas. Sua vegetação varia de campos abertos a formações florestais.",type:"savanna"},
-      caatinga:{name:"Caatinga",title:"Vida no semiárido",sky:"#e9c28b",ground:"#b28a5b",water:"#9aab9b",description:"A Caatinga é um bioma exclusivamente brasileiro, com plantas adaptadas à escassez de água, como cactos e arbustos que perdem as folhas na seca.",facts:["Clima semiárido","Cactáceas","Adaptação à seca"],detail:"Muitas plantas da Caatinga armazenam água ou possuem folhas reduzidas a espinhos. A paisagem muda bastante entre a estação seca e a estação chuvosa.",type:"dry"},
-      "mata-atlantica":{name:"Mata Atlântica",title:"Floresta de grande diversidade",sky:"#a7cbb9",ground:"#356b4e",water:"#4b9a9b",description:"A Mata Atlântica reúne diferentes formações florestais e ecossistemas costeiros, com elevada biodiversidade e espécies endêmicas.",facts:["Floresta tropical","Alto endemismo","Serra e litoral"],detail:"Originalmente presente em grande parte do litoral brasileiro, a Mata Atlântica é um dos biomas mais ameaçados e fragmentados do país. Sua conservação é essencial para a água e a biodiversidade.",type:"atlantic"},
-      pantanal:{name:"Pantanal",title:"A planície das águas",sky:"#a9c9d2",ground:"#8a9a61",water:"#4c9ba5",description:"O Pantanal é uma extensa planície inundável. O pulso anual de cheias e secas transforma a paisagem e influencia a vida dos animais.",facts:["Planície alagável","Cheias sazonais","Rica fauna"],detail:"As cheias periódicas conectam rios, lagoas e áreas alagadas. Esse ciclo sustenta uma grande diversidade de peixes, aves, répteis e mamíferos.",type:"wetland"},
-      pampa:{name:"Pampa",title:"Campos do Sul",sky:"#b9d2dc",ground:"#77965a",water:"#6e9ca4",description:"O Pampa é caracterizado por campos naturais, gramíneas, herbáceas e relevo suavemente ondulado, com fauna e flora próprias.",facts:["Campos naturais","Gramíneas","Clima subtropical"],detail:"No Brasil, o Pampa ocorre no Rio Grande do Sul. A conservação dos campos naturais é importante para a biodiversidade, o solo e os recursos hídricos.",type:"grass"}
+      amazonia:{
+        name:"Amazônia",title:"A maior floresta tropical",
+        sky:"#9fc8b5",ground:"#456c49",water:"#397f8b",
+        description:"É o maior bioma brasileiro e ocupa cerca de 49,29% do território nacional. Está na Região Norte e em partes do Centro-Oeste e do Nordeste. Seu clima é equatorial, quente e muito úmido. Abriga a maior floresta tropical do planeta e a maior bacia hidrográfica do mundo, a do rio Amazonas, com árvores de grande porte e imensa biodiversidade.",
+        facts:["49,29% do Brasil","Clima equatorial","Maior bacia hidrográfica"],
+        detail:"TAMANHO E LOCALIZAÇÃO — A Amazônia é o maior bioma brasileiro e ocupa cerca de 49,29% do território nacional, abrangendo a Região Norte e partes do Centro-Oeste e do Nordeste. CLIMA — Equatorial, quente e muito úmido, com chuvas abundantes. CARACTERÍSTICAS — Abriga a maior floresta tropical do planeta e a maior bacia hidrográfica do mundo, a do rio Amazonas. Possui árvores de grande porte, rios extensos e imensa biodiversidade.",
+        type:"forest"
+      },
+      cerrado:{
+        name:"Cerrado",title:"A savana brasileira",
+        sky:"#e7c58b",ground:"#a18a4f",water:"#6f9b9b",
+        description:"É o segundo maior bioma do Brasil, cobrindo aproximadamente 24% a 25% do território, principalmente no Planalto Central. Tem clima tropical sazonal, com verão chuvoso e inverno seco. Conhecido como savana brasileira e berço das águas, apresenta árvores retorcidas, arbustos e gramíneas.",
+        facts:["24% a 25% do Brasil","Verão chuvoso","Berço das águas"],
+        detail:"TAMANHO E LOCALIZAÇÃO — O Cerrado é o segundo maior bioma brasileiro e cobre aproximadamente 24% a 25% do território nacional, com grande presença no Planalto Central. CLIMA — Tropical sazonal, com verão chuvoso e inverno seco. CARACTERÍSTICAS — É conhecido como a savana brasileira e como berço das águas, pois abriga nascentes que alimentam importantes bacias hidrográficas. Sua vegetação reúne árvores de troncos retorcidos, arbustos e gramíneas.",
+        type:"savanna"
+      },
+      caatinga:{
+        name:"Caatinga",title:"Vida no semiárido",
+        sky:"#e9c28b",ground:"#b28a5b",water:"#9aab9b",
+        description:"Ocupa cerca de 11% do território brasileiro e está localizada predominantemente na Região Nordeste. Seu clima é semiárido, com chuvas escassas e irregulares. É o único bioma exclusivamente brasileiro, com vegetação adaptada à seca: arbustos espinhosos, cactos e plantas que perdem as folhas na estação seca.",
+        facts:["Cerca de 11% do Brasil","Clima semiárido","Único bioma exclusivamente brasileiro"],
+        detail:"TAMANHO E LOCALIZAÇÃO — A Caatinga ocupa cerca de 11% do território nacional e está localizada predominantemente na Região Nordeste. CLIMA — Semiárido, marcado por chuvas escassas e irregulares e longos períodos secos. CARACTERÍSTICAS — É o único bioma exclusivamente brasileiro. Sua vegetação xerófila é adaptada à falta de água e inclui arbustos espinhosos, cactos e plantas que perdem as folhas durante a estação seca.",
+        type:"dry"
+      },
+      "mata-atlantica":{
+        name:"Mata Atlântica",title:"Floresta de grande diversidade",
+        sky:"#a7cbb9",ground:"#356b4e",water:"#4b9a9b",
+        description:"Estende-se originalmente por grande parte da faixa litorânea e áreas do interior de 17 estados brasileiros. Predomina o clima tropical úmido. É uma das florestas mais ricas em biodiversidade do planeta, mas também uma das mais devastadas; concentra grande parte da população brasileira.",
+        facts:["17 estados brasileiros","Clima tropical úmido","Alta biodiversidade e ameaça"],
+        detail:"TAMANHO E LOCALIZAÇÃO — A Mata Atlântica se estende originalmente ao longo de grande parte da faixa litorânea e por áreas do interior de 17 estados brasileiros. CLIMA — Predomina o tropical úmido, embora existam variações regionais. CARACTERÍSTICAS — É uma das florestas mais ricas em biodiversidade do planeta e também uma das mais devastadas, restando uma pequena fração de sua cobertura original. A região abrangida pelo bioma concentra grande parte da população brasileira.",
+        type:"atlantic"
+      },
+      pantanal:{
+        name:"Pantanal",title:"A planície das águas",
+        sky:"#a9c9d2",ground:"#8a9a61",water:"#4c9ba5",
+        description:"É o menor bioma brasileiro em extensão territorial, localizado na planície alagável de Mato Grosso e Mato Grosso do Sul. Tem clima tropical continental, com verão quente e úmido e inverno seco. Seus ciclos de cheias e vazantes moldam a maior planície alagável contínua do mundo e sustentam fauna como tuiuiús, jacarés e onças-pintadas.",
+        facts:["Menor bioma brasileiro","Cheias e vazantes","Tuiuiús, jacarés e onças"],
+        detail:"TAMANHO E LOCALIZAÇÃO — O Pantanal é o menor bioma brasileiro em extensão territorial e está situado na planície alagável dos estados de Mato Grosso e Mato Grosso do Sul. CLIMA — Tropical continental, com verão quente e úmido e inverno seco. CARACTERÍSTICAS — É reconhecido como a maior planície alagável contínua do mundo. Os ciclos de cheias e vazantes transformam a paisagem e sustentam uma rica fauna, que inclui tuiuiús, jacarés e onças-pintadas, além de grande diversidade de plantas.",
+        type:"wetland"
+      },
+      pampa:{
+        name:"Pampa",title:"Campos do Sul",
+        sky:"#b9d2dc",ground:"#77965a",water:"#6e9ca4",
+        description:"Localiza-se exclusivamente no Rio Grande do Sul e cobre cerca de 2% do território brasileiro. Seu clima é subtropical, com quatro estações bem definidas. É caracterizado por campos e pastagens naturais, planícies e coxilhas (colinas suaves), vegetação rasteira e arbustos esparsos.",
+        facts:["Exclusivo do Rio Grande do Sul","Cerca de 2% do Brasil","Clima subtropical"],
+        detail:"TAMANHO E LOCALIZAÇÃO — No Brasil, o Pampa ocorre exclusivamente no estado do Rio Grande do Sul e cobre cerca de 2% do território nacional. CLIMA — Subtropical, com quatro estações do ano bem definidas. CARACTERÍSTICAS — Predominam campos e pastagens naturais, relevo de planícies e coxilhas (colinas suaves), vegetação rasteira, gramíneas e arbustos esparsos. Esses campos abrigam biodiversidade própria e são importantes para a conservação do solo e da água.",
+        type:"grass"
+      }
     };
 
     const discoveryCatalog = {
