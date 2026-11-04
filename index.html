@@ -642,6 +642,7 @@
       if(!biomes[id])return;
       document.querySelector("#home-screen").hidden=true;
       document.querySelector("#experience-screen").hidden=false;
+      stopNarration();
       configureNarration(id);
       selectBiome(id);
       resetPosition();
