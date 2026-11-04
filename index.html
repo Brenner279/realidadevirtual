@@ -601,32 +601,33 @@
       narration.pause();
       narration.currentTime=0;
       narrationButton.setAttribute("aria-pressed","false");
+      configureNarration(current);
     }
     function configureNarration(id){
-      stopNarration();
       const available=id==="amazonia";
-      narrationButton.disabled=!available;
-      narrationButton.textContent=available?"▶ Ativar narração":"🔊 Narração disponível na Amazônia";
-      if(!available)return;
+      const inVR=document.querySelector("a-scene").is("vr-mode");
+      narrationButton.disabled=!available||!inVR;
+      narrationButton.textContent=!available
+        ?"🔊 Narração disponível na Amazônia"
+        :inVR?"▶ Ativar narração":"🔊 Entre no modo VR para ouvir";
+      if(!available||!inVR)narrationButton.setAttribute("aria-pressed","false");
+    }
+    function playNarration(){
+      if(current!=="amazonia"||!document.querySelector("a-scene").is("vr-mode"))return;
       narration.play().then(()=>{
         narrationButton.textContent="Ⅱ Pausar narração";
+        narrationButton.disabled=false;
         narrationButton.setAttribute("aria-pressed","true");
       }).catch(()=>{
-        narrationButton.textContent="▶ Ativar narração";
+        narrationButton.textContent="▶ Toque para iniciar a narração";
+        narrationButton.disabled=false;
         narrationButton.setAttribute("aria-pressed","false");
       });
     }
     narrationButton.addEventListener("click",()=>{
-      if(current!=="amazonia")return;
-      if(narration.paused){
-        narration.play().then(()=>{
-          narrationButton.textContent="Ⅱ Pausar narração";
-          narrationButton.setAttribute("aria-pressed","true");
-        }).catch(()=>{
-          narrationButton.textContent="▶ Tentar novamente";
-          narrationButton.setAttribute("aria-pressed","false");
-        });
-      }else{
+      if(current!=="amazonia"||!document.querySelector("a-scene").is("vr-mode"))return;
+      if(narration.paused)playNarration();
+      else{
         narration.pause();
         narrationButton.textContent="▶ Continuar narração";
         narrationButton.setAttribute("aria-pressed","false");
