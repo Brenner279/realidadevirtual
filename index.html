@@ -41,6 +41,34 @@
     .modal{position:fixed;inset:0;background:#071b16b8;display:none;place-items:center;padding:20px;z-index:20}.modal.open{display:grid}.modal-panel{max-width:520px;width:100%;background:white;border-radius:20px;padding:24px}.modal-panel h2{font:800 23px Manrope,sans-serif;margin:0 0 10px}.modal-panel p{font-size:14px;line-height:1.65;color:var(--muted)}.modal-close{float:right;border:0;background:#edf2eb;border-radius:50%;width:34px;height:34px;font-size:18px}
     @media(max-width:900px){.layout{grid-template-columns:1fr}.scene-wrap{height:430px}.steps{grid-template-columns:1fr}}
     @media(max-width:520px){.topbar{height:60px}.top-note{display:none}.hero{padding-top:32px}.scene-wrap{height:360px}.viewer-head{padding:14px}.explore-card{padding:18px}.biome-grid{gap:8px}.biome{min-height:82px;padding:10px}.biome.active{padding:9px}.intro{font-size:14px}}
+  
+    .home-screen,.experience-screen{max-width:1500px;margin:0 auto;padding:clamp(24px,4vw,54px) clamp(18px,5vw,72px) 62px}
+    .home-hero{padding:7px 0 30px}.home-hero h1{font:800 clamp(36px,5.3vw,66px)/1.02 Manrope,sans-serif;letter-spacing:-2px;margin:13px 0 16px}.home-hero h1 span{color:#2b7654}.home-hero p{max-width:700px;color:#617269;font-size:16px;line-height:1.65;margin:0}
+    .home-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);gap:22px;align-items:stretch}
+    .map-card,.destination-card,.viewer-card,.learning-card{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 12px 35px #193a2410;overflow:hidden}
+    .map-card-head{padding:20px 22px 0;display:flex;justify-content:space-between;align-items:center;gap:10px}.map-card-head h2,.destination-card h2{font:800 21px Manrope,sans-serif;margin:6px 0 0}.map-note{font-size:10px;color:#718177;background:#f0f4ed;padding:7px 9px;border-radius:20px}
+    .map-canvas{height:480px;max-width:540px;margin:0 auto;position:relative}.brazil-map{height:100%;width:100%;display:block;filter:drop-shadow(0 9px 5px #24452a18)}
+    .map-marker{position:absolute;transform:translate(-50%,-50%);border:1px solid #ffffff;background:#ffffffed;box-shadow:0 4px 14px #183e2b21;border-radius:12px;padding:6px 9px;display:flex;align-items:center;gap:5px;color:#294c38;font-size:11px;white-space:nowrap;transition:.18s}
+    .map-marker span{font-size:15px}.map-marker b{font-size:10px}.map-marker:hover,.map-marker:focus-visible{background:#e9f3e6;border-color:#5d9366;transform:translate(-50%,-50%) scale(1.06)}
+    .marker-amazonia{left:35%;top:21%}.marker-cerrado{left:52%;top:49%}.marker-caatinga{left:71%;top:29%}.marker-mata{left:77%;top:56%}.marker-pantanal{left:43%;top:66%}.marker-pampa{left:54%;top:85%}
+    .map-legend{display:flex;gap:9px 14px;flex-wrap:wrap;padding:0 20px 20px;color:#5c6d62;font-size:10px}.map-legend span{display:flex;align-items:center;gap:5px}.legend-dot{width:9px;height:9px;border-radius:50%}
+    .destination-card{padding:22px}.destination-card>div:first-child p{color:#6a7b70;font-size:13px;line-height:1.55;margin:8px 0 18px}
+    .destination-list{display:grid;gap:8px}.destination-option{display:flex;align-items:center;gap:11px;padding:11px;border:1px solid #e5eae2;background:#fff;border-radius:13px;text-align:left;color:var(--ink);transition:.18s}.destination-option:hover{background:#f0f5ed;border-color:#a9c7a3;transform:translateX(2px)}.dest-icon{width:38px;height:38px;border-radius:11px;background:#edf3e9;display:grid;place-items:center;font-size:20px}.destination-option b{font:700 13px Manrope,sans-serif}.destination-option small{display:block;font-size:10px;color:#718177;margin-top:3px}.dest-arrow{margin-left:auto;color:#60816a;font-size:17px}
+    .hybrid-note{display:flex;align-items:center;gap:13px;margin-top:19px;padding:15px 18px;background:#e8f0e4;border-radius:15px}.hybrid-note>span{width:38px;height:38px;display:grid;place-items:center;background:#d2e5c5;border-radius:12px;font-size:23px;color:#28583d}.hybrid-note b{font:700 13px Manrope,sans-serif}.hybrid-note p{font-size:11px;color:#627368;margin:4px 0 0;line-height:1.45}
+    .experience-screen[hidden],.home-screen[hidden]{display:none!important}.experience-top{display:flex;align-items:center;gap:16px;margin-bottom:18px}.back-button{border:1px solid #dce5d9;background:#fff;color:#345744;padding:10px 13px;border-radius:11px;font-weight:700;font-size:12px}.experience-context{display:flex;flex-direction:column;gap:3px}.experience-context b{font:800 17px Manrope,sans-serif}.mode-chip{margin-left:auto;background:#e6f0e6;color:#35694b;padding:8px 11px;border-radius:25px;font-size:10px;font-weight:800;letter-spacing:.05em}
+    .experience-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(290px,.65fr);gap:20px;align-items:start}.experience-layout .viewer-card{min-width:0}.viewer-head{padding:17px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--line)}.viewer-head>div{display:flex;flex-direction:column;gap:4px}.viewer-head strong{font:800 15px Manrope,sans-serif}.live{font-size:10px;color:#28714e;background:#eaf4e9;padding:7px 10px;border-radius:30px;font-weight:700;white-space:nowrap}
+    .scene-wrap{height:490px;position:relative;background:#b8cbb2;overflow:hidden}.scene-wrap a-scene{width:100%;height:100%;display:block}.scene-hint,.vr-hint{position:absolute;z-index:3;left:13px;bottom:13px;max-width:72%;background:#102b27dd;color:#fff;padding:9px 12px;border-radius:10px;font-size:10px;pointer-events:none}.vr-hint{display:none;bottom:63px;max-width:80%;color:#e9f5df}
+    .touch-pad{display:none;position:absolute;right:14px;bottom:13px;width:144px;height:144px;z-index:5;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:4px;touch-action:none}.pad-button{border:1px solid #ffffff90;border-radius:12px;background:#102b27c9;color:#fff;font-size:18px;font-weight:800;box-shadow:0 3px 10px #0002;touch-action:none;user-select:none;-webkit-user-select:none}.pad-button:active,.pad-button.is-pressed{background:#63905d}.pad-up{grid-area:1/2}.pad-left{grid-area:2/1}.pad-center{grid-area:2/2;font-size:11px;opacity:.8}.pad-right{grid-area:2/3}.pad-down{grid-area:3/2}
+    .viewer-actions{display:flex;gap:8px;padding:13px 16px;flex-wrap:wrap}.btn{border:0;border-radius:11px;padding:10px 13px;font-weight:700;font-size:12px;transition:.2s}.btn-primary{background:var(--green);color:white}.btn-soft{background:#edf2eb;color:#254637}.btn:focus-visible,.pad-button:focus-visible,.destination-option:focus-visible,.map-marker:focus-visible{outline:3px solid #a2c66f;outline-offset:3px}
+    .control-legend{display:flex;gap:8px 16px;flex-wrap:wrap;padding:0 17px 16px;font-size:10px;color:#66776d}.control-legend b{color:#345743}
+    .learning-card{padding:21px;position:sticky;top:15px}.learning-header h2{font:800 22px/1.15 Manrope,sans-serif;margin:8px 0}.learning-header p{color:#66766c;font-size:12px;line-height:1.65;margin:0}.facts{display:flex;flex-wrap:wrap;gap:6px;margin:13px 0 19px}.fact{font-size:10px;background:#f2f6ef;border:1px solid #e2e9dc;padding:6px 9px;border-radius:30px;color:#385847}
+    .discovery-section{border-top:1px solid #e7ece5;padding-top:17px}.discovery-section h3{font:800 14px Manrope,sans-serif;margin:0 0 6px}.discovery-section>p{font-size:11px;line-height:1.5;color:#728075;margin:0 0 11px}.discovery-list{display:grid;gap:7px}.discovery-button{display:flex;align-items:center;gap:9px;text-align:left;border:1px solid #e5ebe2;background:#fff;border-radius:11px;padding:9px;color:#2f4f3b}.discovery-button:hover{background:#eff5eb;border-color:#b2c9a9}.discovery-num{width:25px;height:25px;border-radius:8px;background:#e8f1e5;display:grid;place-items:center;font-size:10px;font-weight:800}.discovery-button b{font:700 11px Manrope,sans-serif}.discovery-button small{display:block;color:#738277;font-size:9px;margin-top:2px}
+    .learning-tip{margin-top:17px;padding:13px;background:#eff4eb;border-radius:12px}.learning-tip b{font:800 11px Manrope,sans-serif}.learning-tip p{font-size:10px;line-height:1.55;color:#66776b;margin:5px 0 0}
+    .modal{position:fixed;inset:0;background:#071b16b8;display:none;place-items:center;padding:20px;z-index:20}.modal.open{display:grid}.modal-panel{max-width:520px;width:100%;background:white;border-radius:20px;padding:24px}.modal-panel h2{font:800 23px Manrope,sans-serif;margin:0 0 10px}.modal-panel p{font-size:14px;line-height:1.65;color:var(--muted)}.modal-close{float:right;border:0;background:#edf2eb;border-radius:50%;width:34px;height:34px;font-size:18px}
+    @media(max-width:980px){.home-grid,.experience-layout{grid-template-columns:1fr}.map-canvas{height:440px}.learning-card{position:static}.experience-layout{gap:14px}}
+    @media(max-width:700px){.home-screen,.experience-screen{padding:22px 13px 42px}.home-hero{padding:4px 4px 23px}.home-hero p{font-size:13px}.home-grid{gap:13px}.map-card-head{padding:15px 15px 0}.map-card-head h2,.destination-card h2{font-size:18px}.map-canvas{height:360px}.map-legend{padding:0 13px 15px;gap:7px 10px}.destination-card{padding:17px}.destination-list{grid-template-columns:1fr 1fr}.destination-option{padding:8px;gap:7px}.dest-icon{width:31px;height:31px;font-size:17px}.destination-option b{font-size:11px}.destination-option small{font-size:8px}.dest-arrow{font-size:13px}.hybrid-note{align-items:flex-start;padding:13px}.experience-top{gap:8px;flex-wrap:wrap}.experience-context b{font-size:14px}.mode-chip{font-size:8px;padding:7px 8px}.scene-wrap{height:min(64vh,430px);min-height:310px}.touch-pad{display:grid}.scene-hint{bottom:13px;max-width:52%;font-size:9px;padding:8px}.vr-hint{bottom:165px;max-width:90%;font-size:9px}.viewer-actions{padding:11px}.viewer-actions .btn{font-size:10px;padding:9px 10px}.control-legend{font-size:9px}.learning-card{padding:17px}}
+    @media(max-width:390px){.map-canvas{height:320px}.map-marker{padding:5px 6px;gap:3px}.map-marker b{font-size:8px}.map-marker span{font-size:12px}.destination-list{grid-template-columns:1fr}.scene-wrap{height:350px}.touch-pad{width:124px;height:124px}.scene-hint{max-width:45%}}
+
   </style>
 </head>
 <body>
@@ -49,64 +77,110 @@
     <div class="top-note">Uma experiência do projeto Realidade Virtual Geo</div>
   </header>
   <main>
-    <section class="hero">
-      <div class="eyebrow">Geografia • Natureza • Tecnologia</div>
-      <h1>Explore os biomas<br>do Brasil.</h1>
-      <p class="intro">Uma viagem educativa por paisagens, ecossistemas e biodiversidade brasileira. Escolha um bioma, observe o ambiente em 3D e descubra informações sobre cada região.</p>
+    <section class="home-screen" id="home-screen">
+      <div class="home-hero">
+        <div class="eyebrow">Geografia • Natureza • Tecnologia imersiva</div>
+        <h1>Uma viagem pelos<br><span>biomas do Brasil.</span></h1>
+        <p>Escolha uma região no mapa e entre em um ambiente 3D interativo. Caminhe, observe espécies e descubra como cada paisagem funciona.</p>
+      </div>
+      <div class="home-grid">
+        <article class="map-card">
+          <div class="map-card-head">
+            <div><span class="eyebrow">SELECIONE SEU DESTINO</span><h2>Explore o mapa do Brasil</h2></div>
+            <span class="map-note">Localização esquemática</span>
+          </div>
+          <div class="map-canvas">
+            <svg class="brazil-map" viewBox="0 0 360 420" role="img" aria-label="Mapa esquemático do Brasil com regiões dos seis biomas">
+              <defs>
+                <clipPath id="brazil-clip">
+                  <path d="M117 18 L151 27 174 42 209 48 230 68 258 76 272 101 302 120 291 146 314 167 299 190 306 218 283 237 270 266 249 278 245 310 224 325 209 357 184 365 174 393 148 402 130 386 111 365 90 351 82 329 60 312 65 286 47 267 55 239 39 217 51 191 44 165 62 142 70 114 88 96 93 69 108 51 Z"/>
+                </clipPath>
+              </defs>
+              <path d="M117 18 L151 27 174 42 209 48 230 68 258 76 272 101 302 120 291 146 314 167 299 190 306 218 283 237 270 266 249 278 245 310 224 325 209 357 184 365 174 393 148 402 130 386 111 365 90 351 82 329 60 312 65 286 47 267 55 239 39 217 51 191 44 165 62 142 70 114 88 96 93 69 108 51 Z" fill="#e5ebdd" stroke="#617a67" stroke-width="3" stroke-linejoin="round"/>
+              <g clip-path="url(#brazil-clip)">
+                <path d="M52 20 H285 V160 Q225 149 187 165 Q120 154 50 177Z" fill="#3c9567" opacity=".92"/>
+                <path d="M185 100 Q260 105 330 130 L330 220 Q272 210 245 235 L190 205Z" fill="#e5bb55" opacity=".95"/>
+                <path d="M150 155 Q205 140 255 190 L245 290 Q183 280 142 240Z" fill="#bc9b55" opacity=".95"/>
+                <path d="M242 170 Q292 168 330 216 L320 310 Q285 294 244 279Z" fill="#3c8060" opacity=".95"/>
+                <path d="M140 270 Q180 250 235 280 L225 350 Q183 357 153 330Z" fill="#6fa3a0" opacity=".96"/>
+                <path d="M120 333 Q165 330 220 350 L210 420 H120Z" fill="#8b9c55" opacity=".96"/>
+              </g>
+              <path d="M117 18 L151 27 174 42 209 48 230 68 258 76 272 101 302 120 291 146 314 167 299 190 306 218 283 237 270 266 249 278 245 310 224 325 209 357 184 365 174 393 148 402 130 386 111 365 90 351 82 329 60 312 65 286 47 267 55 239 39 217 51 191 44 165 62 142 70 114 88 96 93 69 108 51 Z" fill="none" stroke="#617a67" stroke-width="3" stroke-linejoin="round"/>
+            </svg>
+            <button class="map-marker marker-amazonia" data-biome="amazonia"><span>🌳</span><b>Amazônia</b></button>
+            <button class="map-marker marker-cerrado" data-biome="cerrado"><span>🌾</span><b>Cerrado</b></button>
+            <button class="map-marker marker-caatinga" data-biome="caatinga"><span>🌵</span><b>Caatinga</b></button>
+            <button class="map-marker marker-mata" data-biome="mata-atlantica"><span>🌿</span><b>Mata Atlântica</b></button>
+            <button class="map-marker marker-pantanal" data-biome="pantanal"><span>🦜</span><b>Pantanal</b></button>
+            <button class="map-marker marker-pampa" data-biome="pampa"><span>🌱</span><b>Pampa</b></button>
+          </div>
+          <div class="map-legend"><span><i class="legend-dot" style="background:#3c9567"></i> Amazônia</span><span><i class="legend-dot" style="background:#e5bb55"></i> Caatinga</span><span><i class="legend-dot" style="background:#bc9b55"></i> Cerrado</span><span><i class="legend-dot" style="background:#3c8060"></i> Mata Atlântica</span><span><i class="legend-dot" style="background:#6fa3a0"></i> Pantanal</span><span><i class="legend-dot" style="background:#8b9c55"></i> Pampa</span></div>
+        </article>
+        <aside class="destination-card">
+          <div><span class="eyebrow">SEIS BIOMAS • SEIS EXPERIÊNCIAS</span><h2>Por onde vamos começar?</h2><p>Toque em um bioma no mapa ou escolha uma das opções abaixo.</p></div>
+          <div class="destination-list">
+            <button class="destination-option" data-biome="amazonia"><span class="dest-icon">🌳</span><span><b>Amazônia</b><small>Floresta tropical • Norte</small></span><span class="dest-arrow">↗</span></button>
+            <button class="destination-option" data-biome="cerrado"><span class="dest-icon">🌾</span><span><b>Cerrado</b><small>Savana brasileira • Centro</small></span><span class="dest-arrow">↗</span></button>
+            <button class="destination-option" data-biome="caatinga"><span class="dest-icon">🌵</span><span><b>Caatinga</b><small>Semiárido • Nordeste</small></span><span class="dest-arrow">↗</span></button>
+            <button class="destination-option" data-biome="mata-atlantica"><span class="dest-icon">🌿</span><span><b>Mata Atlântica</b><small>Florestas • Litoral</small></span><span class="dest-arrow">↗</span></button>
+            <button class="destination-option" data-biome="pantanal"><span class="dest-icon">🦜</span><span><b>Pantanal</b><small>Planície alagável • Centro-Oeste</small></span><span class="dest-arrow">↗</span></button>
+            <button class="destination-option" data-biome="pampa"><span class="dest-icon">🌱</span><span><b>Pampa</b><small>Campos naturais • Sul</small></span><span class="dest-arrow">↗</span></button>
+          </div>
+        </aside>
+      </div>
+      <div class="hybrid-note"><span>⌁</span><div><b>Uma experiência, diferentes formas de explorar</b><p>Use o computador, toque na tela do celular ou coloque o aparelho em um óculos de realidade virtual compatível.</p></div></div>
     </section>
-    <section class="layout">
-      <article class="viewer-card">
-        <div class="viewer-head"><strong id="viewer-title">Amazônia · ambiente imersivo</strong><span class="live">● EXPERIÊNCIA 3D</span></div>
-        <div class="scene-wrap">
-          <a-scene embedded vr-mode-ui="enabled: true" renderer="colorManagement: true; physicallyCorrectLights: true" background="color: #b7d2c1">
-            <a-entity id="world">
-              <a-sky id="sky" color="#9fc8b5"></a-sky>
-              <a-plane id="ground" rotation="-90 0 0" width="180" height="180" color="#456c49" position="0 0 0"></a-plane>
-              <a-entity id="environment"></a-entity>
-            </a-entity>
-            <a-entity id="camera-rig" position="0 1.6 8">
-              <a-camera wasd-controls="acceleration: 28" look-controls>
-                <a-cursor raycaster="objects: .interactive" fuse="true" fuse-timeout="1200" color="#f4e9a7" geometry="primitive: ring; radiusInner: 0.008; radiusOuter: 0.013"></a-cursor>
-              </a-camera>
-            </a-entity>
-            <a-entity light="type: ambient; intensity: 1.15"></a-entity>
-            <a-entity light="type: directional; intensity: 1.2" position="-3 8 5"></a-entity>
-          </a-scene>
-          <div class="scene-hint">Use WASD ou as setas para caminhar • Arraste para olhar ao redor</div>
-        </div>
-        <div class="viewer-actions">
-          <button class="btn btn-primary" id="enter-vr">Entrar em realidade virtual</button>
-          <button class="btn btn-soft" id="reset-view">Voltar ao início</button>
-          <button class="btn btn-soft" id="learn-more">Sobre este bioma</button>
-          <button class="btn btn-soft" id="load-panorama">Carregar foto 360°</button>
-          <button class="btn btn-soft" id="clear-panorama" hidden>Voltar ao céu 3D</button>
-          <input id="panorama-file" type="file" accept="image/jpeg,image/png,image/webp" hidden>
-        </div>
-      </article>
-      <aside class="explore-card">
-        <h2 class="section-title">Escolha seu destino</h2>
-        <p class="section-sub">Selecione um dos seis biomas brasileiros para carregar seu cenário interativo.</p>
-        <div class="biome-grid" id="biome-list">
-          <button class="biome active" data-biome="amazonia"><span class="biome-icon">🌳</span><span><span class="biome-name">Amazônia</span><br><span class="biome-region">Norte</span></span></button>
-          <button class="biome" data-biome="cerrado"><span class="biome-icon">🌾</span><span><span class="biome-name">Cerrado</span><br><span class="biome-region">Centro-Oeste</span></span></button>
-          <button class="biome" data-biome="caatinga"><span class="biome-icon">🌵</span><span><span class="biome-name">Caatinga</span><br><span class="biome-region">Nordeste</span></span></button>
-          <button class="biome" data-biome="mata-atlantica"><span class="biome-icon">🌿</span><span><span class="biome-name">Mata Atlântica</span><br><span class="biome-region">Faixa litorânea</span></span></button>
-          <button class="biome" data-biome="pantanal"><span class="biome-icon">🦜</span><span><span class="biome-name">Pantanal</span><br><span class="biome-region">Centro-Oeste</span></span></button>
-          <button class="biome" data-biome="pampa"><span class="biome-icon">🌱</span><span><span class="biome-name">Pampa</span><br><span class="biome-region">Sul</span></span></button>
-        </div>
-        <div class="info-box">
-          <h3 id="biome-heading">A maior floresta tropical</h3>
-          <p id="biome-description">Explore uma representação tridimensional da floresta amazônica, com árvores altas, cursos d'água e pontos de observação da biodiversidade.</p>
-          <div class="facts" id="biome-facts"><span class="fact">Floresta tropical</span><span class="fact">Rios extensos</span><span class="fact">Alta biodiversidade</span></div>
-        </div>
-      </aside>
-    </section>
-    <section class="instructions">
-      <h2>Como explorar</h2>
-      <div class="steps">
-        <div class="step"><b>01 · Escolha</b><p>Selecione um dos seis biomas no painel ao lado para mudar o ambiente.</p></div>
-        <div class="step"><b>02 · Caminhe</b><p>No computador, use WASD ou as setas. No celular, movimente a câmera com o toque e use o modo VR quando compatível.</p></div>
-        <div class="step"><b>03 · Descubra</b><p>Observe os elementos em 3D e abra os cartões informativos para aprender sobre o ecossistema.</p></div>
+
+    <section class="experience-screen" id="experience-screen" hidden>
+      <div class="experience-top">
+        <button class="back-button" id="back-to-map">← Voltar ao mapa</button>
+        <div class="experience-context"><span class="eyebrow">BRASIL IMERSIVO</span><b id="experience-biome-label">Amazônia</b></div>
+        <span class="mode-chip" id="mode-chip">MODO EXPLORAÇÃO</span>
+      </div>
+      <div class="experience-layout">
+        <article class="viewer-card">
+          <div class="viewer-head"><div><span class="eyebrow">AMBIENTE INTERATIVO</span><strong id="viewer-title">Amazônia · ambiente imersivo</strong></div><span class="live">● 3D ATIVO</span></div>
+          <div class="scene-wrap">
+            <a-scene embedded vr-mode-ui="enabled: true" renderer="colorManagement: true; physicallyCorrectLights: true" background="color: #b7cbb8">
+              <a-entity id="world">
+                <a-sky id="sky" color="#9fc8b5"></a-sky>
+                <a-plane id="ground" class="walkable" rotation="-90 0 0" width="180" height="180" color="#456c49" position="0 0 0"></a-plane>
+                <a-entity id="environment"></a-entity>
+              </a-entity>
+              <a-entity id="camera-rig" position="0 1.6 8">
+                <a-camera id="main-camera" look-controls>
+                  <a-cursor raycaster="objects: .interactive, .walkable" fuse="true" fuse-timeout="1000" color="#f4e9a7" geometry="primitive: ring; radiusInner: 0.008; radiusOuter: 0.013"></a-cursor>
+                </a-camera>
+              </a-entity>
+              <a-entity light="type: ambient; intensity: 1.15"></a-entity>
+              <a-entity light="type: directional; intensity: 1.2" position="-3 8 5"></a-entity>
+            </a-scene>
+            <div class="scene-hint" id="scene-hint">WASD / setas para caminhar • Arraste para olhar</div>
+            <div class="touch-pad" id="touch-pad" aria-label="Controles direcionais para caminhar">
+              <button class="pad-button pad-up" data-move="forward" aria-label="Avançar">▲</button>
+              <button class="pad-button pad-left" data-move="left" aria-label="Mover para a esquerda">◀</button>
+              <button class="pad-button pad-center" data-move="stop" aria-label="Parar">●</button>
+              <button class="pad-button pad-right" data-move="right" aria-label="Mover para a direita">▶</button>
+              <button class="pad-button pad-down" data-move="back" aria-label="Recuar">▼</button>
+            </div>
+            <div class="vr-hint" id="vr-hint">No modo VR, olhe para um ponto dourado para selecioná-lo. Olhe para o chão e acione o seletor para se deslocar.</div>
+          </div>
+          <div class="viewer-actions">
+            <button class="btn btn-primary" id="enter-vr">◉ Entrar em modo VR</button>
+            <button class="btn btn-soft" id="reset-view">⌖ Voltar ao início</button>
+            <button class="btn btn-soft" id="learn-more">Sobre este bioma</button>
+            <button class="btn btn-soft" id="load-panorama">Carregar foto 360°</button>
+            <button class="btn btn-soft" id="clear-panorama" hidden>Voltar ao cenário 3D</button>
+            <input id="panorama-file" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+          </div>
+          <div class="control-legend"><span><b>Computador</b> WASD / setas + mouse</span><span><b>Celular</b> botões direcionais + toque para olhar</span><span><b>Óculos VR</b> olhar e selecionar pontos</span></div>
+        </article>
+        <aside class="learning-card">
+          <div class="learning-header"><span class="eyebrow">GUIA DE DESCOBERTA</span><h2 id="biome-heading">A maior floresta tropical</h2><p id="biome-description"></p></div>
+          <div class="facts" id="biome-facts"></div>
+          <div class="discovery-section"><h3>O que observar neste ambiente</h3><p>Selecione um ponto no cenário ou toque em um assunto abaixo para aprender.</p><div class="discovery-list" id="discovery-list"></div></div>
+          <div class="learning-tip"><b>Dica de exploração</b><p>Procure os marcadores dourados no ambiente. Eles indicam espécies, plantas e elementos da paisagem que têm informações especiais.</p></div>
+        </aside>
       </div>
     </section>
   </main>
