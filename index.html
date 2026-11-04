@@ -180,7 +180,11 @@
             <button class="btn btn-primary" id="enter-vr">◉ Entrar em modo VR</button>
             <button class="btn btn-soft" id="reset-view">⌖ Voltar ao início</button>
             <button class="btn btn-soft" id="learn-more">Sobre este bioma</button>
+            <button class="btn btn-soft" id="toggle-narration" type="button" aria-pressed="false" disabled>🔊 Narração indisponível</button>
           </div>
+          <audio id="biome-narration" preload="none">
+            <source src="amaz%C3%B4nia.mp3" type="audio/mpeg">
+          </audio>
           <div class="control-legend"><span><b>Computador</b> WASD / setas + mouse</span><span><b>Celular</b> botões direcionais + toque para olhar</span><span><b>Óculos VR</b> olhar e selecionar pontos</span></div>
         </article>
         <aside class="learning-card">
@@ -590,10 +594,54 @@
       document.querySelectorAll("[data-biome]").forEach(el=>el.classList.toggle("selected",el.dataset.biome===id));
     }
     function openInfo(){showDiscovery(biomes[current].name+" · você sabia?",biomes[current].detail)}
+    const narration=document.querySelector("#biome-narration");
+    const narrationButton=document.querySelector("#toggle-narration");
+
+    function stopNarration(){
+      narration.pause();
+      narration.currentTime=0;
+      narrationButton.setAttribute("aria-pressed","false");
+    }
+    function configureNarration(id){
+      stopNarration();
+      const available=id==="amazonia";
+      narrationButton.disabled=!available;
+      narrationButton.textContent=available?"▶ Ativar narração":"🔊 Narração disponível na Amazônia";
+      if(!available)return;
+      narration.play().then(()=>{
+        narrationButton.textContent="Ⅱ Pausar narração";
+        narrationButton.setAttribute("aria-pressed","true");
+      }).catch(()=>{
+        narrationButton.textContent="▶ Ativar narração";
+        narrationButton.setAttribute("aria-pressed","false");
+      });
+    }
+    narrationButton.addEventListener("click",()=>{
+      if(current!=="amazonia")return;
+      if(narration.paused){
+        narration.play().then(()=>{
+          narrationButton.textContent="Ⅱ Pausar narração";
+          narrationButton.setAttribute("aria-pressed","true");
+        }).catch(()=>{
+          narrationButton.textContent="▶ Tentar novamente";
+          narrationButton.setAttribute("aria-pressed","false");
+        });
+      }else{
+        narration.pause();
+        narrationButton.textContent="▶ Continuar narração";
+        narrationButton.setAttribute("aria-pressed","false");
+      }
+    });
+    narration.addEventListener("ended",()=>{
+      narrationButton.textContent="↻ Ouvir novamente";
+      narrationButton.setAttribute("aria-pressed","false");
+    });
+
     function startBiome(id){
       if(!biomes[id])return;
       document.querySelector("#home-screen").hidden=true;
       document.querySelector("#experience-screen").hidden=false;
+      configureNarration(id);
       selectBiome(id);
       resetPosition();
       document.querySelector("#mode-chip").textContent="MODO EXPLORAÇÃO";
