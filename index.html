@@ -141,11 +141,11 @@
       </div>
       <div class="experience-layout">
         <article class="viewer-card">
-          <div class="viewer-head"><div><span class="eyebrow">AMBIENTE INTERATIVO</span><strong id="viewer-title">Amazônia · ambiente imersivo</strong></div><span class="live">● 3D ATIVO</span></div>
+          <div class="viewer-head"><div><span class="eyebrow">AMBIENTE INTERATIVO</span><strong id="viewer-title">Amazônia · ambiente imersivo</strong></div><span class="live">● PANORAMA 360°</span></div>
           <div class="scene-wrap">
             <a-scene embedded vr-mode-ui="enabled: true" renderer="colorManagement: true; physicallyCorrectLights: true" background="color: #b7cbb8">
               <a-assets timeout="60000">
-                <img id="amazon-panorama" crossorigin="anonymous" src="https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/Copy_of_USGS_Amazon_001.jpg">
+                <img id="amazon-panorama" src="amaz.png">
               </a-assets>
               <a-entity id="world">
                 <a-sky id="sky" color="#9fc8b5"></a-sky>
@@ -175,9 +175,6 @@
             <button class="btn btn-primary" id="enter-vr">◉ Entrar em modo VR</button>
             <button class="btn btn-soft" id="reset-view">⌖ Voltar ao início</button>
             <button class="btn btn-soft" id="learn-more">Sobre este bioma</button>
-            <button class="btn btn-soft" id="load-panorama">Carregar foto 360°</button>
-            <button class="btn btn-soft" id="clear-panorama" hidden>Voltar ao cenário 3D</button>
-            <input id="panorama-file" type="file" accept="image/jpeg,image/png,image/webp" hidden>
           </div>
           <div class="control-legend"><span><b>Computador</b> WASD / setas + mouse</span><span><b>Celular</b> botões direcionais + toque para olhar</span><span><b>Óculos VR</b> olhar e selecionar pontos</span></div>
         </article>
@@ -244,7 +241,6 @@
     };
     const env = document.querySelector("#environment"), sky=document.querySelector("#sky"), ground=document.querySelector("#ground");
     let current="amazonia";
-    let panoramaUrl=null;
     function entity(tag,attrs,parent=env){const el=document.createElement(tag);Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v));parent.appendChild(el);return el}
     function tree(x,z,height=4,leaf="#286443",trunk="#69513a"){
       entity("a-cylinder",{position:`${x} ${height*.28} ${z}`,radius:.16,height:height*.58,color:trunk});
@@ -493,61 +489,36 @@
     function selectBiome(id){
       current=id;
       const b=biomes[id];
-      if(panoramaUrl){URL.revokeObjectURL(panoramaUrl);panoramaUrl=null;}
       const image=document.querySelector("#amazon-panorama");
-      const credit=document.querySelector("#panorama-credit");
       const title=document.querySelector("#viewer-title");
-      const realPanoramas={
-        amazonia:{
-          asset:"#amazon-panorama",
-          credit:"Panorama 360° da Floresta Nacional do Tapajós, próximo a Santarém (PA) — U.S. Geological Survey (USGS), domínio público.",
-          source:"https://www.usgs.gov/media/images/panorama-top-amazon-observation-tower"
-        }
-      };
-      const panorama=realPanoramas[id];
 
-      // Limpa a textura anterior antes de selecionar o novo ambiente.
+      // Cada bioma recebe sua própria imagem local no repositório.
+      // Por enquanto, somente a Amazônia possui arquivo cadastrado.
+      const panoramas={
+        amazonia:{asset:"#amazon-panorama"}
+      };
+      const panorama=panoramas[id];
+
       sky.removeAttribute("src");
-      sky.setAttribute("color",b.sky);
+      sky.setAttribute("color","#17251d");
       sky.setAttribute("rotation","0 0 0");
-      ground.setAttribute("color",b.ground);
-      ground.object3D.visible=true;
-      credit.hidden=true;
-      document.querySelector("#clear-panorama").hidden=true;
+      ground.object3D.visible=false;
+      env.innerHTML="";
 
       if(panorama){
-        // No modo panorâmico, a fotografia ocupa toda a esfera. O cenário
-        // procedural e o chão são ocultados para não encobrir a imagem real.
-        env.innerHTML="";
-        ground.object3D.visible=false;
         title.textContent=b.name+" · carregando panorama 360°…";
-
         const applyPanorama=()=>{
           if(current!==id)return;
           sky.setAttribute("src",panorama.asset);
-          sky.setAttribute("color","#ffffff");
           sky.setAttribute("rotation","0 -90 0");
-          title.textContent=b.name+" · panorama 360° real";
-          credit.replaceChildren();
-          const label=document.createElement("span");
-          label.textContent=panorama.credit+" ";
-          const link=document.createElement("a");
-          link.href=panorama.source;
-          link.target="_blank";
-          link.rel="noopener";
-          link.textContent="Fonte original";
-          credit.append(label,link);
-          credit.hidden=false;
+          title.textContent=b.name+" · panorama 360°";
         };
         const panoramaFailed=()=>{
           if(current!==id)return;
           sky.removeAttribute("src");
-          sky.setAttribute("color",b.sky);
-          ground.object3D.visible=true;
-          build(b.type);
-          title.textContent=b.name+" · cenário 3D (falha ao carregar a foto 360°)";
-          credit.hidden=true;
-          console.error("Não foi possível carregar o panorama 360° da Amazônia.",image.currentSrc||image.src);
+          sky.setAttribute("color","#17251d");
+          title.textContent="Não foi possível carregar amaz.png";
+          console.error("Falha ao carregar o arquivo local amaz.png.");
         };
         if(image.complete&&image.naturalWidth>0){
           applyPanorama();
@@ -556,9 +527,7 @@
           image.addEventListener("error",panoramaFailed,{once:true});
         }
       }else{
-        sky.removeAttribute("src");
-        build(b.type);
-        title.textContent=b.name+" · ambiente 3D";
+        title.textContent=b.name+" · imagem 360° ainda não adicionada";
       }
 
       document.querySelector("#experience-biome-label").textContent=b.name;
@@ -606,28 +575,6 @@
       if(vrRequest&&typeof vrRequest.catch==="function")vrRequest.catch(()=>alert("Não foi possível iniciar o modo VR. Verifique se o navegador e o dispositivo oferecem suporte a WebXR e se o acesso está em HTTPS."));
     });
     document.querySelector("#reset-view").addEventListener("click",resetPosition);
-    document.querySelector("#load-panorama").addEventListener("click",()=>document.querySelector("#panorama-file").click());
-    document.querySelector("#panorama-file").addEventListener("change",event=>{
-      const file=event.target.files&&event.target.files[0];
-      if(!file)return;
-      if(!file.type.startsWith("image/")){alert("Selecione um arquivo de imagem.");return;}
-      if(panoramaUrl)URL.revokeObjectURL(panoramaUrl);
-      panoramaUrl=URL.createObjectURL(file);
-      sky.setAttribute("src",panoramaUrl);
-      sky.setAttribute("rotation","0 -90 0");
-      document.querySelector("#clear-panorama").hidden=false;
-      document.querySelector("#viewer-title").textContent=biomes[current].name+" · panorama 360° + cenário 3D";
-      event.target.value="";
-    });
-    document.querySelector("#clear-panorama").addEventListener("click",()=>{
-      if(panoramaUrl)URL.revokeObjectURL(panoramaUrl);
-      panoramaUrl=null;
-      sky.removeAttribute("src");
-      sky.setAttribute("color",biomes[current].sky);
-      document.querySelector("#clear-panorama").hidden=true;
-      document.querySelector("#viewer-title").textContent=biomes[current].name+" · ambiente imersivo";
-    });
-
     // Movimento por teclado e por botões de toque, com direção relativa ao olhar da câmera.
     const pressed=new Set();
     const keyDirections={w:"forward",arrowup:"forward",s:"back",arrowdown:"back",a:"left",arrowleft:"left",d:"right",arrowright:"right"};
