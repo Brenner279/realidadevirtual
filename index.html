@@ -196,6 +196,44 @@
       "mata-atlantica":{name:"Mata Atlântica",title:"Floresta de grande diversidade",sky:"#a7cbb9",ground:"#356b4e",water:"#4b9a9b",description:"A Mata Atlântica reúne diferentes formações florestais e ecossistemas costeiros, com elevada biodiversidade e espécies endêmicas.",facts:["Floresta tropical","Alto endemismo","Serra e litoral"],detail:"Originalmente presente em grande parte do litoral brasileiro, a Mata Atlântica é um dos biomas mais ameaçados e fragmentados do país. Sua conservação é essencial para a água e a biodiversidade.",type:"atlantic"},
       pantanal:{name:"Pantanal",title:"A planície das águas",sky:"#a9c9d2",ground:"#8a9a61",water:"#4c9ba5",description:"O Pantanal é uma extensa planície inundável. O pulso anual de cheias e secas transforma a paisagem e influencia a vida dos animais.",facts:["Planície alagável","Cheias sazonais","Rica fauna"],detail:"As cheias periódicas conectam rios, lagoas e áreas alagadas. Esse ciclo sustenta uma grande diversidade de peixes, aves, répteis e mamíferos.",type:"wetland"},
       pampa:{name:"Pampa",title:"Campos do Sul",sky:"#b9d2dc",ground:"#77965a",water:"#6e9ca4",description:"O Pampa é caracterizado por campos naturais, gramíneas, herbáceas e relevo suavemente ondulado, com fauna e flora próprias.",facts:["Campos naturais","Gramíneas","Clima subtropical"],detail:"No Brasil, o Pampa ocorre no Rio Grande do Sul. A conservação dos campos naturais é importante para a biodiversidade, o solo e os recursos hídricos.",type:"grass"}
+
+    const discoveryCatalog = {
+      amazonia:[
+        ["Samaúma","PLANTA","A samaúma é uma árvore de grande porte da floresta amazônica. Suas raízes tabulares ajudam a sustentar o tronco e podem formar estruturas muito amplas junto ao solo."],
+        ["Arara-vermelha","ANIMAL","A arara-vermelha é uma ave de plumagem marcante que utiliza cavidades de árvores para nidificar. A perda de árvores antigas reduz locais de alimentação e reprodução."],
+        ["Rios amazônicos","PAISAGEM","Os rios conectam ecossistemas, transportam sedimentos e sustentam comunidades. O regime das águas influencia a vida nas várzeas e em outros ambientes da região."],
+        ["Camadas e conservação","ECOSSISTEMA","O dossel, o sub-bosque e o chão da floresta abrigam diferentes formas de vida. Proteger a vegetação contínua ajuda a manter habitats, o ciclo da água e o armazenamento de carbono."]
+      ],
+      cerrado:[
+        ["Pequi","PLANTA","O pequizeiro é uma árvore típica do Cerrado. Seu fruto é importante na alimentação e na cultura regional, além de servir de recurso para a fauna."],
+        ["Lobo-guará","ANIMAL","O lobo-guará é um canídeo de pernas longas associado a áreas abertas do Cerrado. Sua dieta inclui frutos, pequenos vertebrados e insetos."],
+        ["Veredas e buritis","PAISAGEM","As veredas são ambientes úmidos frequentemente associados ao buriti. Elas protegem nascentes e funcionam como refúgio para diversas espécies."],
+        ["Adaptação ao fogo","ECOSSISTEMA","Algumas plantas do Cerrado têm casca espessa, raízes profundas e capacidade de rebrotar. Queimadas frequentes e intensas, porém, podem degradar o ambiente."]
+      ],
+      caatinga:[
+        ["Mandacaru","PLANTA","O mandacaru é um cacto nativo da Caatinga. Seu caule armazena água e os espinhos ajudam a reduzir a perda de água e a proteger a planta."],
+        ["Asa-branca","ANIMAL","A asa-branca é uma pomba conhecida por sua adaptação às paisagens abertas e secas do Nordeste. A disponibilidade de água e alimento influencia seus deslocamentos."],
+        ["Paisagem rochosa","PAISAGEM","Afloramentos rochosos, solos rasos e vegetação adaptada à seca compõem muitas paisagens da Caatinga. A cobertura vegetal ajuda a reduzir a erosão."],
+        ["Rios temporários","ECOSSISTEMA","Em muitas áreas semiáridas, cursos d'água podem ser temporários e variar conforme as chuvas. A paisagem muda bastante entre as estações seca e chuvosa."]
+      ],
+      "mata-atlantica":[
+        ["Bromélia","PLANTA","Bromélias podem acumular água entre as folhas e formar pequenos micro-habitats. Muitas espécies são epífitas, crescendo sobre árvores sem retirar delas seu alimento."],
+        ["Mico-leão-dourado","ANIMAL","O mico-leão-dourado é um primata endêmico da Mata Atlântica do Rio de Janeiro. A conservação de fragmentos conectados é importante para sua sobrevivência."],
+        ["Estratos da floresta","PAISAGEM","A Mata Atlântica apresenta árvores emergentes, dossel e sub-bosque. Esses estratos criam diferentes condições de luz, umidade e abrigo."],
+        ["Fragmentação","ECOSSISTEMA","A fragmentação separa habitats e dificulta o deslocamento de espécies. Corredores ecológicos e restauração florestal ajudam a conectar áreas naturais."]
+      ],
+      pantanal:[
+        ["Vitória-régia e plantas aquáticas","PLANTA","Plantas aquáticas ocupam lagoas e áreas inundadas. Elas oferecem abrigo e alimento para organismos e participam do funcionamento dos ambientes alagáveis."],
+        ["Tuiuiú","ANIMAL","O tuiuiú é uma das aves-símbolo do Pantanal. Alimenta-se principalmente de animais aquáticos e utiliza áreas úmidas para buscar alimento."],
+        ["Pulso das cheias","PAISAGEM","O ciclo anual de cheias e vazantes reorganiza os ambientes do Pantanal. A água transporta nutrientes e conecta áreas alagadas."],
+        ["Vida nas áreas alagáveis","ECOSSISTEMA","A alternância entre períodos de cheia e seca influencia a alimentação e a reprodução de peixes, aves, répteis e mamíferos."]
+      ],
+      pampa:[
+        ["Gramíneas nativas","PLANTA","As gramíneas são componentes importantes dos campos do Pampa. Suas raízes ajudam a estruturar o solo e a vegetação sustenta diversos animais."],
+        ["Ema","ANIMAL","A ema é uma ave corredora de grande porte que vive em ambientes abertos. Alimenta-se de matéria vegetal e pequenos animais."],
+        ["Campos naturais","PAISAGEM","O Pampa brasileiro possui campos com gramíneas e plantas herbáceas, além de áreas úmidas e capões. A paisagem campestre tem grande diversidade."],
+        ["Solo e conservação","ECOSSISTEMA","A vegetação campestre protege o solo, favorece a infiltração da água e oferece abrigo à fauna. A conversão dos campos naturais ameaça espécies nativas."]
+      ]
     };
     const env = document.querySelector("#environment"), sky=document.querySelector("#sky"), ground=document.querySelector("#ground");
     let current="amazonia";
@@ -231,14 +269,15 @@
         entity("a-cone",{position:`${x+Math.cos(a)*1.05} ${h+.25} ${z+Math.sin(a)*1.05}`,radiusBottom:.18,radiusTop:.02,height:2.35,rotation:`0 ${i*45} ${i%2? -48:48}`,color:"#3b814b"});
       }
     }
+    function showDiscovery(title,description){
+      document.querySelector("#modal-title").textContent=title;
+      document.querySelector("#modal-text").textContent=description;
+      document.querySelector("#info-modal").classList.add("open");
+    }
     function addHotspot(x,y,z,label,description){
-      const marker=entity("a-sphere",{class:"interactive",position:`${x} ${y} ${z}`,radius:.28,color:"#f1cf65",material:"emissive: #80621e; emissiveIntensity: .45"});
-      marker.addEventListener("click",()=>{
-        document.querySelector("#modal-title").textContent=label;
-        document.querySelector("#modal-text").textContent=description;
-        document.querySelector("#info-modal").classList.add("open");
-      });
-      entity("a-text",{value:label.toUpperCase(),position:`${x-1.35} ${y+.55} ${z}`,color:"#fff",width:3.8,align:"center",side:"double"});
+      const marker=entity("a-sphere",{class:"interactive",position:x+" "+y+" "+z,radius:.3,color:"#f1cf65",material:"emissive: #80621e; emissiveIntensity: .5"});
+      marker.addEventListener("click",()=>showDiscovery(label,description));
+      entity("a-text",{value:label.toUpperCase(),position:(x-1.35)+" "+(y+.55)+" "+z,color:"#fff",width:3.8,align:"center",side:"double"});
     }
     function addMacaw(x,y,z){
       // Representação didática estilizada de uma arara-vermelha.
@@ -383,24 +422,182 @@
         });
       }
     }
-    function selectBiome(id){
-      current=id;const b=biomes[id];if(panoramaUrl){URL.revokeObjectURL(panoramaUrl);panoramaUrl=null;}sky.removeAttribute("src");sky.setAttribute("color",b.sky);ground.setAttribute("color",b.ground);document.querySelector("#clear-panorama").hidden=true;build(b.type);
-      document.querySelector("#viewer-title").textContent=b.name+" · ambiente imersivo";
-      document.querySelector("#biome-heading").textContent=b.title;document.querySelector("#biome-description").textContent=b.description;
-      document.querySelector("#biome-facts").innerHTML=b.facts.map(x=>'<span class="fact">'+x+'</span>').join("");
-      document.querySelectorAll(".biome").forEach(el=>el.classList.toggle("active",el.dataset.biome===id));
+
+    function renderDiscoveryList(id){
+      const container=document.querySelector("#discovery-list");
+      const entries=discoveryCatalog[id]||[];
+      container.innerHTML="";
+      entries.forEach((item,index)=>{
+        const button=document.createElement("button");
+        button.className="discovery-button";
+        button.type="button";
+        const number=document.createElement("span");
+        number.className="discovery-num";
+        number.textContent=String(index+1).padStart(2,"0");
+        const text=document.createElement("span");
+        const title=document.createElement("b");
+        title.textContent=item[0];
+        const category=document.createElement("small");
+        category.textContent=item[1];
+        text.appendChild(title);
+        text.appendChild(category);
+        button.appendChild(number);
+        button.appendChild(text);
+        button.addEventListener("click",()=>showDiscovery(item[0],item[2]));
+        container.appendChild(button);
+      });
     }
-    function openInfo(){const b=biomes[current];document.querySelector("#modal-title").textContent=b.name+" · você sabia?";document.querySelector("#modal-text").textContent=b.detail;document.querySelector("#info-modal").classList.add("open")}
-    document.querySelectorAll(".biome").forEach(el=>el.addEventListener("click",()=>selectBiome(el.dataset.biome)));
+    function selectBiome(id){
+      current=id;
+      const b=biomes[id];
+      if(panoramaUrl){URL.revokeObjectURL(panoramaUrl);panoramaUrl=null;}
+      sky.removeAttribute("src");
+      sky.setAttribute("color",b.sky);
+      sky.setAttribute("rotation","0 0 0");
+      ground.setAttribute("color",b.ground);
+      document.querySelector("#clear-panorama").hidden=true;
+      build(b.type);
+      document.querySelector("#viewer-title").textContent=b.name+" · ambiente imersivo";
+      document.querySelector("#experience-biome-label").textContent=b.name;
+      document.querySelector("#biome-heading").textContent=b.title;
+      document.querySelector("#biome-description").textContent=b.description;
+      document.querySelector("#biome-facts").innerHTML=b.facts.map(x=>'<span class="fact">'+x+'</span>').join("");
+      renderDiscoveryList(id);
+      document.querySelectorAll("[data-biome]").forEach(el=>el.classList.toggle("selected",el.dataset.biome===id));
+    }
+    function openInfo(){showDiscovery(biomes[current].name+" · você sabia?",biomes[current].detail)}
+    function startBiome(id){
+      if(!biomes[id])return;
+      document.querySelector("#home-screen").hidden=true;
+      document.querySelector("#experience-screen").hidden=false;
+      selectBiome(id);
+      resetPosition();
+      document.querySelector("#mode-chip").textContent="MODO EXPLORAÇÃO";
+      setTimeout(()=>{const scene=document.querySelector("a-scene");if(scene&&scene.resize)scene.resize();},180);
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+    function resetPosition(){
+      const rig=document.querySelector("#camera-rig");
+      rig.object3D.position.set(0,1.6,8);
+      rig.object3D.rotation.set(0,0,0);
+      const camera=document.querySelector("#main-camera");
+      camera.object3D.position.set(0,0,0);
+      camera.object3D.rotation.set(0,0,0);
+    }
+    document.querySelectorAll("[data-biome]").forEach(el=>el.addEventListener("click",()=>startBiome(el.dataset.biome)));
+    document.querySelector("#back-to-map").addEventListener("click",()=>{
+      const scene=document.querySelector("a-scene");
+      if(scene.is("vr-mode"))scene.exitVR();
+      document.querySelector("#experience-screen").hidden=true;
+      document.querySelector("#home-screen").hidden=false;
+      document.querySelector("#touch-pad").style.display="";
+      window.scrollTo({top:0,behavior:"smooth"});
+    });
     document.querySelector("#learn-more").addEventListener("click",openInfo);
     document.querySelector("#close-modal").addEventListener("click",()=>document.querySelector("#info-modal").classList.remove("open"));
     document.querySelector("#info-modal").addEventListener("click",e=>{if(e.target.id==="info-modal")e.currentTarget.classList.remove("open")});
-    document.querySelector("#enter-vr").addEventListener("click",()=>{const scene=document.querySelector("a-scene");if(scene.is("vr-mode"))scene.exitVR();else scene.enterVR()});
-    document.querySelector("#reset-view").addEventListener("click",()=>document.querySelector("#camera-rig").setAttribute("position","0 1.6 8"));
+    document.querySelector("#enter-vr").addEventListener("click",()=>{
+      const scene=document.querySelector("a-scene");
+      if(scene.is("vr-mode")){scene.exitVR();return;}
+      scene.enterVR().catch(()=>alert("Não foi possível iniciar o modo VR. Verifique se o navegador e o dispositivo oferecem suporte a WebXR e se o acesso está em HTTPS."));
+    });
+    document.querySelector("#reset-view").addEventListener("click",resetPosition);
     document.querySelector("#load-panorama").addEventListener("click",()=>document.querySelector("#panorama-file").click());
-    document.querySelector("#panorama-file").addEventListener("change",event=>{const file=event.target.files&&event.target.files[0];if(!file)return;if(!file.type.startsWith("image/")){alert("Selecione um arquivo de imagem.");return;}if(panoramaUrl)URL.revokeObjectURL(panoramaUrl);panoramaUrl=URL.createObjectURL(file);sky.setAttribute("src",panoramaUrl);sky.setAttribute("rotation","0 -90 0");document.querySelector("#clear-panorama").hidden=false;document.querySelector("#viewer-title").textContent=biomes[current].name+" · panorama 360° + cenário 3D";});
-    document.querySelector("#clear-panorama").addEventListener("click",()=>{if(panoramaUrl)URL.revokeObjectURL(panoramaUrl);panoramaUrl=null;sky.removeAttribute("src");sky.setAttribute("color",biomes[current].sky);document.querySelector("#clear-panorama").hidden=true;document.querySelector("#viewer-title").textContent=biomes[current].name+" · ambiente imersivo";});
+    document.querySelector("#panorama-file").addEventListener("change",event=>{
+      const file=event.target.files&&event.target.files[0];
+      if(!file)return;
+      if(!file.type.startsWith("image/")){alert("Selecione um arquivo de imagem.");return;}
+      if(panoramaUrl)URL.revokeObjectURL(panoramaUrl);
+      panoramaUrl=URL.createObjectURL(file);
+      sky.setAttribute("src",panoramaUrl);
+      sky.setAttribute("rotation","0 -90 0");
+      document.querySelector("#clear-panorama").hidden=false;
+      document.querySelector("#viewer-title").textContent=biomes[current].name+" · panorama 360° + cenário 3D";
+      event.target.value="";
+    });
+    document.querySelector("#clear-panorama").addEventListener("click",()=>{
+      if(panoramaUrl)URL.revokeObjectURL(panoramaUrl);
+      panoramaUrl=null;
+      sky.removeAttribute("src");
+      sky.setAttribute("color",biomes[current].sky);
+      document.querySelector("#clear-panorama").hidden=true;
+      document.querySelector("#viewer-title").textContent=biomes[current].name+" · ambiente imersivo";
+    });
+
+    // Movimento por teclado e por botões de toque, com direção relativa ao olhar da câmera.
+    const pressed=new Set();
+    const keyDirections={w:"forward",arrowup:"forward",s:"back",arrowdown:"back",a:"left",arrowleft:"left",d:"right",arrowright:"right"};
+    document.addEventListener("keydown",event=>{
+      const key=event.key.toLowerCase();
+      if(keyDirections[key]&& !document.querySelector("#experience-screen").hidden){
+        pressed.add(keyDirections[key]);
+        event.preventDefault();
+      }
+    });
+    document.addEventListener("keyup",event=>{
+      const key=event.key.toLowerCase();
+      if(keyDirections[key])pressed.delete(keyDirections[key]);
+    });
+    window.addEventListener("blur",()=>pressed.clear());
+    const touchPad=document.querySelector("#touch-pad");
+    touchPad.querySelectorAll("[data-move]").forEach(button=>{
+      const move=button.dataset.move;
+      button.addEventListener("pointerdown",event=>{
+        event.preventDefault();
+        if(move==="stop")pressed.clear();
+        else pressed.add(move);
+        button.classList.add("is-pressed");
+        if(button.setPointerCapture)button.setPointerCapture(event.pointerId);
+      });
+      ["pointerup","pointercancel","lostpointercapture","pointerleave"].forEach(name=>button.addEventListener(name,()=>{
+        if(move!=="stop")pressed.delete(move);
+        button.classList.remove("is-pressed");
+      }));
+    });
+    let previousFrame=0;
+    function movementFrame(timestamp){
+      const delta=Math.min((timestamp-previousFrame)/1000,.05)||0;
+      previousFrame=timestamp;
+      if(pressed.size&&!document.querySelector("#experience-screen").hidden){
+        const camera=document.querySelector("#main-camera");
+        const rig=document.querySelector("#camera-rig");
+        const yaw=camera.object3D.rotation.y+rig.object3D.rotation.y;
+        const forward={x:-Math.sin(yaw),z:-Math.cos(yaw)};
+        const right={x:Math.cos(yaw),z:-Math.sin(yaw)};
+        let dx=0,dz=0;
+        if(pressed.has("forward")){dx+=forward.x;dz+=forward.z;}
+        if(pressed.has("back")){dx-=forward.x;dz-=forward.z;}
+        if(pressed.has("right")){dx+=right.x;dz+=right.z;}
+        if(pressed.has("left")){dx-=right.x;dz-=right.z;}
+        const length=Math.hypot(dx,dz)||1;
+        const speed=4.2*delta/length;
+        rig.object3D.position.x=Math.max(-32,Math.min(32,rig.object3D.position.x+dx*speed));
+        rig.object3D.position.z=Math.max(-42,Math.min(12,rig.object3D.position.z+dz*speed));
+      }
+      requestAnimationFrame(movementFrame);
+    }
+    requestAnimationFrame(movementFrame);
+
+    const scene=document.querySelector("a-scene");
+    scene.addEventListener("enter-vr",()=>{
+      document.querySelector("#mode-chip").textContent="MODO REALIDADE VIRTUAL";
+      touchPad.style.display="none";
+    });
+    scene.addEventListener("exit-vr",()=>{
+      document.querySelector("#mode-chip").textContent="MODO EXPLORAÇÃO";
+      touchPad.style.display="";
+    });
+    // No modo VR sem controles, olhar para o chão e aguardar o clique por foco desloca o visitante.
+    ground.addEventListener("click",event=>{
+      if(!scene.is("vr-mode"))return;
+      const point=event.detail&&event.detail.intersection&&event.detail.intersection.point;
+      if(!point)return;
+      const rig=document.querySelector("#camera-rig").object3D.position;
+      rig.x=Math.max(-28,Math.min(28,point.x));
+      rig.z=Math.max(-38,Math.min(10,point.z));
+    });
     selectBiome("amazonia");
+  
   </script>
 </body>
 </html>
