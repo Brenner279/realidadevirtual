@@ -750,8 +750,11 @@
     scene.addEventListener("enter-vr",()=>{
       document.querySelector("#mode-chip").textContent="MODO REALIDADE VIRTUAL";
       touchPad.style.display="none";
+      configureNarration(current);
+      playNarration();
     });
     scene.addEventListener("exit-vr",()=>{
+      stopNarration();
       document.querySelector("#mode-chip").textContent="MODO EXPLORAÇÃO";
       touchPad.style.display="";
     });
