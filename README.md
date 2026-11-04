@@ -1,25 +1,51 @@
-# Museu Virtual
+# Brasil Imersivo — Realidade Virtual Geo
 
-Este repositório está dedicado ao projeto **Museu Virtual — Galeria Imersiva**, desenvolvido com A-Frame 1.6.0, HTML, CSS e JavaScript.
+Experiência educativa para explorar os **seis biomas brasileiros** por meio de ambientes tridimensionais, panoramas fotográficos em 360° e conteúdos de Geografia.
 
 ## Acessar o projeto
 
-Abra a pasta [museu-virtual](./museu-virtual/) ou acesse diretamente o arquivo [index.html](./museu-virtual/index.html).
+**Publicação pelo GitHub Actions:** abra **Settings → Pages → Build and deployment**, escolha **GitHub Actions** como fonte e salve. Essa primeira ativação precisa ser feita nas configurações do repositório; depois disso, o workflow publica automaticamente a cada atualização da branch `main`. O site ficará disponível em:
 
-A página inicial do repositório redireciona automaticamente para a experiência.
+`https://brenner279.github.io/realidadevirtual/`
 
-## Executar localmente
+## Recursos do protótipo
 
-Na raiz do repositório, execute:
+- Seleção entre Amazônia, Cerrado, Caatinga, Mata Atlântica, Pantanal e Pampa.
+- Cenários 3D construídos proceduralmente com A-Frame.
+- **Amazônia em desenvolvimento avançado:** dossel e sub-bosque, árvores com raízes tabulares, palmeiras, rio, margens, tronco caído, pedras, representação estilizada de uma arara-vermelha e quatro pontos interativos sobre camadas da floresta, ciclo da água, biodiversidade e conservação.
+- Navegação pelo cenário com teclado e mouse.
+- Botão de entrada em realidade virtual, quando o dispositivo e o navegador oferecem suporte a WebXR.
+- Carregamento local de uma fotografia panorâmica 360° para combinar a paisagem real com os elementos 3D.
+- Painéis com informações educativas sobre cada bioma.
+- Interface responsiva para computador e celular.
 
-```bash
-python -m http.server 8000
-```
+## Como testar
 
-Acesse http://localhost:8000/museu-virtual/.
+1. Abra `index.html` em um servidor local (por exemplo, a extensão Live Server do VS Code).
+2. Escolha um bioma no painel.
+3. No computador, use **W, A, S, D** ou as setas para se deslocar e arraste o mouse para olhar ao redor.
+4. Clique em **Carregar foto 360°** e selecione uma imagem panorâmica equiretangular (proporção recomendada 2:1, por exemplo 4096 × 2048).
+5. Clique em **Entrar em realidade virtual** em um navegador/dispositivo compatível.
 
-## Vídeos da exposição
+> Para WebXR, o site precisa ser servido por HTTPS (ou localhost durante o desenvolvimento). O suporte a VR depende do navegador, do dispositivo e de seus recursos.
 
-Os cinco vídeos podem ser adicionados em `museu-virtual/assets/videos/`, usando os nomes `obra-01.mp4` até `obra-05.mp4`.
+## Adicionar panoramas ao projeto
 
-Consulte o [README do projeto](./museu-virtual/README.md) para detalhes de navegação, publicação e estrutura.
+O botão **Carregar foto 360°** permite testar uma imagem diretamente no dispositivo, sem enviá-la ao GitHub. Para que um panorama seja carregado automaticamente por bioma em uma próxima versão, adicione os arquivos otimizados em `assets/panoramas/` e registre seus caminhos na configuração dos biomas em `index.html`.
+
+Use imagens próprias, de domínio público ou com licença que permita reutilização. Registre a fonte e a licença de cada imagem.
+
+## Tecnologias
+
+- HTML5, CSS3 e JavaScript
+- [A-Frame 1.8.0](https://aframe.io/docs/)
+- WebXR
+- GitHub Pages (hospedagem)
+
+## Escopo e evolução
+
+Este é um protótipo educativo em evolução. A Amazônia recebeu uma primeira expansão de cenário e conteúdo interativo; os demais biomas continuam com ambientes demonstrativos. Os modelos de árvores e animais são representações didáticas estilizadas, não reconstruções científicas em escala real. A camada de panorama 360° já permite testar fotografias locais; a próxima etapa é selecionar e integrar panoramas específicos e licenciados para cada bioma, além de adicionar modelos 3D de espécies nativas, trilhas e pontos de descoberta.
+
+## Licença
+
+A definir. As imagens, panoramas, modelos 3D e áudios incorporados futuramente devem manter suas atribuições e licenças individuais.

@@ -2,12 +2,255 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta http-equiv="refresh" content="0; url=./museu-virtual/">
-  <title>Museu Virtual</title>
-  <script>window.location.replace('./museu-virtual/');</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#102b27">
+  <meta name="description" content="Explore os seis biomas brasileiros em uma experiência educativa de realidade virtual e ambientes 3D.">
+  <title>Brasil Imersivo | Realidade Virtual Geo</title>
+  <script src="https://aframe.io/releases/1.8.0/aframe.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--ink:#172923;--muted:#64756c;--paper:#f4f5ef;--green:#1f624b;--lime:#c6df91;--line:#dfe5dc}
+    *{box-sizing:border-box} body{margin:0;background:var(--paper);color:var(--ink);font-family:"DM Sans",sans-serif}
+    button{font:inherit;cursor:pointer} .topbar{height:70px;padding:0 clamp(18px,5vw,72px);display:flex;align-items:center;justify-content:space-between;background:#102b27;color:white}
+    .brand{display:flex;align-items:center;gap:11px;font-family:Manrope,sans-serif;font-weight:800;letter-spacing:-.4px}.brand-mark{width:34px;height:34px;border-radius:11px;background:var(--lime);display:grid;place-items:center;color:#173b2e;font-size:19px}
+    .top-note{font-size:12px;color:#c4d2c9;letter-spacing:.08em;text-transform:uppercase}
+    .hero{padding:clamp(28px,5vw,64px) clamp(18px,5vw,72px) 34px;max-width:1500px;margin:auto}
+    .eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--green);font-weight:700}
+    h1{font:800 clamp(34px,5vw,62px)/1.03 Manrope,sans-serif;letter-spacing:-2px;margin:13px 0 15px;max-width:780px}
+    .intro{color:var(--muted);font-size:16px;line-height:1.65;max-width:700px;margin:0}
+    .layout{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(300px,.75fr);gap:22px;padding:0 clamp(18px,5vw,72px) 70px;max-width:1500px;margin:auto}
+    .viewer-card,.explore-card{background:white;border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:0 12px 35px #193a2410}
+    .viewer-head{padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line)}
+    .viewer-head strong{font-family:Manrope,sans-serif;font-size:15px}.live{font-size:11px;color:#28714e;background:#eaf4e9;padding:7px 10px;border-radius:30px;font-weight:700}
+    .scene-wrap{height:480px;position:relative;background:#b8cbb2} a-scene{width:100%;height:100%;display:block}
+    .scene-hint{position:absolute;bottom:14px;left:14px;background:#102b27d9;color:white;padding:9px 12px;border-radius:10px;font-size:11px;pointer-events:none;z-index:2}
+    .viewer-actions{display:flex;gap:9px;padding:14px 18px;flex-wrap:wrap}
+    .btn{border:0;border-radius:12px;padding:11px 15px;font-weight:700;font-size:13px;transition:.2s}
+    .btn-primary{background:var(--green);color:white}.btn-primary:hover{background:#164b38}.btn-soft{background:#edf2eb;color:#254637}.btn:focus-visible,.biome:focus-visible{outline:3px solid #a2c66f;outline-offset:3px}
+    .explore-card{padding:22px}.section-title{font:800 20px Manrope,sans-serif;margin:0 0 6px}.section-sub{font-size:13px;color:var(--muted);line-height:1.5;margin:0 0 18px}
+    .biome-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .biome{border:1px solid var(--line);background:#fff;border-radius:14px;padding:13px 12px;text-align:left;min-height:92px;display:flex;flex-direction:column;justify-content:space-between;gap:10px;transition:.2s}
+    .biome:hover{border-color:#9ebc91;transform:translateY(-2px)}.biome.active{background:#edf4e9;border:2px solid #4d8059;padding:12px 11px}
+    .biome-icon{font-size:23px}.biome-name{font-weight:700;font-size:13px}.biome-region{font-size:10px;color:var(--muted);margin-top:3px}
+    .info-box{margin-top:18px;padding:16px;background:#f3f6f0;border-radius:15px}.info-box h3{font:800 16px Manrope,sans-serif;margin:0 0 7px}.info-box p{font-size:12px;line-height:1.6;color:#586a60;margin:0}
+    .facts{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}.fact{font-size:10px;background:white;border:1px solid #e0e8dc;padding:6px 9px;border-radius:30px;color:#385847}
+    .instructions{max-width:1500px;margin:0 auto;padding:0 clamp(18px,5vw,72px) 60px}.instructions h2{font:800 22px Manrope,sans-serif}.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.step{padding:18px;background:#e9eee5;border-radius:16px}.step b{font:800 13px Manrope,sans-serif}.step p{font-size:12px;line-height:1.55;color:var(--muted);margin:7px 0 0}
+    footer{background:#102b27;color:#c3d1c8;padding:22px clamp(18px,5vw,72px);font-size:11px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .modal{position:fixed;inset:0;background:#071b16b8;display:none;place-items:center;padding:20px;z-index:20}.modal.open{display:grid}.modal-panel{max-width:520px;width:100%;background:white;border-radius:20px;padding:24px}.modal-panel h2{font:800 23px Manrope,sans-serif;margin:0 0 10px}.modal-panel p{font-size:14px;line-height:1.65;color:var(--muted)}.modal-close{float:right;border:0;background:#edf2eb;border-radius:50%;width:34px;height:34px;font-size:18px}
+    @media(max-width:900px){.layout{grid-template-columns:1fr}.scene-wrap{height:430px}.steps{grid-template-columns:1fr}}
+    @media(max-width:520px){.topbar{height:60px}.top-note{display:none}.hero{padding-top:32px}.scene-wrap{height:360px}.viewer-head{padding:14px}.explore-card{padding:18px}.biome-grid{gap:8px}.biome{min-height:82px;padding:10px}.biome.active{padding:9px}.intro{font-size:14px}}
+  </style>
 </head>
 <body>
-  <p>Abrindo o <a href="./museu-virtual/">Museu Virtual</a>...</p>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">⌁</span><span>BRASIL IMERSIVO</span></div>
+    <div class="top-note">Uma experiência do projeto Realidade Virtual Geo</div>
+  </header>
+  <main>
+    <section class="hero">
+      <div class="eyebrow">Geografia • Natureza • Tecnologia</div>
+      <h1>Explore os biomas<br>do Brasil.</h1>
+      <p class="intro">Uma viagem educativa por paisagens, ecossistemas e biodiversidade brasileira. Escolha um bioma, observe o ambiente em 3D e descubra informações sobre cada região.</p>
+    </section>
+    <section class="layout">
+      <article class="viewer-card">
+        <div class="viewer-head"><strong id="viewer-title">Amazônia · ambiente imersivo</strong><span class="live">● EXPERIÊNCIA 3D</span></div>
+        <div class="scene-wrap">
+          <a-scene embedded vr-mode-ui="enabled: true" renderer="colorManagement: true; physicallyCorrectLights: true" background="color: #b7d2c1">
+            <a-entity id="world">
+              <a-sky id="sky" color="#9fc8b5"></a-sky>
+              <a-plane id="ground" rotation="-90 0 0" width="180" height="180" color="#456c49" position="0 0 0"></a-plane>
+              <a-entity id="environment"></a-entity>
+            </a-entity>
+            <a-entity id="camera-rig" position="0 1.6 8">
+              <a-camera wasd-controls="acceleration: 28" look-controls>
+                <a-cursor raycaster="objects: .interactive" fuse="true" fuse-timeout="1200" color="#f4e9a7" geometry="primitive: ring; radiusInner: 0.008; radiusOuter: 0.013"></a-cursor>
+              </a-camera>
+            </a-entity>
+            <a-entity light="type: ambient; intensity: 1.15"></a-entity>
+            <a-entity light="type: directional; intensity: 1.2" position="-3 8 5"></a-entity>
+          </a-scene>
+          <div class="scene-hint">Use WASD ou as setas para caminhar • Arraste para olhar ao redor</div>
+        </div>
+        <div class="viewer-actions">
+          <button class="btn btn-primary" id="enter-vr">Entrar em realidade virtual</button>
+          <button class="btn btn-soft" id="reset-view">Voltar ao início</button>
+          <button class="btn btn-soft" id="learn-more">Sobre este bioma</button>
+          <button class="btn btn-soft" id="load-panorama">Carregar foto 360°</button>
+          <button class="btn btn-soft" id="clear-panorama" hidden>Voltar ao céu 3D</button>
+          <input id="panorama-file" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+        </div>
+      </article>
+      <aside class="explore-card">
+        <h2 class="section-title">Escolha seu destino</h2>
+        <p class="section-sub">Selecione um dos seis biomas brasileiros para carregar seu cenário interativo.</p>
+        <div class="biome-grid" id="biome-list">
+          <button class="biome active" data-biome="amazonia"><span class="biome-icon">🌳</span><span><span class="biome-name">Amazônia</span><br><span class="biome-region">Norte</span></span></button>
+          <button class="biome" data-biome="cerrado"><span class="biome-icon">🌾</span><span><span class="biome-name">Cerrado</span><br><span class="biome-region">Centro-Oeste</span></span></button>
+          <button class="biome" data-biome="caatinga"><span class="biome-icon">🌵</span><span><span class="biome-name">Caatinga</span><br><span class="biome-region">Nordeste</span></span></button>
+          <button class="biome" data-biome="mata-atlantica"><span class="biome-icon">🌿</span><span><span class="biome-name">Mata Atlântica</span><br><span class="biome-region">Faixa litorânea</span></span></button>
+          <button class="biome" data-biome="pantanal"><span class="biome-icon">🦜</span><span><span class="biome-name">Pantanal</span><br><span class="biome-region">Centro-Oeste</span></span></button>
+          <button class="biome" data-biome="pampa"><span class="biome-icon">🌱</span><span><span class="biome-name">Pampa</span><br><span class="biome-region">Sul</span></span></button>
+        </div>
+        <div class="info-box">
+          <h3 id="biome-heading">A maior floresta tropical</h3>
+          <p id="biome-description">Explore uma representação tridimensional da floresta amazônica, com árvores altas, cursos d'água e pontos de observação da biodiversidade.</p>
+          <div class="facts" id="biome-facts"><span class="fact">Floresta tropical</span><span class="fact">Rios extensos</span><span class="fact">Alta biodiversidade</span></div>
+        </div>
+      </aside>
+    </section>
+    <section class="instructions">
+      <h2>Como explorar</h2>
+      <div class="steps">
+        <div class="step"><b>01 · Escolha</b><p>Selecione um dos seis biomas no painel ao lado para mudar o ambiente.</p></div>
+        <div class="step"><b>02 · Caminhe</b><p>No computador, use WASD ou as setas. No celular, movimente a câmera com o toque e use o modo VR quando compatível.</p></div>
+        <div class="step"><b>03 · Descubra</b><p>Observe os elementos em 3D e abra os cartões informativos para aprender sobre o ecossistema.</p></div>
+      </div>
+    </section>
+  </main>
+  <div class="modal" id="info-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-panel"><button class="modal-close" id="close-modal" aria-label="Fechar">×</button><h2 id="modal-title">Sobre o bioma</h2><p id="modal-text"></p></div>
+  </div>
+  <footer><span>REALIDADE VIRTUAL GEO · BRASIL IMERSIVO</span><span>Projeto educativo • Protótipo inicial</span></footer>
+  <script>
+    const biomes = {
+      amazonia:{name:"Amazônia",title:"A maior floresta tropical",sky:"#9fc8b5",ground:"#456c49",water:"#397f8b",description:"A Amazônia abriga uma das maiores biodiversidades do planeta. Sua paisagem é marcada por florestas densas, rios extensos e grande variedade de espécies.",facts:["Floresta tropical","Rios extensos","Alta biodiversidade"],detail:"A floresta amazônica influencia o ciclo da água, armazena grandes quantidades de carbono e abriga milhares de espécies. A experiência representa uma clareira próxima a um curso d'água.",type:"forest"},
+      cerrado:{name:"Cerrado",title:"A savana brasileira",sky:"#e7c58b",ground:"#a18a4f",water:"#6f9b9b",description:"O Cerrado apresenta campos, árvores de troncos retorcidos e vegetação adaptada a períodos de seca e fogo natural.",facts:["Savana tropical","Estação seca e chuvosa","Nascentes"],detail:"O Cerrado é conhecido como berço das águas por abrigar nascentes de importantes bacias hidrográficas. Sua vegetação varia de campos abertos a formações florestais.",type:"savanna"},
+      caatinga:{name:"Caatinga",title:"Vida no semiárido",sky:"#e9c28b",ground:"#b28a5b",water:"#9aab9b",description:"A Caatinga é um bioma exclusivamente brasileiro, com plantas adaptadas à escassez de água, como cactos e arbustos que perdem as folhas na seca.",facts:["Clima semiárido","Cactáceas","Adaptação à seca"],detail:"Muitas plantas da Caatinga armazenam água ou possuem folhas reduzidas a espinhos. A paisagem muda bastante entre a estação seca e a estação chuvosa.",type:"dry"},
+      "mata-atlantica":{name:"Mata Atlântica",title:"Floresta de grande diversidade",sky:"#a7cbb9",ground:"#356b4e",water:"#4b9a9b",description:"A Mata Atlântica reúne diferentes formações florestais e ecossistemas costeiros, com elevada biodiversidade e espécies endêmicas.",facts:["Floresta tropical","Alto endemismo","Serra e litoral"],detail:"Originalmente presente em grande parte do litoral brasileiro, a Mata Atlântica é um dos biomas mais ameaçados e fragmentados do país. Sua conservação é essencial para a água e a biodiversidade.",type:"atlantic"},
+      pantanal:{name:"Pantanal",title:"A planície das águas",sky:"#a9c9d2",ground:"#8a9a61",water:"#4c9ba5",description:"O Pantanal é uma extensa planície inundável. O pulso anual de cheias e secas transforma a paisagem e influencia a vida dos animais.",facts:["Planície alagável","Cheias sazonais","Rica fauna"],detail:"As cheias periódicas conectam rios, lagoas e áreas alagadas. Esse ciclo sustenta uma grande diversidade de peixes, aves, répteis e mamíferos.",type:"wetland"},
+      pampa:{name:"Pampa",title:"Campos do Sul",sky:"#b9d2dc",ground:"#77965a",water:"#6e9ca4",description:"O Pampa é caracterizado por campos naturais, gramíneas, herbáceas e relevo suavemente ondulado, com fauna e flora próprias.",facts:["Campos naturais","Gramíneas","Clima subtropical"],detail:"No Brasil, o Pampa ocorre no Rio Grande do Sul. A conservação dos campos naturais é importante para a biodiversidade, o solo e os recursos hídricos.",type:"grass"}
+    };
+    const env = document.querySelector("#environment"), sky=document.querySelector("#sky"), ground=document.querySelector("#ground");
+    let current="amazonia";
+    let panoramaUrl=null;
+    function entity(tag,attrs,parent=env){const el=document.createElement(tag);Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v));parent.appendChild(el);return el}
+    function tree(x,z,height=4,leaf="#286443",trunk="#69513a"){
+      entity("a-cylinder",{position:`${x} ${height*.28} ${z}`,radius:.16,height:height*.58,color:trunk});
+      entity("a-cone",{position:`${x} ${height*.72} ${z}`,radiusBottom:height*.25,radiusTop:.04,height:height*.62,color:leaf});
+      entity("a-sphere",{position:`${x} ${height*.83} ${z}`,radius:height*.22,color:leaf,scale:"1 .8 1"});
+    }
+    function cactus(x,z,h=2.2){
+      entity("a-cylinder",{position:`${x} ${h/2} ${z}`,radius:.18,height:h,color:"#43834e"});
+      entity("a-cylinder",{position:`${x-.28} ${h*.55} ${z}`,radius:.12,height:h*.42,rotation:"0 0 90",color:"#43834e"});
+      entity("a-cylinder",{position:`${x-.4} ${h*.68} ${z}`,radius:.12,height:h*.28,color:"#43834e"});
+    }
+    function addAmazonTree(x,z,h=7,leaf="#18583d"){
+      // Tronco alto e raízes tabulares: elementos característicos de árvores da floresta amazônica.
+      entity("a-cylinder",{position:`${x} ${h/2} ${z}`,radius:.24,height:h,color:"#60452f"});
+      for(let a=0;a<4;a++){
+        const angle=a*Math.PI/2;
+        const rx=x+Math.cos(angle)*.52, rz=z+Math.sin(angle)*.52;
+        entity("a-cone",{position:`${(x+rx)/2} .42 ${(z+rz)/2}`,radiusBottom:.34,radiusTop:.06,height:1.15,rotation:`0 ${a*90} 68`,color:"#60452f"});
+      }
+      for(let i=0;i<7;i++){
+        const ox=(Math.random()-.5)*h*.42, oz=(Math.random()-.5)*h*.34;
+        entity("a-sphere",{position:`${x+ox} ${h*.82+Math.random()*1.1} ${z+oz}`,radius:1.15+Math.random()*.65,color:leaf,scale:"1 .82 1"});
+      }
+    }
+    function addAmazonPalm(x,z,h=5){
+      entity("a-cylinder",{position:`${x} ${h/2} ${z}`,radius:.13,height:h,color:"#806044"});
+      for(let i=0;i<8;i++){
+        const a=i*Math.PI/4;
+        entity("a-cone",{position:`${x+Math.cos(a)*1.05} ${h+.25} ${z+Math.sin(a)*1.05}`,radiusBottom:.18,radiusTop:.02,height:2.35,rotation:`0 ${i*45} ${i%2? -48:48}`,color:"#3b814b"});
+      }
+    }
+    function addHotspot(x,y,z,label,description){
+      const marker=entity("a-sphere",{class:"interactive",position:`${x} ${y} ${z}`,radius:.28,color:"#f1cf65",material:"emissive: #80621e; emissiveIntensity: .45"});
+      marker.addEventListener("click",()=>{
+        document.querySelector("#modal-title").textContent=label;
+        document.querySelector("#modal-text").textContent=description;
+        document.querySelector("#info-modal").classList.add("open");
+      });
+      entity("a-text",{value:label.toUpperCase(),position:`${x-1.35} ${y+.55} ${z}`,color:"#fff",width:3.8,align:"center",side:"double"});
+    }
+    function addMacaw(x,y,z){
+      // Representação didática estilizada de uma arara-vermelha.
+      entity("a-sphere",{position:`${x} ${y} ${z}`,radius:.34,color:"#d94332",scale:"1.35 .8 .8"});
+      entity("a-sphere",{position:`${x+.34} ${y+.18} ${z}`,radius:.19,color:"#d94332"});
+      entity("a-cone",{position:`${x+.55} ${y+.14} ${z}`,radiusBottom:.13,radiusTop:0,height:.34,rotation:"0 0 -90",color:"#e7bd35"});
+      entity("a-sphere",{position:`${x-.08} ${y+.02} ${z-.27}`,radius:.23,color:"#176c9a",scale:"1 .55 .3"});
+      entity("a-sphere",{position:`${x-.08} ${y+.02} ${z+.27}`,radius:.23,color:"#176c9a",scale:"1 .55 .3"});
+      entity("a-cylinder",{position:`${x} ${y-.42} ${z}`,radius:.035,height:.45,color:"#55432e"});
+    }
+    function build(type){
+      env.innerHTML="";
+      if(type==="forest"){
+        // Clareira amazônica com dossel, sub-bosque, palmeiras e um rio lateral.
+        for(let i=0;i<30;i++){
+          const side=i%2===0?-1:1;
+          const x=side*(4.1+Math.random()*10);
+          const z=-2-Math.random()*32;
+          addAmazonTree(x,z,5.5+Math.random()*5,i%4===0?"#2d7048":"#18583d");
+        }
+        for(let i=0;i<10;i++) addAmazonPalm((Math.random()-.5)*23,-3-Math.random()*24,4+Math.random()*2);
+        // Rio sinuoso e margens: a faixa azul acompanha o lado direito da trilha.
+        entity("a-plane",{position:"7.8 .035 -16",rotation:"-90 0 0",width:7.2,height:38,color:"#287e91",material:"roughness: .22"});
+        entity("a-plane",{position:"3.85 .045 -16",rotation:"-90 0 0",width:1.2,height:38,color:"#9a8b5b"});
+        entity("a-plane",{position:"11.65 .045 -16",rotation:"-90 0 0",width:1.2,height:38,color:"#9a8b5b"});
+        for(let i=0;i<26;i++){
+          const x=(Math.random()-.5)*7,z=-2-Math.random()*29;
+          entity("a-cone",{position:`${x} .38 ${z}`,radiusBottom:.16,radiusTop:.025,height:.72,color:i%2?"#347b48":"#5b914e"});
+        }
+        // Troncos caídos, pedras e folhagem baixa na trilha.
+        entity("a-cylinder",{position:"-2 .34 -10",rotation:"0 0 78",radius:.24,height:4.2,color:"#654a32"});
+        for(let i=0;i<18;i++){
+          const x=(Math.random()-.5)*7,z=-2-Math.random()*25;
+          entity("a-sphere",{position:`${x} .18 ${z}`,radius:.24+Math.random()*.22,color:i%2?"#536b3b":"#746c4c",scale:"1 .55 1"});
+        }
+        // Arara estilizada pousada na vegetação.
+        addMacaw(-4.5,4.2,-8.5);
+        // Pontos de descoberta com conteúdos específicos da Amazônia.
+        addHotspot(-2.8,1.65,-5.5,"Camadas da floresta","A floresta possui diferentes estratos. O dossel é formado pelas copas das árvores; abaixo dele ficam o sub-bosque e o chão da floresta. Cada camada oferece condições e habitats distintos para plantas e animais.");
+        addHotspot(3.1,1.5,-9,"Rios e ciclo da água","Os rios amazônicos conectam ambientes e comunidades. A floresta também libera vapor d’água pela evapotranspiração, contribuindo para a formação de nuvens e para o transporte de umidade na América do Sul.");
+        addHotspot(-1.1,2.15,-14,"Biodiversidade","A Amazônia abriga enorme diversidade de plantas, insetos, peixes, anfíbios, aves e mamíferos. A arara-vermelha representada no cenário é um exemplo da fauna associada às florestas tropicais.");
+        addHotspot(5.2,1.6,-20,"Conservação","Desmatamento, queimadas e fragmentação de habitats ameaçam os ecossistemas. Unidades de conservação, pesquisa científica e os conhecimentos de povos e comunidades tradicionais são importantes para proteger a floresta.");
+      }else if(type==="atlantic"){
+        for(let i=0;i<26;i++){let x=(Math.random()-.5)*42,z=-3-Math.random()*38;tree(x,z,3+Math.random()*5,"#286b4a");}
+        entity("a-plane",{position:"0 .025 -12",rotation:"-90 0 0",width:5,height:30,color:"#39828a",material:"roughness: .28"});
+      }else if(type==="savanna"){
+        for(let i=0;i<16;i++){let x=(Math.random()-.5)*38,z=-4-Math.random()*32;tree(x,z,2.4+Math.random()*2,"#8b8747","#594b36");}
+        for(let i=0;i<25;i++)entity("a-cone",{position:`${(Math.random()-.5)*35} .45 ${-3-Math.random()*28}`,radiusBottom:.5,radiusTop:.08,height:.9,color:"#b69b52"});
+      }else if(type==="dry"){
+        for(let i=0;i<13;i++){let x=(Math.random()-.5)*35,z=-4-Math.random()*30;cactus(x,z,1.4+Math.random()*2);}
+        for(let i=0;i<13;i++)tree((Math.random()-.5)*35,-4-Math.random()*30,1.8,"#8a874b","#69513a");
+        for(let i=0;i<16;i++)entity("a-dodecahedron",{position:`${(Math.random()-.5)*35} .25 ${-3-Math.random()*25}`,radius:.4,color:"#8d795d"});
+      }else if(type==="wetland"){
+        entity("a-plane",{position:"0 .04 -10",rotation:"-90 0 0",width:40,height:36,color:"#4b9295",material:"roughness: .25"});
+        for(let i=0;i<24;i++){let x=(Math.random()-.5)*38,z=-3-Math.random()*30;tree(x,z,2+Math.random()*2,"#4d7944","#62513b");}
+        for(let i=0;i<22;i++)entity("a-cylinder",{position:`${(Math.random()-.5)*34} .55 ${-3-Math.random()*25}`,radius:.045,height:1.1,color:"#a3a35d"});
+      }else if(type==="grass"){
+        for(let i=0;i<90;i++)entity("a-cone",{position:`${(Math.random()-.5)*48} .35 ${-2-Math.random()*36}`,radiusBottom:.12,radiusTop:.015,height:.7,color:i%3===0?"#9a9c54":"#78924e"});
+        for(let i=0;i<8;i++)entity("a-sphere",{position:`${(i-4)*5} .5 ${-12-Math.random()*20}`,radius:2+Math.random()*2,color:"#91a66b",scale:"1 .28 1"});
+      }
+      // Nos demais biomas, mantém um ponto geral de observação.
+      if(type!=="forest"){
+        const marker=entity("a-sphere",{class:"interactive",position:"0 1.5 -5",radius:.38,color:"#e2c56b",material:"emissive: #5b461b; emissiveIntensity: .25"});
+        marker.addEventListener("click",()=>openInfo());
+        entity("a-text",{value:"PONTO DE DESCOBERTA",position:"-1.35 2.15 -5",color:"#ffffff",width:4,align:"center"});
+        entity("a-text",{value:"Explore a paisagem",position:"-1.05 1.05 -5",color:"#ffffff",width:3,align:"center"});
+      }
+    }
+    function selectBiome(id){
+      current=id;const b=biomes[id];if(panoramaUrl){URL.revokeObjectURL(panoramaUrl);panoramaUrl=null;}sky.removeAttribute("src");sky.setAttribute("color",b.sky);ground.setAttribute("color",b.ground);document.querySelector("#clear-panorama").hidden=true;build(b.type);
+      document.querySelector("#viewer-title").textContent=b.name+" · ambiente imersivo";
+      document.querySelector("#biome-heading").textContent=b.title;document.querySelector("#biome-description").textContent=b.description;
+      document.querySelector("#biome-facts").innerHTML=b.facts.map(x=>'<span class="fact">'+x+'</span>').join("");
+      document.querySelectorAll(".biome").forEach(el=>el.classList.toggle("active",el.dataset.biome===id));
+    }
+    function openInfo(){const b=biomes[current];document.querySelector("#modal-title").textContent=b.name+" · você sabia?";document.querySelector("#modal-text").textContent=b.detail;document.querySelector("#info-modal").classList.add("open")}
+    document.querySelectorAll(".biome").forEach(el=>el.addEventListener("click",()=>selectBiome(el.dataset.biome)));
+    document.querySelector("#learn-more").addEventListener("click",openInfo);
+    document.querySelector("#close-modal").addEventListener("click",()=>document.querySelector("#info-modal").classList.remove("open"));
+    document.querySelector("#info-modal").addEventListener("click",e=>{if(e.target.id==="info-modal")e.currentTarget.classList.remove("open")});
+    document.querySelector("#enter-vr").addEventListener("click",()=>{const scene=document.querySelector("a-scene");if(scene.is("vr-mode"))scene.exitVR();else scene.enterVR()});
+    document.querySelector("#reset-view").addEventListener("click",()=>document.querySelector("#camera-rig").setAttribute("position","0 1.6 8"));
+    document.querySelector("#load-panorama").addEventListener("click",()=>document.querySelector("#panorama-file").click());
+    document.querySelector("#panorama-file").addEventListener("change",event=>{const file=event.target.files&&event.target.files[0];if(!file)return;if(!file.type.startsWith("image/")){alert("Selecione um arquivo de imagem.");return;}if(panoramaUrl)URL.revokeObjectURL(panoramaUrl);panoramaUrl=URL.createObjectURL(file);sky.setAttribute("src",panoramaUrl);sky.setAttribute("rotation","0 -90 0");document.querySelector("#clear-panorama").hidden=false;document.querySelector("#viewer-title").textContent=biomes[current].name+" · panorama 360° + cenário 3D";});
+    document.querySelector("#clear-panorama").addEventListener("click",()=>{if(panoramaUrl)URL.revokeObjectURL(panoramaUrl);panoramaUrl=null;sky.removeAttribute("src");sky.setAttribute("color",biomes[current].sky);document.querySelector("#clear-panorama").hidden=true;document.querySelector("#viewer-title").textContent=biomes[current].name+" · ambiente imersivo";});
+    selectBiome("amazonia");
+  </script>
 </body>
 </html>
