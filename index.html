@@ -146,6 +146,11 @@
             <a-scene embedded vr-mode-ui="enabled: true" renderer="colorManagement: true; physicallyCorrectLights: true" background="color: #b7cbb8">
               <a-assets timeout="60000">
                 <img id="amazon-panorama" src="amaz.png">
+                <img id="pantanal-panorama" src="Pantanal.png">
+                <img id="pampa-panorama" src="Pampa.png">
+                <img id="mata-panorama" src="Mata Atlântica.png">
+                <img id="caatinga-panorama" src="Caatinga.png">
+                <img id="cerrado-panorama" src="Cer.png">
               </a-assets>
               <a-entity id="world">
                 <a-sky id="sky" material="shader: flat; toneMapped: false" color="#9fc8b5"></a-sky>
@@ -489,15 +494,19 @@
     function selectBiome(id){
       current=id;
       const b=biomes[id];
-      const image=document.querySelector("#amazon-panorama");
       const title=document.querySelector("#viewer-title");
 
-      // Cada bioma recebe sua própria imagem local no repositório.
-      // Por enquanto, somente a Amazônia possui arquivo cadastrado.
+      // Cada bioma utiliza sua própria fotografia panorâmica 360° local.
       const panoramas={
-        amazonia:{asset:"#amazon-panorama"}
+        amazonia:{asset:"#amazon-panorama",file:"amaz.png"},
+        pantanal:{asset:"#pantanal-panorama",file:"Pantanal.png"},
+        pampa:{asset:"#pampa-panorama",file:"Pampa.png"},
+        "mata-atlantica":{asset:"#mata-panorama",file:"Mata Atlântica.png"},
+        caatinga:{asset:"#caatinga-panorama",file:"Caatinga.png"},
+        cerrado:{asset:"#cerrado-panorama",file:"Cer.png"}
       };
       const panorama=panoramas[id];
+      const image=panorama?document.querySelector(panorama.asset):null;
 
       sky.removeAttribute("src");
       sky.setAttribute("color","#17251d");
@@ -518,8 +527,8 @@
           if(current!==id)return;
           sky.removeAttribute("src");
           sky.setAttribute("color","#17251d");
-          title.textContent="Não foi possível carregar amaz.png";
-          console.error("Falha ao carregar o arquivo local amaz.png.");
+          title.textContent="Não foi possível carregar "+panorama.file;
+          console.error("Falha ao carregar o arquivo local "+panorama.file+".");
         };
         if(image.complete&&image.naturalWidth>0){
           applyPanorama();
