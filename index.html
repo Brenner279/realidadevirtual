@@ -509,6 +509,7 @@
         title.textContent=b.name+" · carregando panorama 360°…";
         const applyPanorama=()=>{
           if(current!==id)return;
+          sky.setAttribute("color","#ffffff");
           sky.setAttribute("src",panorama.asset);
           sky.setAttribute("rotation","0 -90 0");
           title.textContent=b.name+" · panorama 360°";
