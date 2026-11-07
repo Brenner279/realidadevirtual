@@ -624,6 +624,9 @@
     async function playFaunaVideo(){
       if(current!=="amazonia")return;
       stopNarration();
+      faunaMode=true;
+      narrationButton.disabled=true;
+      narrationButton.textContent="🔊 Narração pausada durante o vídeo";
       sky.setAttribute("visible","false");
       ground.object3D.visible=false;
       env.object3D.visible=false;
@@ -633,7 +636,6 @@
       try{
         if(faunaVideo.readyState===0)faunaVideo.load();
         await faunaVideo.play();
-        faunaMode=true;
         faunaButton.hidden=true;
         faunaButton.disabled=false;
         panoramaButton.hidden=false;
@@ -644,6 +646,7 @@
         narrationButton.disabled=true;
         narrationButton.textContent="🔊 Narração disponível no panorama";
       }catch(error){
+        faunaMode=false;
         faunaSphere.setAttribute("visible","false");
         sky.setAttribute("visible","true");
         faunaButton.disabled=false;
@@ -680,7 +683,7 @@
       const inVR=document.querySelector("a-scene").is("vr-mode");
       narrationButton.disabled=!available||!inVR;
       narrationButton.textContent=!available
-        ?"🔊 Narração disponível na Amazônia"
+        ?(faunaMode?"🔊 Narração pausada durante o vídeo":"🔊 Narração disponível na Amazônia")
         :inVR?"▶ Ativar narração":"🔊 Entre no modo VR para ouvir";
       if(!available||!inVR)narrationButton.setAttribute("aria-pressed","false");
     }
@@ -697,7 +700,7 @@
       });
     }
     narrationButton.addEventListener("click",()=>{
-      if(current!=="amazonia"||!document.querySelector("a-scene").is("vr-mode"))return;
+      if(current!=="amazonia"||faunaMode||!document.querySelector("a-scene").is("vr-mode"))return;
       if(narration.paused)playNarration();
       else{
         narration.pause();
