@@ -1,4 +1,4 @@
-name: Gerar APK Android
+name: Gerar APK Android instalável
 
 on:
   workflow_dispatch:
@@ -38,17 +38,25 @@ jobs:
       - name: Instalar dependências
         run: npm install
 
-      - name: Montar arquivos locais para uso offline
+      - name: Preparar arquivos offline
         run: |
           mkdir -p www/vendor
           cp index.html www/index.html
           cp ./*.png ./*.mp3 ./*.mp4 www/
           curl -fL --retry 3 https://aframe.io/releases/1.8.0/aframe.min.js -o www/vendor/aframe.min.js
           cp node_modules/webxr-polyfill/build/webxr-polyfill.min.js www/vendor/webxr-polyfill.min.js
+          test -s www/index.html
           test -s www/vendor/aframe.min.js
           test -s www/vendor/webxr-polyfill.min.js
-          echo "Arquivos locais preparados:"
+          test -s www/amaz.png
+          test -s www/amz360.mp4
+          echo "Arquivos offline preparados:"
           du -sh www
+
+      - name: Validar JavaScript da aplicação
+        run: |
+          node --check <(sed -n '/^  <script>$/,/^  <\\/script>$/p' www/index.html | sed '1d;$d')
+          echo "Sintaxe JavaScript validada."
 
       - name: Criar projeto Android
         run: npx cap add android
@@ -62,10 +70,18 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon
 
-      - name: Publicar APK
+      - name: Preparar APK com nome claro
+        run: |
+          mkdir -p dist
+          cp android/app/build/outputs/apk/debug/app-debug.apk dist/Brasil-Imersivo.apk
+          test -s dist/Brasil-Imersivo.apk
+          file dist/Brasil-Imersivo.apk
+          ls -lh dist/Brasil-Imersivo.apk
+
+      - name: Disponibilizar APK para instalação
         uses: actions/upload-artifact@v4
         with:
-          name: Brasil-Imersivo-APK
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          name: APK-ANDROID-Brasil-Imersivo
+          path: dist/Brasil-Imersivo.apk
           if-no-files-found: error
           retention-days: 30
