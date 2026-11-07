@@ -151,9 +151,11 @@
                 <img id="mata-panorama" src="Mata Atlântica.png">
                 <img id="caatinga-panorama" src="Caatinga.png">
                 <img id="cerrado-panorama" src="Cer.png">
+                <video id="amazon-fauna-video" src="Videoamaz.mp4" preload="none" loop playsinline webkit-playsinline crossorigin="anonymous"></video>
               </a-assets>
               <a-entity id="world">
                 <a-sky id="sky" material="shader: flat; toneMapped: false" color="#9fc8b5"></a-sky>
+                <a-videosphere id="fauna-videosphere" src="#amazon-fauna-video" rotation="0 -90 0" visible="false"></a-videosphere>
                 <a-plane id="ground" class="walkable" rotation="-90 0 0" width="180" height="180" color="#456c49" position="0 0 0"></a-plane>
                 <a-entity id="environment"></a-entity>
               </a-entity>
@@ -181,6 +183,8 @@
             <button class="btn btn-soft" id="reset-view">⌖ Voltar ao início</button>
             <button class="btn btn-soft" id="learn-more">Sobre este bioma</button>
             <button class="btn btn-soft" id="toggle-narration" type="button" aria-pressed="false" disabled>🔊 Narração indisponível</button>
+            <button class="btn btn-primary" id="explore-fauna" type="button" hidden>▶ Explorar fauna em 360°</button>
+            <button class="btn btn-soft" id="back-to-panorama" type="button" hidden>↩ Voltar ao panorama</button>
           </div>
           <audio id="biome-narration" preload="none">
             <source src="Amazonia.mp3" type="audio/mpeg">
@@ -292,6 +296,11 @@
     };
     const env = document.querySelector("#environment"), sky=document.querySelector("#sky"), ground=document.querySelector("#ground");
     let current="amazonia";
+    let faunaMode=false;
+    const faunaVideo=document.querySelector("#amazon-fauna-video");
+    const faunaSphere=document.querySelector("#fauna-videosphere");
+    const faunaButton=document.querySelector("#explore-fauna");
+    const panoramaButton=document.querySelector("#back-to-panorama");
     function entity(tag,attrs,parent=env){const el=document.createElement(tag);Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v));parent.appendChild(el);return el}
     function tree(x,z,height=4,leaf="#286443",trunk="#69513a"){
       entity("a-cylinder",{position:`${x} ${height*.28} ${z}`,radius:.16,height:height*.58,color:trunk});
@@ -538,6 +547,7 @@
       });
     }
     function selectBiome(id){
+      stopFaunaVideo();
       current=id;
       const b=biomes[id];
       const title=document.querySelector("#viewer-title");
@@ -553,7 +563,11 @@
       };
       const panorama=panoramas[id];
       const image=panorama?document.querySelector(panorama.asset):null;
+      faunaButton.hidden=id!=="amazonia";
+      panoramaButton.hidden=true;
 
+      sky.setAttribute("visible","true");
+      faunaSphere.setAttribute("visible","false");
       sky.removeAttribute("src");
       sky.setAttribute("color","#17251d");
       sky.setAttribute("rotation","0 0 0");
@@ -596,6 +610,58 @@
     function openInfo(){showDiscovery(biomes[current].name+" · você sabia?",biomes[current].detail)}
     const narration=document.querySelector("#biome-narration");
     const narrationButton=document.querySelector("#toggle-narration");
+
+    function stopFaunaVideo(){
+      if(!faunaVideo)return;
+      faunaVideo.pause();
+      try{faunaVideo.currentTime=0;}catch(error){}
+      faunaSphere.setAttribute("visible","false");
+      sky.setAttribute("visible","true");
+      faunaMode=false;
+      if(faunaButton)faunaButton.hidden=current!=="amazonia";
+      if(panoramaButton)panoramaButton.hidden=true;
+    }
+    async function playFaunaVideo(){
+      if(current!=="amazonia")return;
+      stopNarration();
+      sky.setAttribute("visible","false");
+      faunaSphere.setAttribute("visible","true");
+      faunaButton.disabled=true;
+      faunaButton.textContent="Carregando vídeo 360°…";
+      try{
+        if(faunaVideo.readyState===0)faunaVideo.load();
+        await faunaVideo.play();
+        faunaMode=true;
+        faunaButton.hidden=true;
+        faunaButton.disabled=false;
+        panoramaButton.hidden=false;
+        document.querySelector("#viewer-title").textContent="Amazônia · exploração da fauna em vídeo 360°";
+        document.querySelector(".viewer-head .live").textContent="● FAUNA 360°";
+        document.querySelector("#mode-chip").textContent="MODO FAUNA 360°";
+        document.querySelector("#scene-hint").textContent="Vídeo 360° da fauna amazônica • Use o olhar para explorar";
+      }catch(error){
+        faunaSphere.setAttribute("visible","false");
+        sky.setAttribute("visible","true");
+        faunaButton.disabled=false;
+        faunaButton.textContent="▶ Tentar novamente";
+        document.querySelector("#viewer-title").textContent="Não foi possível reproduzir Videoamaz.mp4";
+        console.error("Falha ao reproduzir o vídeo 360° da fauna amazônica:",error);
+      }
+    }
+    function returnToPanorama(){
+      stopFaunaVideo();
+      selectBiome(current);
+      document.querySelector(".viewer-head .live").textContent="● PANORAMA 360°";
+      document.querySelector("#scene-hint").textContent="WASD / setas para caminhar • Arraste para olhar";
+      document.querySelector("#mode-chip").textContent="MODO EXPLORAÇÃO";
+    }
+    faunaButton.addEventListener("click",playFaunaVideo);
+    panoramaButton.addEventListener("click",returnToPanorama);
+    faunaVideo.addEventListener("ended",()=>{
+      faunaButton.hidden=false;
+      faunaButton.textContent="↻ Assistir novamente";
+      panoramaButton.hidden=false;
+    });
 
     function stopNarration(){
       narration.pause();
@@ -643,6 +709,7 @@
       document.querySelector("#home-screen").hidden=true;
       document.querySelector("#experience-screen").hidden=false;
       stopNarration();
+      stopFaunaVideo();
       configureNarration(id);
       selectBiome(id);
       resetPosition();
@@ -678,6 +745,7 @@
     document.querySelector("#back-to-map").addEventListener("click",()=>{
       const scene=document.querySelector("a-scene");
       if(scene.is("vr-mode"))scene.exitVR();
+      stopFaunaVideo();
       document.querySelector("#experience-screen").hidden=true;
       document.querySelector("#home-screen").hidden=false;
       document.querySelector("#touch-pad").style.display="";
@@ -749,14 +817,14 @@
 
     const scene=document.querySelector("a-scene");
     scene.addEventListener("enter-vr",()=>{
-      document.querySelector("#mode-chip").textContent="MODO REALIDADE VIRTUAL";
+      document.querySelector("#mode-chip").textContent=faunaMode?"FAUNA 360° · MODO VR":"MODO REALIDADE VIRTUAL";
       touchPad.style.display="none";
       configureNarration(current);
       playNarration();
     });
     scene.addEventListener("exit-vr",()=>{
       stopNarration();
-      document.querySelector("#mode-chip").textContent="MODO EXPLORAÇÃO";
+      document.querySelector("#mode-chip").textContent=faunaMode?"MODO FAUNA 360°":"MODO EXPLORAÇÃO";
       touchPad.style.display="";
     });
     // No modo VR sem controles, olhar para o chão e aguardar o clique por foco desloca o visitante.
