@@ -23,12 +23,36 @@ jobs:
     steps:
       - name: Baixar repositório
         uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Instalar dependências
+        run: npm install
+
+      - name: Preparar site e bibliotecas locais
+        run: |
+          mkdir -p site/vendor
+          cp index.html site/index.html
+          cp ./*.png ./*.mp3 ./*.mp4 site/
+          curl -fL --retry 3 https://aframe.io/releases/1.8.0/aframe.min.js -o site/vendor/aframe.min.js
+          cp node_modules/webxr-polyfill/build/webxr-polyfill.min.js site/vendor/webxr-polyfill.min.js
+          test -s site/vendor/aframe.min.js
+          test -s site/vendor/webxr-polyfill.min.js
+          echo "Arquivos preparados para o GitHub Pages:"
+          du -sh site
+          find site -maxdepth 2 -type f
+
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
-      - name: Preparar arquivos do site
+
+      - name: Preparar artefato do site
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: site
+
       - name: Publicar
         id: deployment
         uses: actions/deploy-pages@v4
