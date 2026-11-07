@@ -563,7 +563,9 @@
       };
       const panorama=panoramas[id];
       const image=panorama?document.querySelector(panorama.asset):null;
-      faunaButton.hidden=id!=="amazonia";
+      faunaButton.hidden=!["amazonia","cerrado"].includes(id);
+      faunaButton.textContent="▶ Explorar fauna em 360°";
+      faunaButton.disabled=false;
       panoramaButton.hidden=true;
 
       sky.setAttribute("visible","true");
@@ -618,12 +620,20 @@
       faunaSphere.setAttribute("visible","false");
       sky.setAttribute("visible","true");
       faunaMode=false;
-      if(faunaButton)faunaButton.hidden=current!=="amazonia";
+      if(faunaButton)faunaButton.hidden=!faunaVideos[current];
       if(panoramaButton)panoramaButton.hidden=true;
     }
+    const faunaVideos={
+      amazonia:{src:"Videoamaz.mp4",label:"Amazônia"},
+      cerrado:{src:"vidcer.mp4",label:"Cerrado"}
+    };
     async function playFaunaVideo(){
-      if(current!=="amazonia")return;
+      const videoInfo=faunaVideos[current];
+      if(!videoInfo)return;
       stopNarration();
+      faunaVideo.pause();
+      faunaVideo.src=videoInfo.src;
+      faunaVideo.load();
       faunaMode=true;
       narrationButton.disabled=true;
       narrationButton.textContent="🔊 Narração pausada durante o vídeo";
@@ -639,7 +649,7 @@
         faunaButton.hidden=true;
         faunaButton.disabled=false;
         panoramaButton.hidden=false;
-        document.querySelector("#viewer-title").textContent="Amazônia · exploração da fauna em vídeo 360°";
+        document.querySelector("#viewer-title").textContent=videoInfo.label+" · exploração da fauna em vídeo 360°";
         document.querySelector(".viewer-head .live").textContent="● FAUNA 360°";
         document.querySelector("#mode-chip").textContent="MODO FAUNA 360°";
         document.querySelector("#scene-hint").textContent="Vídeo 360° da fauna amazônica • Use o olhar para explorar";
@@ -652,7 +662,7 @@
         faunaButton.disabled=false;
         faunaButton.textContent="▶ Tentar novamente";
         configureNarration(current);
-        document.querySelector("#viewer-title").textContent="Não foi possível reproduzir Videoamaz.mp4";
+        document.querySelector("#viewer-title").textContent="Não foi possível reproduzir "+videoInfo.src;
         console.error("Falha ao reproduzir o vídeo 360° da fauna amazônica:",error);
       }
     }
