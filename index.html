@@ -71,27 +71,70 @@
     @media(max-width:700px){.home-screen,.experience-screen{padding:22px 13px 42px}.home-hero{padding:4px 4px 23px}.home-hero p{font-size:13px}.home-grid{gap:13px}.map-card-head{padding:15px 15px 0}.map-card-head h2,.destination-card h2{font-size:18px}.map-canvas{height:360px}.map-legend{padding:0 13px 15px;gap:7px 10px}.destination-card{padding:17px}.destination-list{grid-template-columns:1fr 1fr}.destination-option{padding:8px;gap:7px}.dest-icon{width:31px;height:31px;font-size:17px}.destination-option b{font-size:11px}.destination-option small{font-size:8px}.dest-arrow{font-size:13px}.hybrid-note{align-items:flex-start;padding:13px}.experience-top{gap:8px;flex-wrap:wrap}.experience-context b{font-size:14px}.mode-chip{font-size:8px;padding:7px 8px}.scene-wrap{height:min(64vh,430px);min-height:310px}.touch-pad{display:grid}.scene-hint{bottom:13px;max-width:52%;font-size:9px;padding:8px}.vr-hint{bottom:165px;max-width:90%;font-size:9px}.viewer-actions{padding:11px}.viewer-actions .btn{font-size:10px;padding:9px 10px}.control-legend{font-size:9px}.learning-card{padding:17px}}
     @media(max-width:390px){.map-canvas{height:320px}.map-marker{padding:5px 6px;gap:3px}.map-marker b{font-size:8px}.map-marker span{font-size:12px}.destination-list{grid-template-columns:1fr}.scene-wrap{height:350px}.touch-pad{width:124px;height:124px}.scene-hint{max-width:45%}}
 
+  
+    /* Página inicial Brasil Imersivo — identidade visual da expedição */
+    body{background:#eef5e9;background-image:radial-gradient(ellipse at 12% 18%,#d9f0d4 0,transparent 36%),linear-gradient(180deg,#f7fbf4,#e8f2e4);color:#153c2b}
+    .topbar{height:76px;padding:0 clamp(16px,5vw,70px);background:linear-gradient(100deg,#063c29,#08713c 58%,#064b32);box-shadow:0 5px 20px #073d2b2b;position:relative;z-index:10}
+    .brand{color:#fff;text-decoration:none;font-size:20px;letter-spacing:.3px}.brand-mark{width:42px;height:42px;border-radius:50%;font-size:25px;background:#d6f4a8;box-shadow:0 0 0 4px #ffffff22}
+    .brand b{color:#d7f49c}.top-note{color:#d9efdc;text-transform:none;letter-spacing:.02em;font-size:13px}
+    .menu-toggle{width:48px;height:48px;border:1px solid #ffffff55;border-radius:15px;background:#07572f;color:white;font-size:24px;box-shadow:0 4px 12px #001d1138}
+    .quick-menu{position:absolute;right:clamp(16px,5vw,70px);top:67px;min-width:220px;padding:9px;background:#fff;border:1px solid #d9e8d4;border-radius:16px;box-shadow:0 14px 35px #102c1d30;display:grid;gap:4px}
+    .quick-menu[hidden]{display:none}.quick-menu button{border:0;background:white;text-align:left;padding:11px 13px;border-radius:10px;color:#214b32;font-weight:700}.quick-menu button:hover{background:#edf6e8}
+    .home-screen{max-width:1440px;padding:26px clamp(14px,3.5vw,52px) 0}
+    .showcase-hero{min-height:400px;position:relative;overflow:hidden;border-radius:28px;padding:clamp(26px,5vw,62px);background:linear-gradient(115deg,#0877c9 0%,#149edb 45%,#c4edff 100%);box-shadow:0 15px 40px #135a7730;color:#fff;isolation:isolate}
+    .showcase-hero:before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse at 83% 25%,#ffffffaa 0 3%,transparent 25%),linear-gradient(165deg,transparent 56%,#126a3c 57%,#063e2b 100%);opacity:.95}
+    .showcase-hero:after{content:"";position:absolute;z-index:-1;width:500px;height:500px;border-radius:50%;right:-80px;bottom:-300px;background:#46a947;box-shadow:0 0 0 25px #ffffff22,0 0 0 55px #ffffff18}
+    .hero-copy{position:relative;z-index:2;max-width:690px}.hero-kicker{display:inline-flex;align-items:center;gap:8px;padding:8px 13px;border-radius:30px;background:#063c2bbd;border:1px solid #ffffff55;font-size:11px;font-weight:800;letter-spacing:.08em}
+    .hero-kicker span{font-size:19px}.hero-copy h1{font:900 clamp(48px,8vw,94px)/.86 Manrope,sans-serif;letter-spacing:-4px;color:#fff;text-shadow:0 5px 0 #07512d,0 9px 20px #063a2c75;margin:24px 0 14px}.hero-copy h1 em{font-style:normal;color:#ffdc36}.hero-leaf{font-size:.45em;vertical-align:top;margin-left:10px}
+    .hero-copy h2{font:700 clamp(19px,2.5vw,28px)/1.2 Manrope,sans-serif;margin:0 0 10px;text-shadow:0 2px 6px #003c2b55}.hero-copy h2 strong{color:#fff28a}.hero-copy p{font-size:14px;line-height:1.55;max-width:570px;color:#f1fbff;margin:0 0 22px;text-shadow:0 1px 4px #003c2b66}
+    .journey-button{border:3px solid #a8ed87;border-radius:40px;padding:13px 22px;background:linear-gradient(180deg,#50d843,#078b3c);color:#fff;font:800 17px Manrope,sans-serif;box-shadow:0 5px 0 #075b32,0 9px 20px #003b2b55;text-shadow:0 2px 3px #07552e;transition:.2s}.journey-button:hover{transform:translateY(-3px);filter:brightness(1.08)}.journey-button span{font-size:26px;vertical-align:-2px;margin-left:12px}
+    .hero-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:23px}.hero-tags span{font-size:10px;font-weight:700;padding:7px 10px;border-radius:30px;background:#063e2a99;border:1px solid #ffffff40}
+    .hero-art{position:absolute;right:5%;top:7%;width:38%;height:88%;display:grid;place-items:center}.hero-globe{font-size:clamp(120px,19vw,250px);filter:drop-shadow(0 18px 14px #063c2b66);transform:rotate(-12deg)}.hero-bird{position:absolute;left:4%;top:18%;font-size:clamp(45px,7vw,90px);transform:rotate(-18deg);filter:drop-shadow(0 8px 5px #063c2b55)}.hero-orbit{position:absolute;border:2px solid #ffffff77;border-radius:50%;width:90%;height:55%;transform:rotate(-25deg)}.orbit-two{width:110%;height:72%;transform:rotate(28deg);border-color:#d8ff9c88}.hero-art-label{position:absolute;right:0;bottom:7%;background:#fffef0;color:#175335;padding:12px 18px;border-radius:16px;font-size:11px;line-height:1.4;box-shadow:0 7px 18px #003b2b44;transform:rotate(-4deg)}.hero-art-label b{font-size:14px}
+    .home-section-heading{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:38px 4px 17px}.home-section-heading h2,.biome-showcase-title h2{font:900 clamp(23px,3vw,34px) Manrope,sans-serif;margin:5px 0;color:#174b30}.home-section-heading p,.biome-showcase-title p{font-size:13px;color:#647a68;margin:0;line-height:1.5}.home-grid{grid-template-columns:minmax(0,1.1fr) minmax(300px,.9fr);gap:18px}
+    .map-card,.destination-card{border:1px solid #d9e9d4;border-radius:22px;box-shadow:0 10px 28px #234c2b13}.map-card-head{padding:19px 20px 0}.map-card-head h2,.destination-card h2{color:#174b30}.map-canvas{height:440px}.brazil-map{filter:drop-shadow(0 12px 8px #17472b30)}.map-marker{border:1px solid #fff;background:#fffffff2;box-shadow:0 5px 15px #17472b30;border-radius:30px;padding:8px 12px;color:#174b30}.map-marker:hover,.map-marker.selected{background:#e4f7d7;border-color:#5b9e55}.map-note{background:#eff8e9;color:#51734e}
+    .destination-card{padding:22px}.destination-card>div:first-child p{color:#647a68}.destination-option{border-color:#e0eadb;border-radius:14px}.destination-option:hover,.destination-option.selected{background:#eef8e9;border-color:#9cc88f}.dest-icon{background:#e8f5df}.dest-arrow{color:#248246;font-size:22px}
+    .hybrid-note{background:#eaf5e2}.hybrid-note>span{background:#d5edc6}.biome-showcase-title{text-align:center;margin:42px 0 18px}.biome-showcase-title h2{margin-bottom:5px}.biome-showcase{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding-bottom:28px}
+    .biome-tile{min-height:190px;position:relative;overflow:hidden;border:3px solid #fff;border-radius:19px;padding:18px;text-align:left;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;color:#fff;text-shadow:0 2px 5px #102b1d;box-shadow:0 7px 20px #173e291c;transition:.2s;background-size:cover;background-position:center}
+    .biome-tile:before{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#062b1edb 0%,#062b1e12 90%);z-index:0}.biome-tile>*{position:relative;z-index:1}.biome-tile:hover{transform:translateY(-4px);box-shadow:0 12px 25px #173e2935}.biome-tile b{font:900 23px Manrope,sans-serif}.biome-tile small{font-size:12px;margin:4px 0 12px}.tile-symbol{position:absolute!important;top:13px;left:16px;font-size:30px}.tile-action{background:#078d3e;border:1px solid #a8e99c;border-radius:30px;padding:7px 15px;font-size:12px;font-weight:800}.tile-action i{font-style:normal;margin-left:12px;font-size:18px}
+    .tile-amazonia{background-image:url("amaz.png"),linear-gradient(120deg,#176b35,#83b94b)}.tile-caatinga{background-image:url("Caatinga.png"),linear-gradient(120deg,#a85b22,#e5b65d)}.tile-cerrado{background-image:url("Cer.png"),linear-gradient(120deg,#916b32,#d8b66d)}.tile-mata{background-image:url("Mata%20Atl%C3%A2ntica.png"),linear-gradient(120deg,#155b35,#7caf4d)}.tile-pantanal{background-image:url("Pantanal.png"),linear-gradient(120deg,#2b7d9a,#8ac6c1)}.tile-pampa{background-image:url("Pampa.png"),linear-gradient(120deg,#81943d,#d4c76c)}
+    .home-footer{margin:0 -3.5vw;padding:22px clamp(18px,5vw,70px);background:linear-gradient(100deg,#063b28,#08713d,#06442e);color:#e8f6e8;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;font-size:12px}.home-footer strong{font:italic 800 16px Manrope,sans-serif;color:#e4f7a7}
+    @media(max-width:900px){.hero-art{right:0;width:34%;opacity:.72}.home-grid{grid-template-columns:1fr}.map-canvas{height:410px}.biome-showcase{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:600px){.topbar{height:65px}.brand{font-size:16px}.brand-mark{width:36px;height:36px;font-size:21px}.top-note{display:none}.home-screen{padding:13px 10px 0}.showcase-hero{min-height:480px;padding:25px 20px;border-radius:20px}.hero-copy{max-width:100%}.hero-copy h1{font-size:clamp(49px,13vw,72px);letter-spacing:-3px;margin-top:23px}.hero-copy h2{font-size:20px;max-width:300px}.hero-copy p{font-size:12px;max-width:310px}.hero-art{width:46%;height:42%;right:-2%;top:auto;bottom:-2%;opacity:.95}.hero-globe{font-size:145px}.hero-bird{font-size:42px;left:0;top:5%}.hero-art-label{font-size:8px;padding:8px 11px;bottom:8%}.hero-art-label b{font-size:10px}.hero-tags{max-width:280px;margin-top:16px}.hero-tags span{font-size:8px}.journey-button{font-size:14px;padding:11px 16px}.home-section-heading{margin:27px 4px 14px;align-items:flex-start}.home-section-heading h2{font-size:22px}.home-section-heading p{font-size:11px;max-width:290px}.home-section-heading>.map-note{display:none}.map-card-head{padding:15px 13px 0}.map-card-head h2{font-size:17px}.map-canvas{height:340px}.map-marker{padding:6px 8px;gap:3px}.map-marker b{font-size:8px}.map-marker span{font-size:12px}.map-legend{font-size:8px;padding:0 12px 14px}.destination-card{padding:16px}.destination-card h2{font-size:19px}.destination-card>div:first-child p{font-size:11px;margin-bottom:12px}.destination-list{grid-template-columns:1fr 1fr;gap:7px}.destination-option{padding:8px;gap:6px}.dest-icon{width:29px;height:29px;font-size:15px}.destination-option b{font-size:10px}.destination-option small{font-size:8px}.dest-arrow{font-size:16px}.hybrid-note{margin-top:12px;padding:10px}.hybrid-note p{font-size:9px}.biome-showcase-title{margin:30px 0 14px}.biome-showcase-title h2{font-size:22px}.biome-showcase-title p{font-size:11px}.biome-showcase{gap:8px;padding-bottom:20px}.biome-tile{min-height:145px;padding:11px;border-width:2px;border-radius:14px}.biome-tile b{font-size:16px}.biome-tile small{font-size:9px;margin:3px 0 8px}.tile-symbol{font-size:23px;top:8px;left:10px}.tile-action{font-size:9px;padding:5px 10px}.tile-action i{margin-left:5px}.home-footer{margin:0 -10px;padding:18px 14px;gap:9px;font-size:9px}.home-footer strong{font-size:12px}}
+    @media(max-width:380px){.map-canvas{height:310px}.biome-tile{min-height:132px}.destination-list{grid-template-columns:1fr}}
+
   </style>
 </head>
 <body>
   <header class="topbar">
-    <div class="brand"><span class="brand-mark">⌁</span><span>BRASIL IMERSIVO</span></div>
-    <div class="top-note">Uma experiência do projeto Realidade Virtual Geo</div>
-  </header>
+  <a class="brand" href="#" aria-label="Brasil Imersivo início"><span class="brand-mark">🌎</span><span>BRASIL <b>IMERSIVO</b></span></a>
+  <div class="top-note">Uma expedição pelos seis biomas brasileiros</div>
+  <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu" aria-expanded="false">☰</button>
+  <nav class="quick-menu" id="quick-menu" hidden>
+    <button data-biome="amazonia">Amazônia</button><button data-biome="cerrado">Cerrado</button><button data-biome="caatinga">Caatinga</button><button data-biome="mata-atlantica">Mata Atlântica</button><button data-biome="pantanal">Pantanal</button><button data-biome="pampa">Pampa</button>
+  </nav>
+</header>
   <main>
     <section class="home-screen" id="home-screen">
-      <div class="home-hero">
-        <div class="eyebrow">Geografia • Natureza • Tecnologia imersiva</div>
-        <h1>Uma viagem pelos<br><span>biomas do Brasil.</span></h1>
-        <p>Escolha uma região no mapa e entre em um ambiente 3D interativo. Caminhe, observe espécies e descubra como cada paisagem funciona.</p>
-      </div>
-      <div class="home-grid">
-        <article class="map-card">
-          <div class="map-card-head">
-            <div><span class="eyebrow">SELECIONE SEU DESTINO</span><h2>Explore o mapa do Brasil</h2></div>
-            <span class="map-note">Localização esquemática</span>
-          </div>
-          <div class="map-canvas">
+  <div class="showcase-hero">
+    <div class="hero-copy">
+      <div class="hero-kicker"><span>🌎</span> UMA EXPEDIÇÃO PELOS BIOMAS BRASILEIROS</div>
+      <h1>BRASIL<br><em>IMERSIVO</em><span class="hero-leaf">🌿</span></h1>
+      <h2>Uma expedição pelos <strong>seis biomas</strong> brasileiros.</h2>
+      <p>Explore o mapa, descubra as riquezas naturais de cada bioma e mergulhe em uma jornada educativa, interativa e inesquecível!</p>
+      <button class="journey-button" id="begin-journey">◉ &nbsp; Comece sua jornada <span>›</span></button>
+      <div class="hero-tags"><span>🌱 Educação ambiental</span><span>◉ Conhecimento interativo</span><span>🥽 Realidade virtual</span></div>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <div class="hero-globe">🌎</div><div class="hero-bird">🦜</div>
+      <div class="hero-orbit orbit-one"></div><div class="hero-orbit orbit-two"></div>
+      <div class="hero-art-label">SEIS BIOMAS<br><b>UMA SÓ JORNADA</b></div>
+    </div>
+  </div>
+  <div class="home-section-heading"><div><span class="eyebrow">ESCOLHA SEU DESTINO</span><h2>O Brasil espera por você!</h2><p>Toque em uma região do mapa ou escolha um dos biomas para começar a explorar.</p></div><span class="map-note">6 ambientes para descobrir</span></div>
+  <div class="home-grid">
+    <article class="map-card">
+      <div class="map-card-head"><div><span class="eyebrow">EXPLORE E INTERAJA</span><h2>Mapa dos biomas brasileiros</h2></div><span class="map-note">Toque nos marcadores</span></div>
+      <div class="map-canvas">
             <svg class="brazil-map" viewBox="0 0 360 420" role="img" aria-label="Mapa esquemático do Brasil com regiões dos seis biomas">
               <defs>
                 <clipPath id="brazil-clip">
@@ -117,21 +160,31 @@
             <button class="map-marker marker-pampa" data-biome="pampa"><span>🌱</span><b>Pampa</b></button>
           </div>
           <div class="map-legend"><span><i class="legend-dot" style="background:#3c9567"></i> Amazônia</span><span><i class="legend-dot" style="background:#e5bb55"></i> Caatinga</span><span><i class="legend-dot" style="background:#bc9b55"></i> Cerrado</span><span><i class="legend-dot" style="background:#3c8060"></i> Mata Atlântica</span><span><i class="legend-dot" style="background:#6fa3a0"></i> Pantanal</span><span><i class="legend-dot" style="background:#8b9c55"></i> Pampa</span></div>
-        </article>
-        <aside class="destination-card">
-          <div><span class="eyebrow">SEIS BIOMAS • SEIS EXPERIÊNCIAS</span><h2>Por onde vamos começar?</h2><p>Toque em um bioma no mapa ou escolha uma das opções abaixo.</p></div>
-          <div class="destination-list">
-            <button class="destination-option" data-biome="amazonia"><span class="dest-icon">🌳</span><span><b>Amazônia</b><small>Floresta tropical • Norte</small></span><span class="dest-arrow">↗</span></button>
-            <button class="destination-option" data-biome="cerrado"><span class="dest-icon">🌾</span><span><b>Cerrado</b><small>Savana brasileira • Centro</small></span><span class="dest-arrow">↗</span></button>
-            <button class="destination-option" data-biome="caatinga"><span class="dest-icon">🌵</span><span><b>Caatinga</b><small>Semiárido • Nordeste</small></span><span class="dest-arrow">↗</span></button>
-            <button class="destination-option" data-biome="mata-atlantica"><span class="dest-icon">🌿</span><span><b>Mata Atlântica</b><small>Florestas • Litoral</small></span><span class="dest-arrow">↗</span></button>
-            <button class="destination-option" data-biome="pantanal"><span class="dest-icon">🦜</span><span><b>Pantanal</b><small>Planície alagável • Centro-Oeste</small></span><span class="dest-arrow">↗</span></button>
-            <button class="destination-option" data-biome="pampa"><span class="dest-icon">🌱</span><span><b>Pampa</b><small>Campos naturais • Sul</small></span><span class="dest-arrow">↗</span></button>
-          </div>
-        </aside>
+    </article>
+    <aside class="destination-card">
+      <div><span class="eyebrow">SUA PRÓXIMA AVENTURA</span><h2>Os 6 biomas do Brasil</h2><p>Cada bioma guarda paisagens, espécies e histórias únicas. Qual será sua primeira parada?</p></div>
+      <div class="destination-list">
+        <button class="destination-option" data-biome="amazonia"><span class="dest-icon">🌳</span><span><b>Amazônia</b><small>Floresta viva e extraordinária</small></span><span class="dest-arrow">›</span></button>
+        <button class="destination-option" data-biome="caatinga"><span class="dest-icon">🌵</span><span><b>Caatinga</b><small>Resiliência em terra seca</small></span><span class="dest-arrow">›</span></button>
+        <button class="destination-option" data-biome="cerrado"><span class="dest-icon">🌾</span><span><b>Cerrado</b><small>O berço das águas</small></span><span class="dest-arrow">›</span></button>
+        <button class="destination-option" data-biome="mata-atlantica"><span class="dest-icon">🌿</span><span><b>Mata Atlântica</b><small>Vida em cada detalhe</small></span><span class="dest-arrow">›</span></button>
+        <button class="destination-option" data-biome="pantanal"><span class="dest-icon">🦜</span><span><b>Pantanal</b><small>Um paraíso de biodiversidade</small></span><span class="dest-arrow">›</span></button>
+        <button class="destination-option" data-biome="pampa"><span class="dest-icon">🌱</span><span><b>Pampa</b><small>Campos que encantam</small></span><span class="dest-arrow">›</span></button>
       </div>
-      <div class="hybrid-note"><span>⌁</span><div><b>Uma experiência, diferentes formas de explorar</b><p>Use o computador, toque na tela do celular ou coloque o aparelho em um óculos de realidade virtual compatível.</p></div></div>
-    </section>
+      <div class="hybrid-note"><span>🥽</span><div><b>Explore do seu jeito</b><p>Use o celular, computador ou óculos de realidade virtual compatível.</p></div></div>
+    </aside>
+  </div>
+  <div class="biome-showcase-title"><span class="eyebrow">DESCUBRA CADA PAISAGEM</span><h2>Uma experiência em cada bioma</h2><p>Escolha um cenário e comece sua expedição imersiva.</p></div>
+  <div class="biome-showcase">
+    <button class="biome-tile tile-amazonia" data-biome="amazonia"><span class="tile-symbol">🌳</span><b>Amazônia</b><small>Floresta viva e extraordinária</small><span class="tile-action">Explorar <i>›</i></span></button>
+    <button class="biome-tile tile-caatinga" data-biome="caatinga"><span class="tile-symbol">🌵</span><b>Caatinga</b><small>Resiliência em terra seca</small><span class="tile-action">Explorar <i>›</i></span></button>
+    <button class="biome-tile tile-cerrado" data-biome="cerrado"><span class="tile-symbol">🌾</span><b>Cerrado</b><small>O berço das águas</small><span class="tile-action">Explorar <i>›</i></span></button>
+    <button class="biome-tile tile-mata" data-biome="mata-atlantica"><span class="tile-symbol">🌿</span><b>Mata Atlântica</b><small>Vida em cada detalhe</small><span class="tile-action">Explorar <i>›</i></span></button>
+    <button class="biome-tile tile-pantanal" data-biome="pantanal"><span class="tile-symbol">🦜</span><b>Pantanal</b><small>Um paraíso de biodiversidade</small><span class="tile-action">Explorar <i>›</i></span></button>
+    <button class="biome-tile tile-pampa" data-biome="pampa"><span class="tile-symbol">🌱</span><b>Pampa</b><small>Campos que encantam</small><span class="tile-action">Explorar <i>›</i></span></button>
+  </div>
+  <footer class="home-footer"><span>🌿 Educação ambiental</span><span>▣ Conhecimento interativo</span><span>◎ Tecnologia a serviço do planeta</span><strong>Descubra o Brasil de um jeito diferente!</strong></footer>
+</section>
 
     <section class="experience-screen" id="experience-screen" hidden>
       <div class="experience-top">
@@ -674,6 +727,20 @@
       }
       camera.object3D.updateMatrixWorld(true);
     }
+    const menuToggle=document.querySelector("#menu-toggle");
+    const quickMenu=document.querySelector("#quick-menu");
+    menuToggle.addEventListener("click",()=>{
+      const opening=quickMenu.hidden;
+      quickMenu.hidden=!opening;
+      menuToggle.setAttribute("aria-expanded",String(opening));
+      menuToggle.textContent=opening?"×":"☰";
+    });
+    document.querySelector("#begin-journey").addEventListener("click",()=>{
+      document.querySelector("#home-screen .home-section-heading").scrollIntoView({behavior:"smooth",block:"start"});
+    });
+    quickMenu.querySelectorAll("button[data-biome]").forEach(button=>button.addEventListener("click",()=>{
+      quickMenu.hidden=true;menuToggle.setAttribute("aria-expanded","false");menuToggle.textContent="☰";
+    }));
     document.querySelectorAll("[data-biome]").forEach(el=>el.addEventListener("click",()=>startBiome(el.dataset.biome)));
     document.querySelector("#back-to-map").addEventListener("click",()=>{
       const scene=document.querySelector("a-scene");
