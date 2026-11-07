@@ -43,6 +43,7 @@ jobs:
           mkdir -p www/vendor
           cp index.html www/index.html
           cp ./*.png ./*.mp3 ./*.mp4 www/
+          cp "Mata Atlântica.png" www/Mata-Atlantica.png
           curl -fL --retry 3 https://aframe.io/releases/1.8.0/aframe.min.js -o www/vendor/aframe.min.js
           cp node_modules/webxr-polyfill/build/webxr-polyfill.min.js www/vendor/webxr-polyfill.min.js
           test -s www/index.html
