@@ -625,6 +625,8 @@
       if(current!=="amazonia")return;
       stopNarration();
       sky.setAttribute("visible","false");
+      ground.object3D.visible=false;
+      env.object3D.visible=false;
       faunaSphere.setAttribute("visible","true");
       faunaButton.disabled=true;
       faunaButton.textContent="Carregando vídeo 360°…";
@@ -639,11 +641,14 @@
         document.querySelector(".viewer-head .live").textContent="● FAUNA 360°";
         document.querySelector("#mode-chip").textContent="MODO FAUNA 360°";
         document.querySelector("#scene-hint").textContent="Vídeo 360° da fauna amazônica • Use o olhar para explorar";
+        narrationButton.disabled=true;
+        narrationButton.textContent="🔊 Narração disponível no panorama";
       }catch(error){
         faunaSphere.setAttribute("visible","false");
         sky.setAttribute("visible","true");
         faunaButton.disabled=false;
         faunaButton.textContent="▶ Tentar novamente";
+        configureNarration(current);
         document.querySelector("#viewer-title").textContent="Não foi possível reproduzir Videoamaz.mp4";
         console.error("Falha ao reproduzir o vídeo 360° da fauna amazônica:",error);
       }
@@ -654,6 +659,7 @@
       document.querySelector(".viewer-head .live").textContent="● PANORAMA 360°";
       document.querySelector("#scene-hint").textContent="WASD / setas para caminhar • Arraste para olhar";
       document.querySelector("#mode-chip").textContent="MODO EXPLORAÇÃO";
+      configureNarration(current);
     }
     faunaButton.addEventListener("click",playFaunaVideo);
     panoramaButton.addEventListener("click",returnToPanorama);
@@ -670,7 +676,7 @@
       configureNarration(current);
     }
     function configureNarration(id){
-      const available=id==="amazonia";
+      const available=id==="amazonia"&&!faunaMode;
       const inVR=document.querySelector("a-scene").is("vr-mode");
       narrationButton.disabled=!available||!inVR;
       narrationButton.textContent=!available
@@ -679,7 +685,7 @@
       if(!available||!inVR)narrationButton.setAttribute("aria-pressed","false");
     }
     function playNarration(){
-      if(current!=="amazonia"||!document.querySelector("a-scene").is("vr-mode"))return;
+      if(current!=="amazonia"||faunaMode||!document.querySelector("a-scene").is("vr-mode"))return;
       narration.play().then(()=>{
         narrationButton.textContent="Ⅱ Pausar narração";
         narrationButton.disabled=false;
