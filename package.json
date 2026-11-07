@@ -4,7 +4,7 @@
   "private": true,
   "description": "Aplicativo offline de realidade virtual educativa sobre os biomas brasileiros",
   "scripts": {
-    "build:android": "node scripts/build-android.js"
+    "build:android": "npx cap sync android && cd android && ./gradlew assembleDebug"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.3",
