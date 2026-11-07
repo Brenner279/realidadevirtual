@@ -1,0 +1,8 @@
+{
+  "appId": "com.michelbrenner.brasilimersivo",
+  "appName": "Brasil Imersivo",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}
