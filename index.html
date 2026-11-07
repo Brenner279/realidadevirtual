@@ -71,6 +71,45 @@
     @media(max-width:700px){.home-screen,.experience-screen{padding:22px 13px 42px}.home-hero{padding:4px 4px 23px}.home-hero p{font-size:13px}.home-grid{gap:13px}.map-card-head{padding:15px 15px 0}.map-card-head h2,.destination-card h2{font-size:18px}.map-canvas{height:360px}.map-legend{padding:0 13px 15px;gap:7px 10px}.destination-card{padding:17px}.destination-list{grid-template-columns:1fr 1fr}.destination-option{padding:8px;gap:7px}.dest-icon{width:31px;height:31px;font-size:17px}.destination-option b{font-size:11px}.destination-option small{font-size:8px}.dest-arrow{font-size:13px}.hybrid-note{align-items:flex-start;padding:13px}.experience-top{gap:8px;flex-wrap:wrap}.experience-context b{font-size:14px}.mode-chip{font-size:8px;padding:7px 8px}.scene-wrap{height:min(64vh,430px);min-height:310px}.touch-pad{display:grid}.scene-hint{bottom:13px;max-width:52%;font-size:9px;padding:8px}.vr-hint{bottom:165px;max-width:90%;font-size:9px}.viewer-actions{padding:11px}.viewer-actions .btn{font-size:10px;padding:9px 10px}.control-legend{font-size:9px}.learning-card{padding:17px}}
     @media(max-width:390px){.map-canvas{height:320px}.map-marker{padding:5px 6px;gap:3px}.map-marker b{font-size:8px}.map-marker span{font-size:12px}.destination-list{grid-template-columns:1fr}.scene-wrap{height:350px}.touch-pad{width:124px;height:124px}.scene-hint{max-width:45%}}
 
+  
+    /* Página inicial experimental inspirada no novo layout enviado */
+    .topbar{height:72px;padding:0 clamp(18px,5vw,72px);background:#102b27}
+    .brand-mark{background:#d7e8a5}
+    .home-screen{max-width:1500px;padding-top:clamp(24px,4vw,48px)}
+    .hero{padding:0 0 26px;max-width:900px}
+    .hero-kicker,.section-kicker{font-size:10px;letter-spacing:.16em;font-weight:800;color:#397552}
+    .main-title{font:900 clamp(42px,7vw,78px)/.94 Manrope,sans-serif;letter-spacing:-3px;margin:13px 0 15px;color:#173b2e}
+    .main-title span,.main-title strong{display:block}.main-title strong{color:#b58a35}
+    .subtitle-banner{display:inline-block;background:#e6edda;color:#254c37;border-left:4px solid #b58a35;padding:10px 15px;border-radius:0 10px 10px 0;font:700 clamp(14px,2vw,18px) Manrope,sans-serif}
+    .subtitle-banner b{color:#9a6d1e}
+    .hero-desc{max-width:680px;color:#63746a;font-size:14px;line-height:1.7;margin:15px 0 0}
+    .map-section{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(270px,.6fr);gap:18px;align-items:stretch}
+    .map-panel,.legend-card{background:#fff;border:1px solid #dfe5dc;border-radius:20px;box-shadow:0 12px 35px #193a2410;overflow:hidden}
+    .panel-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:18px 20px 0}
+    .panel-heading h2,.legend-card h2{font:800 20px Manrope,sans-serif;margin:5px 0 0;color:#203b2c}
+    .map-hint{font-size:10px;color:#5b7562;background:#eef4e9;padding:7px 10px;border-radius:20px}
+    .map-container{height:420px;max-width:570px;margin:0 auto;position:relative}
+    .brazil-map{width:100%;height:100%;display:block;filter:drop-shadow(0 8px 5px #24452a18)}
+    .map-pin{position:absolute;transform:translate(-50%,-50%);border:1px solid #fff;background:#ffffffed;box-shadow:0 4px 14px #183e2b25;border-radius:11px;padding:6px 9px;display:flex;align-items:center;gap:5px;color:#294c38;white-space:nowrap;font-size:10px;cursor:pointer}
+    .map-pin span{font-size:15px}.map-pin b{font-size:10px}.map-pin:hover,.map-pin:focus-visible{background:#e9f3e6;border-color:#5d9366;transform:translate(-50%,-50%) scale(1.06)}
+    .pin-amazonia{left:35%;top:21%}.pin-cerrado{left:52%;top:49%}.pin-caatinga{left:72%;top:29%}.pin-mata{left:78%;top:57%}.pin-pantanal{left:43%;top:66%}.pin-pampa{left:54%;top:85%}
+    .legend-card{padding:22px}.legend-card h2{font-size:22px;margin-top:8px}.legend-intro{font-size:12px;line-height:1.6;color:#6b7a70;margin:8px 0 17px}
+    .legend-list{display:grid;gap:7px}.legend-list button{display:flex;align-items:center;gap:9px;border:1px solid #e8ede5;background:#fff;padding:9px 10px;border-radius:11px;text-align:left;color:#294c38;cursor:pointer}.legend-list button:hover{background:#f0f5ed;border-color:#b3c9a9}.legend-list button span{font-size:11px}.legend-list button small{margin-left:auto;color:#77867b;font-size:9px}
+    .legend-dot{width:10px;height:10px;border-radius:50%;flex:none}.dot-amazonia{background:#3c9567}.dot-caatinga{background:#e5bb55}.dot-cerrado{background:#bc9b55}.dot-mata{background:#3c8060}.dot-pantanal{background:#6fa3a0}.dot-pampa{background:#8b9c55}
+    .legend-footer{font-size:11px;color:#66816b;font-weight:700;margin:16px 0 0}
+    .cta-wrapper{display:flex;justify-content:center;padding:24px 0 26px}.cta-btn{display:inline-flex;align-items:center;gap:22px;background:#1f624b;color:white;text-decoration:none;border-radius:12px;padding:13px 19px;font-size:13px;font-weight:800;box-shadow:0 7px 18px #1f624b25}.cta-btn span{font-size:18px}.cta-btn:hover{background:#164b38;transform:translateY(-1px)}
+    .biomes-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;scroll-margin-top:18px}
+    .biome-card{position:relative;min-height:170px;border:0;border-radius:16px;overflow:hidden;padding:18px;text-align:left;color:#fff;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;cursor:pointer;background:linear-gradient(125deg,#174a35,#397a50);box-shadow:0 8px 22px #183e2b20;isolation:isolate}
+    .biome-card:before{content:"";position:absolute;inset:0;z-index:-2;background-size:cover;background-position:center;opacity:.64;transition:transform .35s}
+    .biome-card:after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,#102b27e8,#102b2766)}
+    .biome-card:hover:before{transform:scale(1.06)}
+    .card-amazonia:before{background-image:url("amaz.png")}.card-caatinga:before{background-image:url("Caatinga.png")}.card-cerrado:before{background-image:url("Cer.png")}.card-mata:before{background-image:linear-gradient(135deg,#1b573c,#7c9d62)}.card-pantanal:before{background-image:url("Pantanal.png")}.card-pampa:before{background-image:url("Pampa.png")}
+    .card-emoji{font-size:25px}.card-copy{display:grid;gap:5px}.card-copy b{font:800 19px Manrope,sans-serif}.card-copy small{font-size:11px;color:#f0f4e9}.explore-btn{align-self:flex-end;border:1px solid #ffffff90;border-radius:20px;padding:6px 10px;font-size:10px;font-weight:800;background:#ffffff20}
+    .hybrid-note{margin-top:20px}
+    @media(max-width:900px){.map-section{grid-template-columns:1fr}.legend-list{grid-template-columns:1fr 1fr}.map-container{height:390px}.biomes-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:600px){.home-screen{padding:22px 13px 42px}.main-title{font-size:48px}.hero{padding-bottom:20px}.hero-desc{font-size:12px}.panel-heading{padding:15px 14px 0}.panel-heading h2{font-size:17px}.map-container{height:330px}.map-pin{padding:5px 6px;gap:3px}.map-pin b{font-size:8px}.map-pin span{font-size:12px}.legend-card{padding:17px}.legend-list{gap:6px}.legend-list button{padding:8px}.legend-list button span{font-size:10px}.biomes-grid{gap:9px}.biome-card{min-height:145px;padding:13px}.card-copy b{font-size:16px}.card-copy small{font-size:9px}.explore-btn{font-size:9px}.cta-wrapper{padding:20px 0}.top-note{display:none}}
+    @media(max-width:390px){.main-title{font-size:42px}.map-container{height:300px}.map-pin b{font-size:7px}.biomes-grid{grid-template-columns:1fr 1fr}}
+
   </style>
 </head>
 <body>
@@ -80,19 +119,17 @@
   </header>
   <main>
     <section class="home-screen" id="home-screen">
-      <div class="home-hero">
-        <div class="eyebrow">Geografia • Natureza • Tecnologia imersiva</div>
-        <h1>Uma viagem pelos<br><span>biomas do Brasil.</span></h1>
-        <p>Escolha uma região no mapa e entre em um ambiente 3D interativo. Caminhe, observe espécies e descubra como cada paisagem funciona.</p>
-      </div>
-      <div class="home-grid">
-        <article class="map-card">
-          <div class="map-card-head">
-            <div><span class="eyebrow">SELECIONE SEU DESTINO</span><h2>Explore o mapa do Brasil</h2></div>
-            <span class="map-note">Localização esquemática</span>
-          </div>
-          <div class="map-canvas">
-            <svg class="brazil-map" viewBox="0 0 360 420" role="img" aria-label="Mapa esquemático do Brasil com regiões dos seis biomas">
+  <section class="hero">
+    <div class="hero-kicker">GEOGRAFIA • NATUREZA • TECNOLOGIA</div>
+    <h1 class="main-title"><span>BRASIL</span><strong>IMERSIVO:</strong></h1>
+    <div class="subtitle-banner">Uma expedição pelos <b>seis biomas</b> brasileiros.</div>
+    <p class="hero-desc">Explore o mapa, descubra as riquezas naturais de cada bioma e mergulhe em uma jornada educativa, interativa e inesquecível!</p>
+  </section>
+  <section class="map-section">
+    <article class="map-panel">
+      <div class="panel-heading"><div><span class="section-kicker">ESCOLHA SEU DESTINO</span><h2>Explore o mapa do Brasil</h2></div><span class="map-hint">Toque em um bioma</span></div>
+      <div class="map-container">
+        <svg class="brazil-map" viewBox="0 0 360 420" role="img" aria-label="Mapa esquemático do Brasil com regiões dos seis biomas">
               <defs>
                 <clipPath id="brazil-clip">
                   <path d="M117 18 L151 27 174 42 209 48 230 68 258 76 272 101 302 120 291 146 314 167 299 190 306 218 283 237 270 266 249 278 245 310 224 325 209 357 184 365 174 393 148 402 130 386 111 365 90 351 82 329 60 312 65 286 47 267 55 239 39 217 51 191 44 165 62 142 70 114 88 96 93 69 108 51 Z"/>
@@ -109,31 +146,41 @@
               </g>
               <path d="M117 18 L151 27 174 42 209 48 230 68 258 76 272 101 302 120 291 146 314 167 299 190 306 218 283 237 270 266 249 278 245 310 224 325 209 357 184 365 174 393 148 402 130 386 111 365 90 351 82 329 60 312 65 286 47 267 55 239 39 217 51 191 44 165 62 142 70 114 88 96 93 69 108 51 Z" fill="none" stroke="#617a67" stroke-width="3" stroke-linejoin="round"/>
             </svg>
-            <button class="map-marker marker-amazonia" data-biome="amazonia"><span>🌳</span><b>Amazônia</b></button>
-            <button class="map-marker marker-cerrado" data-biome="cerrado"><span>🌾</span><b>Cerrado</b></button>
-            <button class="map-marker marker-caatinga" data-biome="caatinga"><span>🌵</span><b>Caatinga</b></button>
-            <button class="map-marker marker-mata" data-biome="mata-atlantica"><span>🌿</span><b>Mata Atlântica</b></button>
-            <button class="map-marker marker-pantanal" data-biome="pantanal"><span>🦜</span><b>Pantanal</b></button>
-            <button class="map-marker marker-pampa" data-biome="pampa"><span>🌱</span><b>Pampa</b></button>
-          </div>
-          <div class="map-legend"><span><i class="legend-dot" style="background:#3c9567"></i> Amazônia</span><span><i class="legend-dot" style="background:#e5bb55"></i> Caatinga</span><span><i class="legend-dot" style="background:#bc9b55"></i> Cerrado</span><span><i class="legend-dot" style="background:#3c8060"></i> Mata Atlântica</span><span><i class="legend-dot" style="background:#6fa3a0"></i> Pantanal</span><span><i class="legend-dot" style="background:#8b9c55"></i> Pampa</span></div>
-        </article>
-        <aside class="destination-card">
-          <div><span class="eyebrow">SEIS BIOMAS • SEIS EXPERIÊNCIAS</span><h2>Por onde vamos começar?</h2><p>Toque em um bioma no mapa ou escolha uma das opções abaixo.</p></div>
-          <div class="destination-list">
-            <button class="destination-option" data-biome="amazonia"><span class="dest-icon">🌳</span><span><b>Amazônia</b><small>Floresta tropical • Norte</small></span><span class="dest-arrow">↗</span></button>
-            <button class="destination-option" data-biome="cerrado"><span class="dest-icon">🌾</span><span><b>Cerrado</b><small>Savana brasileira • Centro</small></span><span class="dest-arrow">↗</span></button>
-            <button class="destination-option" data-biome="caatinga"><span class="dest-icon">🌵</span><span><b>Caatinga</b><small>Semiárido • Nordeste</small></span><span class="dest-arrow">↗</span></button>
-            <button class="destination-option" data-biome="mata-atlantica"><span class="dest-icon">🌿</span><span><b>Mata Atlântica</b><small>Florestas • Litoral</small></span><span class="dest-arrow">↗</span></button>
-            <button class="destination-option" data-biome="pantanal"><span class="dest-icon">🦜</span><span><b>Pantanal</b><small>Planície alagável • Centro-Oeste</small></span><span class="dest-arrow">↗</span></button>
-            <button class="destination-option" data-biome="pampa"><span class="dest-icon">🌱</span><span><b>Pampa</b><small>Campos naturais • Sul</small></span><span class="dest-arrow">↗</span></button>
-          </div>
-        </aside>
+        <button class="map-pin pin-amazonia" data-biome="amazonia"><span>🌳</span><b>Amazônia</b></button>
+        <button class="map-pin pin-caatinga" data-biome="caatinga"><span>🌵</span><b>Caatinga</b></button>
+        <button class="map-pin pin-cerrado" data-biome="cerrado"><span>🌾</span><b>Cerrado</b></button>
+        <button class="map-pin pin-pantanal" data-biome="pantanal"><span>🦜</span><b>Pantanal</b></button>
+        <button class="map-pin pin-mata" data-biome="mata-atlantica"><span>🌿</span><b>Mata Atlântica</b></button>
+        <button class="map-pin pin-pampa" data-biome="pampa"><span>🌱</span><b>Pampa</b></button>
       </div>
-      <div class="hybrid-note"><span>⌁</span><div><b>Uma experiência, diferentes formas de explorar</b><p>Use o computador, toque na tela do celular ou coloque o aparelho em um óculos de realidade virtual compatível.</p></div></div>
-    </section>
+    </article>
+    <aside class="legend-card">
+      <span class="section-kicker">BIODIVERSIDADE BRASILEIRA</span><h2>Os 6 biomas do Brasil</h2>
+      <p class="legend-intro">Cada região guarda paisagens, espécies e características únicas.</p>
+      <div class="legend-list">
+        <button data-biome="amazonia"><i class="legend-dot dot-amazonia"></i><span>🌳 <b>Amazônia</b></span><small>Norte</small></button>
+        <button data-biome="caatinga"><i class="legend-dot dot-caatinga"></i><span>🌵 <b>Caatinga</b></span><small>Nordeste</small></button>
+        <button data-biome="cerrado"><i class="legend-dot dot-cerrado"></i><span>🌾 <b>Cerrado</b></span><small>Centro</small></button>
+        <button data-biome="mata-atlantica"><i class="legend-dot dot-mata"></i><span>🌿 <b>Mata Atlântica</b></span><small>Litoral</small></button>
+        <button data-biome="pantanal"><i class="legend-dot dot-pantanal"></i><span>🦜 <b>Pantanal</b></span><small>Centro-Oeste</small></button>
+        <button data-biome="pampa"><i class="legend-dot dot-pampa"></i><span>🌱 <b>Pampa</b></span><small>Sul</small></button>
+      </div>
+      <p class="legend-footer">Juntos pela biodiversidade!</p>
+    </aside>
+  </section>
+  <div class="cta-wrapper"><a href="#biomas-grid" class="cta-btn">🧭 Comece sua jornada <span>❯</span></a></div>
+  <section id="biomas-grid" class="biomes-grid">
+    <button class="biome-card card-amazonia" data-biome="amazonia"><span class="card-emoji">🌳</span><span class="card-copy"><b>Amazônia</b><small>Floresta viva e extraordinária.</small></span><span class="explore-btn">Explorar ❯</span></button>
+    <button class="biome-card card-caatinga" data-biome="caatinga"><span class="card-emoji">🌵</span><span class="card-copy"><b>Caatinga</b><small>Resiliência em terra seca.</small></span><span class="explore-btn">Explorar ❯</span></button>
+    <button class="biome-card card-cerrado" data-biome="cerrado"><span class="card-emoji">🌾</span><span class="card-copy"><b>Cerrado</b><small>O berço das águas.</small></span><span class="explore-btn">Explorar ❯</span></button>
+    <button class="biome-card card-mata" data-biome="mata-atlantica"><span class="card-emoji">🌿</span><span class="card-copy"><b>Mata Atlântica</b><small>Vida em cada detalhe.</small></span><span class="explore-btn">Explorar ❯</span></button>
+    <button class="biome-card card-pantanal" data-biome="pantanal"><span class="card-emoji">🦜</span><span class="card-copy"><b>Pantanal</b><small>Um paraíso de biodiversidade.</small></span><span class="explore-btn">Explorar ❯</span></button>
+    <button class="biome-card card-pampa" data-biome="pampa"><span class="card-emoji">🌱</span><span class="card-copy"><b>Pampa</b><small>Campos que encantam.</small></span><span class="explore-btn">Explorar ❯</span></button>
+  </section>
+  <div class="hybrid-note"><span>⌁</span><div><b>Uma experiência, diferentes formas de explorar</b><p>Use o computador, toque na tela do celular ou coloque o aparelho em óculos de realidade virtual compatíveis.</p></div></div>
+</section>
 
-    <section class="experience-screen" id="experience-screen" hidden>
+<section class="experience-screen" id="experience-screen" hidden>
       <div class="experience-top">
         <button class="back-button" id="back-to-map">← Voltar ao mapa</button>
         <div class="experience-context"><span class="eyebrow">BRASIL IMERSIVO</span><b id="experience-biome-label">Amazônia</b></div>
