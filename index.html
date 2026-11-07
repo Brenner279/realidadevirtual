@@ -159,7 +159,7 @@
                 <img id="mata-panorama" src="Mata Atlântica.png">
                 <img id="caatinga-panorama" src="Caatinga.png">
                 <img id="cerrado-panorama" src="Cer.png">
-                <video id="amazon-fauna-video" src="Videoamaz.mp4" preload="none" loop playsinline webkit-playsinline crossorigin="anonymous"></video>
+                <video id="amazon-fauna-video" src="amz360.mp4" preload="none" loop playsinline webkit-playsinline crossorigin="anonymous"></video>
               </a-assets>
               <a-entity id="world">
                 <a-sky id="sky" material="shader: flat; toneMapped: false" color="#9fc8b5"></a-sky>
@@ -632,7 +632,7 @@
       if(panoramaButton)panoramaButton.hidden=true;
     }
     const faunaVideos={
-      amazonia:{src:"Videoamaz.mp4",label:"Amazônia"},
+      amazonia:{src:"amz360.mp4",label:"Amazônia"},
       cerrado:{src:"vidcer.mp4",label:"Cerrado"}
     };
     async function playFaunaVideo(){
