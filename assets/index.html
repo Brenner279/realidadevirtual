@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#073b2d">
+  <meta name="description" content="Uma expedição interativa pelos seis biomas brasileiros. Explore mapas, curiosidades e ambientes 3D.">
+  <title>Brasil Imersivo — Uma expedição pelos seis biomas brasileiros</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#inicio" aria-label="Brasil Imersivo - início">
+    <span class="brand-mark">🌎</span><span>BRASIL <b>IMERSIVO</b></span>
+  </a>
+  <nav class="nav" aria-label="Navegação principal">
+    <a class="active" href="#inicio">Início</a>
+    <a href="#mapa">Explorar</a>
+    <a href="#desafios">Desafios</a>
+    <a href="#biomas">Aprender</a>
+    <a href="#sobre">Sobre</a>
+  </nav>
+  <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false">☰</button>
+</header>
+
+<main id="inicio">
+  <section class="hero">
+    <div class="hero-copy">
+      <span class="eyebrow">GEOGRAFIA • NATUREZA • TECNOLOGIA IMERSIVA</span>
+      <h1>Uma expedição pelos <em>seis biomas</em> brasileiros.</h1>
+      <p>Explore o mapa, descubra as riquezas naturais e mergulhe em uma jornada educativa, interativa e inesquecível.</p>
+      <a class="primary-btn" href="#mapa">Comece sua jornada <span>→</span></a>
+      <div class="hero-stats">
+        <div><strong>6</strong><small>biomas</small></div>
+        <div><strong>1</strong><small>país para explorar</small></div>
+        <div><strong>∞</strong><small>descobertas</small></div>
+      </div>
+    </div>
+    <div class="hero-art" aria-label="Ilustração de floresta tropical brasileira">
+      <div class="sun"></div><div class="mountain m1"></div><div class="mountain m2"></div>
+      <div class="forest-layer"></div><div class="hero-leaf leaf-one">🌿</div><div class="hero-leaf leaf-two">🍃</div>
+      <div class="hero-art-label"><span>🌱</span><div><b>Conheça. Aprenda. Preserve.</b><small>A natureza é a nossa maior sala de aula.</small></div></div>
+    </div>
+  </section>
+
+  <section class="map-section section-wrap" id="mapa">
+    <div class="section-heading">
+      <div><span class="eyebrow">SELECIONE SEU DESTINO</span><h2>Explore o mapa do Brasil</h2><p>Toque em uma região do mapa ou escolha um bioma para iniciar a expedição.</p></div>
+      <span class="map-note">Mapa ilustrativo dos biomas</span>
+    </div>
+    <div class="map-layout">
+      <div class="map-card">
+        <svg class="brazil-map" viewBox="0 0 520 560" role="img" aria-label="Mapa ilustrativo do Brasil dividido em seis biomas">
+          <defs>
+            <clipPath id="brClip"><path d="M157 20 L220 35 257 68 305 82 329 119 374 132 402 171 440 197 426 239 450 275 427 315 410 365 375 390 361 433 326 463 306 510 268 533 235 510 205 476 169 453 145 418 111 397 96 357 70 333 82 294 62 257 78 221 66 182 93 150 105 105 139 79 Z"/></clipPath>
+            <filter id="mapShadow"><feDropShadow dx="0" dy="9" stdDeviation="8" flood-color="#123c2c" flood-opacity=".2"/></filter>
+          </defs>
+          <g filter="url(#mapShadow)">
+            <path class="map-outline" d="M157 20 L220 35 257 68 305 82 329 119 374 132 402 171 440 197 426 239 450 275 427 315 410 365 375 390 361 433 326 463 306 510 268 533 235 510 205 476 169 453 145 418 111 397 96 357 70 333 82 294 62 257 78 221 66 182 93 150 105 105 139 79 Z"/>
+            <g clip-path="url(#brClip)">
+              <path class="region amazon" data-biome="amazonia" tabindex="0" role="button" aria-label="Explorar Amazônia" d="M50 0 H350 L370 150 300 178 225 164 155 190 50 180 Z"/>
+              <path class="region caatinga" data-biome="caatinga" tabindex="0" role="button" aria-label="Explorar Caatinga" d="M335 120 L520 150 510 290 420 285 380 240 340 220 Z"/>
+              <path class="region cerrado" data-biome="cerrado" tabindex="0" role="button" aria-label="Explorar Cerrado" d="M180 175 L350 165 405 255 365 365 275 390 185 335 Z"/>
+              <path class="region mata" data-biome="mata" tabindex="0" role="button" aria-label="Explorar Mata Atlântica" d="M365 245 L500 270 465 440 365 460 345 390 380 330 Z"/>
+              <path class="region pantanal" data-biome="pantanal" tabindex="0" role="button" aria-label="Explorar Pantanal" d="M120 330 L215 320 280 375 260 450 170 440 115 395 Z"/>
+              <path class="region pampa" data-biome="pampa" tabindex="0" role="button" aria-label="Explorar Pampa" d="M235 440 L365 420 345 570 210 570 205 490 Z"/>
+            </g>
+          </g>
+          <g class="map-labels">
+            <text x="170" y="125">AMAZÔNIA</text><text x="390" y="205">CAATINGA</text>
+            <text x="270" y="275">CERRADO</text><text x="405" y="350">MATA ATLÂNTICA</text>
+            <text x="175" y="390">PANTANAL</text><text x="290" y="490">PAMPA</text>
+          </g>
+        </svg>
+        <div class="map-legend">
+          <span><i class="dot amazonia-dot"></i>Amazônia</span><span><i class="dot caatinga-dot"></i>Caatinga</span>
+          <span><i class="dot cerrado-dot"></i>Cerrado</span><span><i class="dot mata-dot"></i>Mata Atlântica</span>
+          <span><i class="dot pantanal-dot"></i>Pantanal</span><span><i class="dot pampa-dot"></i>Pampa</span>
+        </div>
+      </div>
+      <aside class="selected-card" id="selectedCard" aria-live="polite">
+        <div class="selected-top"><span class="selected-icon" id="selectedIcon">🌳</span><span class="eyebrow">BIOMA SELECIONADO</span></div>
+        <h3 id="selectedName">Amazônia</h3>
+        <p id="selectedDesc">A maior floresta tropical do mundo, marcada por rios extensos e enorme diversidade de vida.</p>
+        <div class="fact-row"><span>📍 Região</span><b id="selectedRegion">Norte</b></div>
+        <div class="fact-row"><span>🌿 Paisagem</span><b id="selectedLandscape">Floresta tropical</b></div>
+        <button class="primary-btn full" id="enterBiome">Entrar no ambiente 3D <span>↗</span></button>
+        <small class="hint">Experiência demonstrativa: os ambientes são cenários 3D procedurais.</small>
+      </aside>
+    </div>
+  </section>
+
+  <section class="biomes-section section-wrap" id="biomas">
+    <div class="section-heading"><div><span class="eyebrow">SEIS BIOMAS • SEIS EXPERIÊNCIAS</span><h2>Por onde vamos começar?</h2><p>Escolha um destino e descubra características, paisagens e espécies.</p></div></div>
+    <div class="biome-grid" id="biomeGrid"></div>
+  </section>
+
+  <section class="challenge-band" id="desafios">
+    <div class="challenge-icon">🧭</div><div><span class="eyebrow">APRENDA EXPLORANDO</span><h2>Observe, descubra e teste seus conhecimentos.</h2><p>Em cada bioma, procure pistas da paisagem e descubra como clima, relevo, água, fauna e flora se relacionam.</p></div>
+    <a class="outline-btn" href="#mapa">Explorar agora →</a>
+  </section>
+
+  <section class="about section-wrap" id="sobre">
+    <span class="eyebrow">BRASIL IMERSIVO</span><h2>Conhecimento que aproxima você da natureza.</h2>
+    <p>Um projeto educativo que une geografia, biodiversidade e tecnologia para transformar o estudo dos biomas brasileiros em uma experiência de descoberta.</p>
+  </section>
+</main>
+
+<footer><a class="brand footer-brand" href="#inicio"><span class="brand-mark">🌎</span><span>BRASIL <b>IMERSIVO</b></span></a><span>Educação ambiental • Conhecimento interativo • Tecnologia a serviço do planeta</span><span>© <span id="year"></span> Brasil Imersivo</span></footer>
+
+<div class="modal" id="sceneModal" aria-hidden="true">
+  <div class="modal-panel">
+    <div class="modal-head"><div><span class="eyebrow">EXPEDIÇÃO 3D</span><h2 id="sceneTitle">Amazônia</h2></div><button class="close-modal" id="closeModal" aria-label="Fechar ambiente 3D">×</button></div>
+    <div class="scene-wrap"><canvas id="sceneCanvas"></canvas><div class="scene-overlay" id="sceneOverlay">Carregando paisagem...</div></div>
+    <div class="scene-info"><p id="sceneText">Explore a paisagem em um cenário tridimensional.</p><span>Arraste para girar • Role para aproximar</span></div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
