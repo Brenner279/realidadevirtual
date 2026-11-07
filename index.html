@@ -8,13 +8,19 @@
   <title>Brasil Imersivo | Realidade Virtual Geo</title>
   <script src="vendor/webxr-polyfill.min.js"></script>
   <script>
-    // Mantém o WebXR nativo quando disponível; usa Cardboard como fallback
-    // dentro do APK Android, sem depender de uma conexão com a internet.
-    if (!navigator.xr && window.WebXRPolyfill) {
-      window.__webxrPolyfill = new WebXRPolyfill({
-        cardboard: true,
-        webvr: true
-      });
+    // O polyfill também precisa ser instalado quando navigator.xr já existe:
+    // em alguns Androids a API está presente, mas não oferece immersive-vr.
+    // Nesse caso, cardboard:true permite o fallback para óculos tipo Cardboard.
+    if (window.WebXRPolyfill && !window.__webxrPolyfill) {
+      try {
+        window.__webxrPolyfill = new WebXRPolyfill({
+          cardboard: true,
+          webvr: true,
+          allowCardboardOnDesktop: false
+        });
+      } catch (error) {
+        console.warn("Não foi possível inicializar o fallback WebXR/Cardboard:", error);
+      }
     }
   </script>
   <script src="vendor/aframe.min.js"></script>
@@ -151,7 +157,7 @@
         <article class="viewer-card">
           <div class="viewer-head"><div><span class="eyebrow">AMBIENTE INTERATIVO</span><strong id="viewer-title">Amazônia · ambiente imersivo</strong></div><span class="live">● PANORAMA 360°</span></div>
           <div class="scene-wrap">
-            <a-scene embedded vr-mode-ui="enabled: true" renderer="colorManagement: true; physicallyCorrectLights: true" background="color: #b7cbb8">
+            <a-scene embedded xr-mode-ui="enabled: true; XRMode: vr; enterVRButton: #enter-vr" renderer="colorManagement: true; physicallyCorrectLights: true" background="color: #b7cbb8">
               <a-assets timeout="60000">
                 <img id="amazon-panorama" src="amaz.png">
                 <img id="pantanal-panorama" src="Pantanal.png">
@@ -581,8 +587,13 @@
       sky.removeAttribute("src");
       sky.setAttribute("color","#17251d");
       sky.setAttribute("rotation","0 0 0");
-      ground.object3D.visible=false;
+      // Reativa o cenário 3D e os alvos de navegação ao trocar de bioma
+      // (inclusive ao retornar do vídeo 360° da fauna).
+      ground.object3D.visible=true;
+      ground.setAttribute("material","color: #ffffff; transparent: true; opacity: 0; side: double; depthWrite: false");
+      env.object3D.visible=true;
       env.innerHTML="";
+      build(b.type);
 
       if(panorama){
         title.textContent=b.name+" · carregando panorama 360°…";
@@ -768,7 +779,14 @@
       }
       camera.object3D.updateMatrixWorld(true);
     }
-    document.querySelectorAll("[data-biome]").forEach(el=>el.addEventListener("click",()=>startBiome(el.dataset.biome)));
+    // Delegação de eventos: mantém os seis destinos clicáveis, inclusive quando
+    // os botões internos do painel são recriados durante a navegação.
+    document.addEventListener("click",event=>{
+      const option=event.target.closest("[data-biome]");
+      if(!option||!biomes[option.dataset.biome])return;
+      event.preventDefault();
+      startBiome(option.dataset.biome);
+    });
     document.querySelector("#back-to-map").addEventListener("click",()=>{
       const scene=document.querySelector("a-scene");
       if(scene.is("vr-mode"))scene.exitVR();
@@ -781,11 +799,11 @@
     document.querySelector("#learn-more").addEventListener("click",openInfo);
     document.querySelector("#close-modal").addEventListener("click",()=>document.querySelector("#info-modal").classList.remove("open"));
     document.querySelector("#info-modal").addEventListener("click",e=>{if(e.target.id==="info-modal")e.currentTarget.classList.remove("open")});
+    // O componente xr-mode-ui liga o botão personalizado ao fluxo oficial do
+    // A-Frame. Aqui tratamos apenas o clique para sair quando já estiver em VR.
     document.querySelector("#enter-vr").addEventListener("click",()=>{
       const scene=document.querySelector("a-scene");
-      if(scene.is("vr-mode")){scene.exitVR();return;}
-      const vrRequest=scene.enterVR();
-      if(vrRequest&&typeof vrRequest.catch==="function")vrRequest.catch(()=>alert("Não foi possível iniciar o modo VR. Verifique se o navegador e o dispositivo oferecem suporte a WebXR e se o acesso está em HTTPS."));
+      if(scene.is("vr-mode"))scene.exitVR();
     });
     document.querySelector("#reset-view").addEventListener("click",resetPosition);
     // Movimento por teclado e por botões de toque, com direção relativa ao olhar da câmera.
@@ -813,7 +831,7 @@
         button.classList.add("is-pressed");
         if(button.setPointerCapture)button.setPointerCapture(event.pointerId);
       });
-      ["pointerup","pointercancel","lostpointercapture","pointerleave"].forEach(name=>button.addEventListener(name,()=>{
+      ["pointerup","pointercancel","lostpointercapture"].forEach(name=>button.addEventListener(name,()=>{
         if(move!=="stop")pressed.delete(move);
         button.classList.remove("is-pressed");
       }));
@@ -825,7 +843,9 @@
       if(pressed.size&&!document.querySelector("#experience-screen").hidden){
         const camera=document.querySelector("#main-camera");
         const rig=document.querySelector("#camera-rig");
-        const yaw=camera.object3D.rotation.y+rig.object3D.rotation.y;
+        const lookControls=camera.components&&camera.components["look-controls"];
+        const yawObject=lookControls&&lookControls.yawObject;
+        const yaw=(yawObject?yawObject.rotation.y:camera.object3D.rotation.y)+rig.object3D.rotation.y;
         const forward={x:-Math.sin(yaw),z:-Math.cos(yaw)};
         const right={x:Math.cos(yaw),z:-Math.sin(yaw)};
         let dx=0,dz=0;
@@ -846,6 +866,7 @@
     scene.addEventListener("enter-vr",()=>{
       document.querySelector("#mode-chip").textContent=faunaMode?"FAUNA 360° · MODO VR":"MODO REALIDADE VIRTUAL";
       touchPad.style.display="none";
+      document.querySelector("#enter-vr").textContent="Sair do modo VR";
       configureNarration(current);
       playNarration();
     });
@@ -853,6 +874,7 @@
       stopNarration();
       document.querySelector("#mode-chip").textContent=faunaMode?"MODO FAUNA 360°":"MODO EXPLORAÇÃO";
       touchPad.style.display="";
+      document.querySelector("#enter-vr").textContent="◉ Entrar em modo VR";
     });
     // No modo VR sem controles, olhar para o chão e aguardar o clique por foco desloca o visitante.
     ground.addEventListener("click",event=>{
