@@ -6,6 +6,17 @@
   <meta name="theme-color" content="#102b27">
   <meta name="description" content="Explore os seis biomas brasileiros em uma experiência educativa de realidade virtual e ambientes 3D.">
   <title>Brasil Imersivo | Realidade Virtual Geo</title>
+  <script src="vendor/webxr-polyfill.min.js"></script>
+  <script>
+    // Mantém o WebXR nativo quando disponível; usa Cardboard como fallback
+    // dentro do APK Android, sem depender de uma conexão com a internet.
+    if (!navigator.xr && window.WebXRPolyfill) {
+      window.__webxrPolyfill = new WebXRPolyfill({
+        cardboard: true,
+        webvr: true
+      });
+    }
+  </script>
   <script src="vendor/aframe.min.js"></script>
   <style>
     :root{--ink:#172923;--muted:#64756c;--paper:#f4f5ef;--green:#1f624b;--lime:#c6df91;--line:#dfe5dc}
