@@ -63,7 +63,7 @@
     .viewer-actions{display:flex;gap:8px;padding:13px 16px;flex-wrap:wrap}.btn{border:0;border-radius:11px;padding:10px 13px;font-weight:700;font-size:12px;transition:.2s}.btn-primary{background:var(--green);color:white}.btn-soft{background:#edf2eb;color:#254637}.btn:focus-visible,.pad-button:focus-visible,.destination-option:focus-visible,.map-marker:focus-visible{outline:3px solid #a2c66f;outline-offset:3px}
     .control-legend{display:flex;gap:8px 16px;flex-wrap:wrap;padding:0 17px 16px;font-size:10px;color:#66776d}.control-legend b{color:#345743}
     .learning-card{padding:21px;position:sticky;top:15px}.learning-header h2{font:800 22px/1.15 Manrope,sans-serif;margin:8px 0}.learning-header p{color:#66766c;font-size:12px;line-height:1.65;margin:0}.facts{display:flex;flex-wrap:wrap;gap:6px;margin:13px 0 19px}.fact{font-size:10px;background:#f2f6ef;border:1px solid #e2e9dc;padding:6px 9px;border-radius:30px;color:#385847}
-    .discovery-section{border-top:1px solid #e7ece5;padding-top:17px}.discovery-section h3{font:800 14px Manrope,sans-serif;margin:0 0 6px}.discovery-section>p{font-size:11px;line-height:1.5;color:#728075;margin:0 0 11px}.discovery-list{display:grid;gap:7px}.discovery-button{display:flex;align-items:center;gap:9px;text-align:left;border:1px solid #e5ebe2;background:#fff;border-radius:11px;padding:9px;color:#2f4f3b}.discovery-button:hover{background:#eff5eb;border-color:#b2c9a9}.discovery-num{width:25px;height:25px;border-radius:8px;background:#e8f1e5;display:grid;place-items:center;font-size:10px;font-weight:800}.discovery-button b{font:700 11px Manrope,sans-serif}.discovery-button small{display:block;color:#738277;font-size:9px;margin-top:2px}
+    .discovery-section{border-top:1px solid #e7ece5;padding-top:17px}.discovery-section h3{font:800 14px Manrope,sans-serif;margin:0 0 6px}.discovery-section>p{font-size:11px;line-height:1.5;color:#728075;margin:0 0 11px}.discovery-list{display:grid;gap:9px}.discovery-filters{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 9px}.discovery-filter{border:1px solid #dce6d9;background:#fff;color:#496450;border-radius:20px;padding:6px 11px;font-size:10px;font-weight:800;cursor:pointer}.discovery-filter.active{background:#315d42;border-color:#315d42;color:#fff}.discovery-items{display:grid;gap:7px}.discovery-button{display:flex;align-items:center;gap:9px;text-align:left;border:1px solid #e5ebe2;background:#fff;border-radius:11px;padding:9px;color:#2f4f3b}.discovery-button:hover{background:#eff5eb;border-color:#b2c9a9}.discovery-num{width:25px;height:25px;border-radius:8px;background:#e8f1e5;display:grid;place-items:center;font-size:10px;font-weight:800}.discovery-button b{font:700 11px Manrope,sans-serif}.discovery-button small{display:block;color:#738277;font-size:9px;margin-top:2px}
     .learning-tip{margin-top:17px;padding:13px;background:#eff4eb;border-radius:12px}.learning-tip b{font:800 11px Manrope,sans-serif}.learning-tip p{font-size:10px;line-height:1.55;color:#66776b;margin:5px 0 0}
     .modal{position:fixed;inset:0;background:#071b16b8;display:none;place-items:center;padding:20px;z-index:20}.modal.open{display:grid}.modal-panel{max-width:520px;width:100%;background:white;border-radius:20px;padding:24px}.modal-panel h2{font:800 23px Manrope,sans-serif;margin:0 0 10px}.modal-panel p{font-size:14px;line-height:1.65;color:var(--muted)}.modal-close{float:right;border:0;background:#edf2eb;border-radius:50%;width:34px;height:34px;font-size:18px}
     .map-marker.selected{background:#dcebd7;border-color:#4d815b;box-shadow:0 5px 16px #183e2b36}.destination-option.selected{background:#edf5e9;border-color:#82ad7b}
@@ -290,36 +290,48 @@
         ["Arara-vermelha","ANIMAL","A arara-vermelha é uma ave de plumagem marcante que utiliza cavidades de árvores para nidificar. A perda de árvores antigas reduz locais de alimentação e reprodução."],
         ["Rios amazônicos","PAISAGEM","Os rios conectam ecossistemas, transportam sedimentos e sustentam comunidades. O regime das águas influencia a vida nas várzeas e em outros ambientes da região."],
         ["Camadas e conservação","ECOSSISTEMA","O dossel, o sub-bosque e o chão da floresta abrigam diferentes formas de vida. Proteger a vegetação contínua ajuda a manter habitats, o ciclo da água e o armazenamento de carbono."]
+        ["Castanheira-do-pará","PLANTA","A castanheira-do-pará é uma árvore de grande porte da Amazônia. Suas sementes, conhecidas como castanhas-do-pará ou castanhas-do-brasil, são importantes para a alimentação e para a economia de comunidades extrativistas."],
+        ["Onça-pintada","ANIMAL","A onça-pintada é o maior felino das Américas. Vive em diferentes ambientes, inclusive florestas e áreas alagáveis, e exerce papel importante no equilíbrio das cadeias alimentares."]
       ],
       cerrado:[
         ["Pequi","PLANTA","O pequizeiro é uma árvore típica do Cerrado. Seu fruto é importante na alimentação e na cultura regional, além de servir de recurso para a fauna."],
         ["Lobo-guará","ANIMAL","O lobo-guará é um canídeo de pernas longas associado a áreas abertas do Cerrado. Sua dieta inclui frutos, pequenos vertebrados e insetos."],
         ["Veredas e buritis","PAISAGEM","As veredas são ambientes úmidos frequentemente associados ao buriti. Elas protegem nascentes e funcionam como refúgio para diversas espécies."],
         ["Adaptação ao fogo","ECOSSISTEMA","Algumas plantas do Cerrado têm casca espessa, raízes profundas e capacidade de rebrotar. Queimadas frequentes e intensas, porém, podem degradar o ambiente."]
+        ["Ipê-amarelo","PLANTA","Os ipês são árvores nativas encontradas em diferentes formações do Cerrado e de outros biomas. Em parte do ano, podem perder as folhas e florescer, produzindo uma floração bastante visível."],
+        ["Tamanduá-bandeira","ANIMAL","O tamanduá-bandeira possui focinho alongado e língua comprida, adaptações que facilitam a captura de formigas e cupins. A perda e a fragmentação do habitat estão entre as ameaças à espécie."]
       ],
       caatinga:[
         ["Mandacaru","PLANTA","O mandacaru é um cacto nativo da Caatinga. Seu caule armazena água e os espinhos ajudam a reduzir a perda de água e a proteger a planta."],
         ["Asa-branca","ANIMAL","A asa-branca é uma pomba conhecida por sua adaptação às paisagens abertas e secas do Nordeste. A disponibilidade de água e alimento influencia seus deslocamentos."],
         ["Paisagem rochosa","PAISAGEM","Afloramentos rochosos, solos rasos e vegetação adaptada à seca compõem muitas paisagens da Caatinga. A cobertura vegetal ajuda a reduzir a erosão."],
         ["Rios temporários","ECOSSISTEMA","Em muitas áreas semiáridas, cursos d'água podem ser temporários e variar conforme as chuvas. A paisagem muda bastante entre as estações seca e chuvosa."]
+        ["Umbuzeiro","PLANTA","O umbuzeiro é uma árvore adaptada ao semiárido. Suas raízes e estruturas subterrâneas ajudam a armazenar água, e seus frutos são utilizados na alimentação regional."],
+        ["Tatu-peba","ANIMAL","O tatu-peba é um mamífero que escava o solo em busca de alimento, como insetos e pequenos invertebrados. As tocas também podem ser utilizadas por outros animais."]
       ],
       "mata-atlantica":[
         ["Bromélia","PLANTA","Bromélias podem acumular água entre as folhas e formar pequenos micro-habitats. Muitas espécies são epífitas, crescendo sobre árvores sem retirar delas seu alimento."],
         ["Mico-leão-dourado","ANIMAL","O mico-leão-dourado é um primata endêmico da Mata Atlântica do Rio de Janeiro. A conservação de fragmentos conectados é importante para sua sobrevivência."],
         ["Estratos da floresta","PAISAGEM","A Mata Atlântica apresenta árvores emergentes, dossel e sub-bosque. Esses estratos criam diferentes condições de luz, umidade e abrigo."],
         ["Fragmentação","ECOSSISTEMA","A fragmentação separa habitats e dificulta o deslocamento de espécies. Corredores ecológicos e restauração florestal ajudam a conectar áreas naturais."]
+        ["Pau-brasil","PLANTA","O pau-brasil é uma árvore nativa da Mata Atlântica que marcou a história do país. Atualmente, a espécie é alvo de ações de conservação e recuperação de populações naturais."],
+        ["Jaguatirica","ANIMAL","A jaguatirica é um felino de hábitos principalmente noturnos, com pelagem manchada que ajuda na camuflagem. Utiliza áreas florestais e outros ambientes com cobertura vegetal."]
       ],
       pantanal:[
         ["Vitória-régia e plantas aquáticas","PLANTA","Plantas aquáticas ocupam lagoas e áreas inundadas. Elas oferecem abrigo e alimento para organismos e participam do funcionamento dos ambientes alagáveis."],
         ["Tuiuiú","ANIMAL","O tuiuiú é uma das aves-símbolo do Pantanal. Alimenta-se principalmente de animais aquáticos e utiliza áreas úmidas para buscar alimento."],
         ["Pulso das cheias","PAISAGEM","O ciclo anual de cheias e vazantes reorganiza os ambientes do Pantanal. A água transporta nutrientes e conecta áreas alagadas."],
         ["Vida nas áreas alagáveis","ECOSSISTEMA","A alternância entre períodos de cheia e seca influencia a alimentação e a reprodução de peixes, aves, répteis e mamíferos."]
+        ["Carandá","PLANTA","O carandá é uma palmeira associada a áreas úmidas do Pantanal. Forma paisagens características e oferece recursos e abrigo para diferentes espécies."],
+        ["Arara-azul-grande","ANIMAL","A arara-azul-grande alimenta-se principalmente de frutos e sementes de palmeiras, como acuri e bocaiuva. A conservação de árvores de alimentação e locais de ninho é essencial para a espécie."]
       ],
       pampa:[
         ["Gramíneas nativas","PLANTA","As gramíneas são componentes importantes dos campos do Pampa. Suas raízes ajudam a estruturar o solo e a vegetação sustenta diversos animais."],
         ["Ema","ANIMAL","A ema é uma ave corredora de grande porte que vive em ambientes abertos. Alimenta-se de matéria vegetal e pequenos animais."],
         ["Campos naturais","PAISAGEM","O Pampa brasileiro possui campos com gramíneas e plantas herbáceas, além de áreas úmidas e capões. A paisagem campestre tem grande diversidade."],
         ["Solo e conservação","ECOSSISTEMA","A vegetação campestre protege o solo, favorece a infiltração da água e oferece abrigo à fauna. A conversão dos campos naturais ameaça espécies nativas."]
+        ["Butiazeiro","PLANTA","O butiazeiro é uma palmeira nativa do Sul do Brasil. Seus frutos alimentam animais e também são utilizados na produção de alimentos tradicionais."],
+        ["Veado-campeiro","ANIMAL","O veado-campeiro é um mamífero herbívoro associado a campos naturais. A conservação das áreas campestres é importante para manter seu habitat e suas fontes de alimento."]
       ]
     };
     const env = document.querySelector("#environment"), sky=document.querySelector("#sky"), ground=document.querySelector("#ground");
@@ -538,18 +550,34 @@
       if(type!=="forest"){
         const list=discoveryCatalog[current]||[];
         const positions=[-4.2,-1.4,1.4,4.2];
-        list.forEach((item,i)=>{
+        list.slice(0,4).forEach((item,i)=>{
           const x=positions[i],z=-7-i*3.5,y=1.5+(i%2)*.25;
           addHotspot(x,y,z,item[0],item[2]);
         });
       }
     }
 
+    let discoveryFilter="TODOS";
     function renderDiscoveryList(id){
       const container=document.querySelector("#discovery-list");
       const entries=discoveryCatalog[id]||[];
       container.innerHTML="";
-      entries.forEach((item,index)=>{
+      const filters=document.createElement("div");
+      filters.className="discovery-filters";
+      ["TODOS","ANIMAL","PLANTA"].forEach(category=>{
+        const chip=document.createElement("button");
+        chip.type="button";
+        chip.className="discovery-filter"+(discoveryFilter===category?" active":"");
+        chip.textContent=category==="TODOS"?"Todos":category==="ANIMAL"?"Fauna":"Flora";
+        chip.setAttribute("aria-pressed",String(discoveryFilter===category));
+        chip.addEventListener("click",()=>{discoveryFilter=category;renderDiscoveryList(id);});
+        filters.appendChild(chip);
+      });
+      container.appendChild(filters);
+      const list=document.createElement("div");
+      list.className="discovery-items";
+      const visible=entries.map((item,index)=>({item,index})).filter(({item})=>discoveryFilter==="TODOS"||item[1]===discoveryFilter);
+      visible.forEach(({item,index})=>{
         const button=document.createElement("button");
         button.className="discovery-button";
         button.type="button";
@@ -560,14 +588,15 @@
         const title=document.createElement("b");
         title.textContent=item[0];
         const category=document.createElement("small");
-        category.textContent=item[1];
+        category.textContent=item[1]==="ANIMAL"?"FAUNA · ANIMAL":item[1]==="PLANTA"?"FLORA · PLANTA":item[1];
         text.appendChild(title);
         text.appendChild(category);
         button.appendChild(number);
         button.appendChild(text);
         button.addEventListener("click",()=>showDiscovery(item[0],item[2]));
-        container.appendChild(button);
+        list.appendChild(button);
       });
+      container.appendChild(list);
     }
     function selectBiome(id){
       current=id;
@@ -579,7 +608,7 @@
         amazonia:{asset:"#amazon-panorama",file:"amaz.png"},
         pantanal:{asset:"#pantanal-panorama",file:"Pantanal.png"},
         pampa:{asset:"#pampa-panorama",file:"Pampa.png"},
-        "mata-atlantica":{asset:"#mata-panorama",file:"Mata Atlântica.png"},
+        "mata-atlantica":{asset:"#mata-panorama",file:"mata.png"},
         caatinga:{asset:"#caatinga-panorama",file:"Caatinga.png"},
         cerrado:{asset:"#cerrado-panorama",file:"Cer.png"}
       };
