@@ -55,7 +55,16 @@ jobs:
 
       - name: Validar JavaScript da aplicação
         run: |
-          node --check <(sed -n '/^  <script>$/,/^  <\\/script>$/p' www/index.html | sed '1d;$d')
+          python - <<'PY'
+          import re
+          from pathlib import Path
+          html = Path("www/index.html").read_text(encoding="utf-8")
+          scripts = re.findall(r"<script>(.*?)</script>", html, flags=re.S)
+          if not scripts:
+              raise SystemExit("Nenhum bloco JavaScript inline encontrado.")
+          Path("/tmp/brasil-imersivo.js").write_text(scripts[-1], encoding="utf-8")
+          PY
+          node --check /tmp/brasil-imersivo.js
           echo "Sintaxe JavaScript validada."
 
       - name: Criar projeto Android
