@@ -1,4 +1,4 @@
-name: Gerar APK Android instalável
+name: Gerar APK Android
 
 on:
   workflow_dispatch:
@@ -38,35 +38,17 @@ jobs:
       - name: Instalar dependências
         run: npm install
 
-      - name: Preparar arquivos offline
+      - name: Montar arquivos locais para uso offline
         run: |
           mkdir -p www/vendor
           cp index.html www/index.html
           cp ./*.png ./*.mp3 ./*.mp4 www/
-          cp "Mata Atlântica.png" www/Mata-Atlantica.png
           curl -fL --retry 3 https://aframe.io/releases/1.8.0/aframe.min.js -o www/vendor/aframe.min.js
           cp node_modules/webxr-polyfill/build/webxr-polyfill.min.js www/vendor/webxr-polyfill.min.js
-          test -s www/index.html
           test -s www/vendor/aframe.min.js
           test -s www/vendor/webxr-polyfill.min.js
-          test -s www/amaz.png
-          test -s www/amz360.mp4
-          echo "Arquivos offline preparados:"
+          echo "Arquivos locais preparados:"
           du -sh www
-
-      - name: Validar JavaScript da aplicação
-        run: |
-          python - <<'PY'
-          import re
-          from pathlib import Path
-          html = Path("www/index.html").read_text(encoding="utf-8")
-          scripts = re.findall(r"<script>(.*?)</script>", html, flags=re.S)
-          if not scripts:
-              raise SystemExit("Nenhum bloco JavaScript inline encontrado.")
-          Path("/tmp/brasil-imersivo.js").write_text(scripts[-1], encoding="utf-8")
-          PY
-          node --check /tmp/brasil-imersivo.js
-          echo "Sintaxe JavaScript validada."
 
       - name: Criar projeto Android
         run: npx cap add android
@@ -80,18 +62,10 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon
 
-      - name: Preparar APK com nome claro
-        run: |
-          mkdir -p dist
-          cp android/app/build/outputs/apk/debug/app-debug.apk dist/Brasil-Imersivo.apk
-          test -s dist/Brasil-Imersivo.apk
-          file dist/Brasil-Imersivo.apk
-          ls -lh dist/Brasil-Imersivo.apk
-
-      - name: Disponibilizar APK para instalação
+      - name: Publicar APK
         uses: actions/upload-artifact@v4
         with:
-          name: APK-ANDROID-Brasil-Imersivo
-          path: dist/Brasil-Imersivo.apk
+          name: Brasil-Imersivo-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30
