@@ -49,3 +49,10 @@ Este é um protótipo educativo em evolução. A Amazônia recebeu uma primeira 
 ## Licença
 
 A definir. As imagens, panoramas, modelos 3D e áudios incorporados futuramente devem manter suas atribuições e licenças individuais.
+
+
+## Aplicativo Android offline
+
+O repositório inclui um fluxo do GitHub Actions para empacotar a experiência em um APK Android com Capacitor. A compilação reúne no aplicativo o HTML, as imagens panorâmicas, os vídeos, a narração e a biblioteca A-Frame local. Depois de instalado, o conteúdo principal não precisa de conexão com a internet.
+
+Para gerar o APK, acesse **Actions → Gerar APK Android → Run workflow**. Ao terminar, abra a execução concluída e baixe o artefato **Brasil-Imersivo-APK**. O arquivo gerado é um APK de depuração para instalação e testes. A compatibilidade do modo de óculos VR/WebXR precisa ser validada no aparelho; o WebView do Android pode não oferecer os mesmos recursos de VR de um navegador compatível.
