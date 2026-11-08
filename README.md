@@ -4,11 +4,9 @@ Experiência educativa para explorar os **seis biomas brasileiros** por meio de 
 
 ## Estrutura e acesso
 
-- `index.html`: página inicial oficial do Biomas Imersivo.
-- `experiencia.html`: experiência de Realidade Virtual com A-Frame e panoramas 360°.
-- `assets/`: estilos, scripts e recursos visuais da página inicial.
-
-A página inicial oferece acesso direto à experiência VR pelo link **Acessar experiência VR**.
+- `index.html`: página principal da experiência de Realidade Virtual com A-Frame.
+- `style.css`: estilos da interface da experiência.
+- `assets/`: recursos visuais e arquivos complementares do projeto.
 
 ## Acessar o projeto
 
@@ -30,7 +28,6 @@ A página inicial oferece acesso direto à experiência VR pelo link **Acessar e
 ## Como testar
 
 1. Abra `index.html` em um servidor local (por exemplo, a extensão Live Server do VS Code) para conhecer a página inicial.
-2. Acesse `experiencia.html` para testar a experiência de Realidade Virtual.
 2. Escolha um bioma no painel.
 3. No computador, use **W, A, S, D** ou as setas para se deslocar e arraste o mouse para olhar ao redor.
 4. Clique em **Carregar foto 360°** e selecione uma imagem panorâmica equiretangular (proporção recomendada 2:1, por exemplo 4096 × 2048).
