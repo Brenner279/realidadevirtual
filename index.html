@@ -63,8 +63,6 @@
     .viewer-actions{display:flex;gap:8px;padding:13px 16px;flex-wrap:wrap}.btn{border:0;border-radius:11px;padding:10px 13px;font-weight:700;font-size:12px;transition:.2s}.btn-primary{background:var(--green);color:white}.btn-soft{background:#edf2eb;color:#254637}.btn:focus-visible,.pad-button:focus-visible,.destination-option:focus-visible,.map-marker:focus-visible{outline:3px solid #a2c66f;outline-offset:3px}
     .control-legend{display:flex;gap:8px 16px;flex-wrap:wrap;padding:0 17px 16px;font-size:10px;color:#66776d}.control-legend b{color:#345743}
     .learning-card{padding:21px;position:sticky;top:15px}.learning-header h2{font:800 22px/1.15 Manrope,sans-serif;margin:8px 0}.learning-header p{color:#66766c;font-size:12px;line-height:1.65;margin:0}.facts{display:flex;flex-wrap:wrap;gap:6px;margin:13px 0 19px}.fact{font-size:10px;background:#f2f6ef;border:1px solid #e2e9dc;padding:6px 9px;border-radius:30px;color:#385847}
-    .discovery-section{border-top:1px solid #e7ece5;padding-top:17px}.discovery-section h3{font:800 14px Manrope,sans-serif;margin:0 0 6px}.discovery-section>p{font-size:11px;line-height:1.5;color:#728075;margin:0 0 11px}.discovery-list{display:grid;gap:9px}.discovery-filters{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 9px}.discovery-filter{border:1px solid #dce6d9;background:#fff;color:#496450;border-radius:20px;padding:6px 11px;font-size:10px;font-weight:800;cursor:pointer}.discovery-filter.active{background:#315d42;border-color:#315d42;color:#fff}.discovery-items{display:grid;gap:7px}.discovery-button{display:flex;align-items:center;gap:9px;text-align:left;border:1px solid #e5ebe2;background:#fff;border-radius:11px;padding:9px;color:#2f4f3b}.discovery-button:hover{background:#eff5eb;border-color:#b2c9a9}.discovery-num{width:25px;height:25px;border-radius:8px;background:#e8f1e5;display:grid;place-items:center;font-size:10px;font-weight:800}.discovery-button b{font:700 11px Manrope,sans-serif}.discovery-button small{display:block;color:#738277;font-size:9px;margin-top:2px}
-    .learning-tip{margin-top:17px;padding:13px;background:#eff4eb;border-radius:12px}.learning-tip b{font:800 11px Manrope,sans-serif}.learning-tip p{font-size:10px;line-height:1.55;color:#66776b;margin:5px 0 0}
     .modal{position:fixed;inset:0;background:#071b16b8;display:none;place-items:center;padding:20px;z-index:20}.modal.open{display:grid}.modal-panel{max-width:520px;width:100%;background:white;border-radius:20px;padding:24px}.modal-panel h2{font:800 23px Manrope,sans-serif;margin:0 0 10px}.modal-panel p{font-size:14px;line-height:1.65;color:var(--muted)}.modal-close{float:right;border:0;background:#edf2eb;border-radius:50%;width:34px;height:34px;font-size:18px}
     .map-marker.selected{background:#dcebd7;border-color:#4d815b;box-shadow:0 5px 16px #183e2b36}.destination-option.selected{background:#edf5e9;border-color:#82ad7b}
     @media(max-width:980px){.home-grid,.experience-layout{grid-template-columns:1fr}.map-canvas{height:440px}.learning-card{position:static}.experience-layout{gap:14px}}
@@ -207,8 +205,6 @@
         <aside class="learning-card">
           <div class="learning-header"><span class="eyebrow">GUIA DE DESCOBERTA</span><h2 id="biome-heading">A maior floresta tropical</h2><p id="biome-description"></p></div>
           <div class="facts" id="biome-facts"></div>
-          <div class="discovery-section"><h3>O que observar neste ambiente</h3><p>Selecione um ponto no cenário ou toque em um assunto abaixo para aprender.</p><div class="discovery-list" id="discovery-list"></div></div>
-          <div class="learning-tip"><b>Dica de exploração</b><p>Procure os marcadores dourados no ambiente. Eles indicam espécies, plantas e elementos da paisagem que têm informações especiais.</p></div>
         </aside>
       </div>
     </section>
@@ -542,47 +538,6 @@
       }
     }
 
-    let discoveryFilter="TODOS";
-    function renderDiscoveryList(id){
-      const container=document.querySelector("#discovery-list");
-      const entries=discoveryCatalog[id]||[];
-      container.innerHTML="";
-      const filters=document.createElement("div");
-      filters.className="discovery-filters";
-      ["TODOS","ANIMAL","PLANTA"].forEach(category=>{
-        const chip=document.createElement("button");
-        chip.type="button";
-        chip.className="discovery-filter"+(discoveryFilter===category?" active":"");
-        chip.textContent=category==="TODOS"?"Todos":category==="ANIMAL"?"Fauna":"Flora";
-        chip.setAttribute("aria-pressed",String(discoveryFilter===category));
-        chip.addEventListener("click",()=>{discoveryFilter=category;renderDiscoveryList(id);});
-        filters.appendChild(chip);
-      });
-      container.appendChild(filters);
-      const list=document.createElement("div");
-      list.className="discovery-items";
-      const visible=entries.map((item,index)=>({item,index})).filter(({item})=>discoveryFilter==="TODOS"||item[1]===discoveryFilter);
-      visible.forEach(({item,index})=>{
-        const button=document.createElement("button");
-        button.className="discovery-button";
-        button.type="button";
-        const number=document.createElement("span");
-        number.className="discovery-num";
-        number.textContent=String(index+1).padStart(2,"0");
-        const text=document.createElement("span");
-        const title=document.createElement("b");
-        title.textContent=item[0];
-        const category=document.createElement("small");
-        category.textContent=item[1]==="ANIMAL"?"FAUNA · ANIMAL":item[1]==="PLANTA"?"FLORA · PLANTA":item[1];
-        text.appendChild(title);
-        text.appendChild(category);
-        button.appendChild(number);
-        button.appendChild(text);
-        button.addEventListener("click",()=>showDiscovery(item[0],item[2]));
-        list.appendChild(button);
-      });
-      container.appendChild(list);
-    }
     function selectBiome(id){
       current=id;
       const b=biomes[id];
@@ -636,7 +591,6 @@
       document.querySelector("#biome-heading").textContent=b.title;
       document.querySelector("#biome-description").textContent=b.description;
       document.querySelector("#biome-facts").innerHTML=b.facts.map(x=>'<span class="fact">'+x+'</span>').join("");
-      renderDiscoveryList(id);
       faunaVRButton.hidden=id!=="amazonia";
       if(id!=="amazonia"){
         faunaVRActive=false;
