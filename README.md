@@ -1,70 +1,54 @@
 # Brasil Imersivo — Realidade Virtual Geo
 
-Projeto educativo sobre os **seis biomas brasileiros**, com uma página inicial de mapa interativo e uma experiência independente de Realidade Virtual com panoramas em 360°.
+Experiência educativa para explorar os **seis biomas brasileiros** por meio de ambientes 3D, panoramas em 360°, conteúdos de Geografia, narração e recursos audiovisuais.
 
-- **Página inicial (mapa interativo):** https://brenner279.github.io/realidadevirtual/
-- **Experiência de Realidade Virtual:** https://brenner279.github.io/realidadevirtual/experiencia.html
+**Acesse o projeto:** https://brenner279.github.io/realidadevirtual/
 
-## Estrutura e acesso
+## Experiência
 
-- `index.html`: página inicial com o mapa interativo e a apresentação dos seis biomas.
-- `assets/styles.css` e `assets/app.js`: estilos e interações da página inicial.
-- `experiencia.html`: experiência de Realidade Virtual com A-Frame.
-- `style.css`: estilos da experiência VR.
-- `assets/`: imagens e recursos complementares.
+A página principal do repositório (index.html) abre diretamente a experiência de Realidade Virtual.
 
-## Acessar o projeto
+- Exploração dos seis biomas: Amazônia, Cerrado, Caatinga, Mata Atlântica, Pantanal e Pampa.
+- Ambientes 3D com A-Frame.
+- Panoramas fotográficos em 360°.
+- Conteúdos educativos e pontos interativos.
+- Narração e vídeo 360°.
+- Interface para computador e celular.
+- Entrada em realidade virtual quando o navegador e o dispositivo oferecem suporte.
 
-**Publicação pelo GitHub Actions:** abra **Settings → Pages → Build and deployment**, escolha **GitHub Actions** como fonte e salve. Essa primeira ativação precisa ser feita nas configurações do repositório; depois disso, o workflow publica automaticamente a cada atualização da branch `main`. O site ficará disponível em:
+## Arquivos principais
 
-`https://brenner279.github.io/realidadevirtual/`
-
-## Recursos do protótipo
-
-- Seleção entre Amazônia, Cerrado, Caatinga, Mata Atlântica, Pantanal e Pampa.
-- Cenários 3D construídos proceduralmente com A-Frame.
-- **Amazônia em desenvolvimento avançado:** dossel e sub-bosque, árvores com raízes tabulares, palmeiras, rio, margens, tronco caído, pedras, representação estilizada de uma arara-vermelha e quatro pontos interativos sobre camadas da floresta, ciclo da água, biodiversidade e conservação.
-- Navegação pelo cenário com teclado e mouse.
-- Botão de entrada em realidade virtual, quando o dispositivo e o navegador oferecem suporte a WebXR.
-- Carregamento local de uma fotografia panorâmica 360° para combinar a paisagem real com os elementos 3D.
-- Painéis com informações educativas sobre cada bioma.
-- Interface responsiva para computador e celular.
+- index.html: experiência principal de Realidade Virtual.
+- style.css: estilos da experiência.
+- assets/mapa.png: mapa utilizado na experiência.
+- amaz.png, Caatinga.png, Cer.png, Mata.png, Pantanal.png, Pampa.png: recursos visuais dos biomas.
+- Amazonia.mp3: narração.
+- v360amz.mp4: vídeo 360°.
+- assets/panoramas/: orientações para panoramas adicionais.
 
 ## Como testar
 
-1. Abra `index.html` em um servidor local (por exemplo, a extensão Live Server do VS Code) para conhecer o mapa interativo.
-2. Para acessar a experiência de Realidade Virtual, abra `experiencia.html`.
-3. Na experiência VR (`experiencia.html`), escolha um bioma no painel.
-4. No computador, use **W, A, S, D** ou as setas para se deslocar e arraste o mouse para olhar ao redor.
-5. Clique em **Carregar foto 360°** e selecione uma imagem panorâmica equiretangular (proporção recomendada 2:1, por exemplo 4096 × 2048).
-6. Clique em **Entrar em realidade virtual** em um navegador/dispositivo compatível.
+1. Acesse o link publicado pelo GitHub Pages.
+2. Escolha um bioma e explore o ambiente.
+3. No computador, utilize os controles apresentados na interface.
+4. Em um dispositivo compatível, utilize a opção de entrada em realidade virtual.
 
-> Para WebXR, o site precisa ser servido por HTTPS (ou localhost durante o desenvolvimento). O suporte a VR depende do navegador, do dispositivo e de seus recursos.
+Para WebXR, a página deve ser acessada por HTTPS (ou localhost durante o desenvolvimento). O suporte ao modo VR depende do navegador, do aparelho e de seus recursos.
 
-## Adicionar panoramas ao projeto
+## Aplicativo Android
 
-O botão **Carregar foto 360°** permite testar uma imagem diretamente no dispositivo, sem enviá-la ao GitHub. Para que um panorama seja carregado automaticamente por bioma em uma próxima versão, adicione os arquivos otimizados em `assets/panoramas/` e registre seus caminhos na configuração dos biomas em `index.html`.
+O repositório mantém a configuração do Capacitor e o fluxo do GitHub Actions para gerar um APK de depuração. Para iniciar a compilação, acesse Actions → Gerar APK Android → Run workflow. Ao concluir, baixe o artefato Brasil-Imersivo-APK.
 
-Use imagens próprias, de domínio público ou com licença que permita reutilização. Registre a fonte e a licença de cada imagem.
+A compatibilidade de WebXR/VR no WebView do Android deve ser validada no aparelho; pode diferir da experiência em um navegador compatível.
 
 ## Tecnologias
 
 - HTML5, CSS3 e JavaScript
-- [A-Frame 1.8.0](https://aframe.io/docs/)
+- A-Frame 1.8.0
 - WebXR
-- GitHub Pages (hospedagem)
+- Capacitor
+- GitHub Pages e GitHub Actions
 
-## Escopo e evolução
+## Observação
 
-Este é um protótipo educativo em evolução. A Amazônia recebeu uma primeira expansão de cenário e conteúdo interativo; os demais biomas continuam com ambientes demonstrativos. Os modelos de árvores e animais são representações didáticas estilizadas, não reconstruções científicas em escala real. A camada de panorama 360° já permite testar fotografias locais; a próxima etapa é selecionar e integrar panoramas específicos e licenciados para cada bioma, além de adicionar modelos 3D de espécies nativas, trilhas e pontos de descoberta.
-
-## Licença
-
-A definir. As imagens, panoramas, modelos 3D e áudios incorporados futuramente devem manter suas atribuições e licenças individuais.
-
-
-## Aplicativo Android offline
-
-O repositório inclui um fluxo do GitHub Actions para empacotar a experiência em um APK Android com Capacitor. A compilação reúne no aplicativo o HTML, as imagens panorâmicas, os vídeos, a narração e a biblioteca A-Frame local. Depois de instalado, o conteúdo principal não precisa de conexão com a internet.
-
-Para gerar o APK, acesse **Actions → Gerar APK Android → Run workflow**. Ao terminar, abra a execução concluída e baixe o artefato **Brasil-Imersivo-APK**. O arquivo gerado é um APK de depuração para instalação e testes. A compatibilidade do modo de óculos VR/WebXR precisa ser validada no aparelho; o WebView do Android pode não oferecer os mesmos recursos de VR de um navegador compatível.
+Este projeto é um protótipo educativo em evolução. Verifique a disponibilidade e a licença dos recursos audiovisuais antes de redistribuí-los.
