@@ -4,9 +4,11 @@ Experiência educativa para explorar os **seis biomas brasileiros** por meio de 
 
 ## Estrutura e acesso
 
-- `index.html`: página principal da experiência de Realidade Virtual com A-Frame.
-- `style.css`: estilos da interface da experiência.
-- `assets/`: recursos visuais e arquivos complementares do projeto.
+- `index.html`: página inicial com o mapa interativo e a apresentação dos seis biomas.
+- `assets/styles.css` e `assets/app.js`: estilos e interações da página inicial.
+- `experiencia.html`: experiência de Realidade Virtual com A-Frame.
+- `style.css`: estilos da experiência VR.
+- `assets/`: imagens e recursos complementares.
 
 ## Acessar o projeto
 
@@ -27,11 +29,12 @@ Experiência educativa para explorar os **seis biomas brasileiros** por meio de 
 
 ## Como testar
 
-1. Abra `index.html` em um servidor local (por exemplo, a extensão Live Server do VS Code) para conhecer a página inicial.
-2. Escolha um bioma no painel.
-3. No computador, use **W, A, S, D** ou as setas para se deslocar e arraste o mouse para olhar ao redor.
-4. Clique em **Carregar foto 360°** e selecione uma imagem panorâmica equiretangular (proporção recomendada 2:1, por exemplo 4096 × 2048).
-5. Clique em **Entrar em realidade virtual** em um navegador/dispositivo compatível.
+1. Abra `index.html` em um servidor local (por exemplo, a extensão Live Server do VS Code) para conhecer o mapa interativo.
+2. Para acessar a experiência de Realidade Virtual, abra `experiencia.html`.
+3. Na experiência VR (`experiencia.html`), escolha um bioma no painel.
+4. No computador, use **W, A, S, D** ou as setas para se deslocar e arraste o mouse para olhar ao redor.
+5. Clique em **Carregar foto 360°** e selecione uma imagem panorâmica equiretangular (proporção recomendada 2:1, por exemplo 4096 × 2048).
+6. Clique em **Entrar em realidade virtual** em um navegador/dispositivo compatível.
 
 > Para WebXR, o site precisa ser servido por HTTPS (ou localhost durante o desenvolvimento). O suporte a VR depende do navegador, do dispositivo e de seus recursos.
 
