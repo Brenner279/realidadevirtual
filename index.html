@@ -178,6 +178,7 @@
             <a-scene embedded vr-mode-ui="enabled: true" renderer="colorManagement: true; physicallyCorrectLights: true" background="color: #b7cbb8">
               <a-assets timeout="60000">
                 <img id="amazon-panorama" src="amaz.png">
+                <video id="fauna-amazonia-video" src="v360amz.mp4" preload="auto" loop playsinline webkit-playsinline crossorigin="anonymous"></video>
                 <img id="pantanal-panorama" src="Pantanal.png">
                 <img id="pampa-panorama" src="Pampa.png">
                 <img id="mata-panorama" src="Mata Atlântica.png">
@@ -210,6 +211,7 @@
           <div id="panorama-credit" class="panorama-credit" hidden></div>
           <div class="viewer-actions">
             <button class="btn btn-primary" id="enter-vr">◉ Entrar em modo VR</button>
+            <button class="btn btn-primary" id="fauna-vr" type="button" hidden>🐾 Fauna VR</button>
             <button class="btn btn-soft" id="reset-view">⌖ Voltar ao início</button>
             <button class="btn btn-soft" id="learn-more">Sobre este bioma</button>
             <button class="btn btn-soft" id="toggle-narration" type="button" aria-pressed="false" disabled>🔊 Narração indisponível</button>
@@ -652,11 +654,19 @@
       document.querySelector("#biome-description").textContent=b.description;
       document.querySelector("#biome-facts").innerHTML=b.facts.map(x=>'<span class="fact">'+x+'</span>').join("");
       renderDiscoveryList(id);
+      faunaVRButton.hidden=id!=="amazonia";
+      if(id!=="amazonia"){
+        faunaVRActive=false;
+        faunaVideo.pause();
+      }
       document.querySelectorAll("[data-biome]").forEach(el=>el.classList.toggle("selected",el.dataset.biome===id));
     }
     function openInfo(){showDiscovery(biomes[current].name+" · você sabia?",biomes[current].detail)}
     const narration=document.querySelector("#biome-narration");
     const narrationButton=document.querySelector("#toggle-narration");
+    const faunaVideo=document.querySelector("#fauna-amazonia-video");
+    const faunaVRButton=document.querySelector("#fauna-vr");
+    let faunaVRActive=false;
 
     function stopNarration(){
       narration.pause();
@@ -674,7 +684,7 @@
       if(!available||!inVR)narrationButton.setAttribute("aria-pressed","false");
     }
     function playNarration(){
-      if(current!=="amazonia"||!document.querySelector("a-scene").is("vr-mode"))return;
+      if(current!=="amazonia"||faunaVRActive||!document.querySelector("a-scene").is("vr-mode"))return;
       narration.play().then(()=>{
         narrationButton.textContent="Ⅱ Pausar narração";
         narrationButton.disabled=false;
@@ -747,6 +757,33 @@
     document.querySelector("#learn-more").addEventListener("click",openInfo);
     document.querySelector("#close-modal").addEventListener("click",()=>document.querySelector("#info-modal").classList.remove("open"));
     document.querySelector("#info-modal").addEventListener("click",e=>{if(e.target.id==="info-modal")e.currentTarget.classList.remove("open")});
+    faunaVRButton.addEventListener("click",()=>{
+      if(current!=="amazonia")return;
+      faunaVRActive=true;
+      stopNarration();
+      sky.setAttribute("color","#ffffff");
+      sky.setAttribute("src","#fauna-amazonia-video");
+      sky.setAttribute("rotation","0 -90 0");
+      faunaVideo.currentTime=0;
+      const playback=faunaVideo.play();
+      if(playback&&typeof playback.catch==="function"){
+        playback.catch(()=>{
+          faunaVRActive=false;
+          sky.setAttribute("src","#amazon-panorama");
+          alert("Não foi possível reproduzir o vídeo. Verifique se v360amz.mp4 está disponível e tente novamente.");
+        });
+      }
+      const scene=document.querySelector("a-scene");
+      if(!scene.is("vr-mode")){
+        const vrRequest=scene.enterVR();
+        if(vrRequest&&typeof vrRequest.catch==="function")vrRequest.catch(()=>{
+          faunaVideo.pause();
+          faunaVRActive=false;
+          sky.setAttribute("src","#amazon-panorama");
+          alert("Não foi possível iniciar o modo VR neste navegador ou dispositivo.");
+        });
+      }
+    });
     document.querySelector("#enter-vr").addEventListener("click",()=>{
       const scene=document.querySelector("a-scene");
       if(scene.is("vr-mode")){scene.exitVR();return;}
@@ -810,13 +847,21 @@
 
     const scene=document.querySelector("a-scene");
     scene.addEventListener("enter-vr",()=>{
-      document.querySelector("#mode-chip").textContent="MODO REALIDADE VIRTUAL";
+      document.querySelector("#mode-chip").textContent=faunaVRActive?"MODO FAUNA VR":"MODO REALIDADE VIRTUAL";
       touchPad.style.display="none";
       configureNarration(current);
-      playNarration();
+      if(faunaVRActive)faunaVideo.play().catch(()=>{});
+      else playNarration();
     });
     scene.addEventListener("exit-vr",()=>{
       stopNarration();
+      if(faunaVRActive){
+        faunaVideo.pause();
+        faunaVideo.currentTime=0;
+        faunaVRActive=false;
+        sky.setAttribute("src","#amazon-panorama");
+        sky.setAttribute("rotation","0 -90 0");
+      }
       document.querySelector("#mode-chip").textContent="MODO EXPLORAÇÃO";
       touchPad.style.display="";
     });
