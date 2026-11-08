@@ -40,11 +40,13 @@ jobs:
 
       - name: Montar arquivos locais para uso offline
         run: |
-          mkdir -p www/vendor
-          cp index.html www/index.html
+          mkdir -p www/vendor www/assets
+          cp index.html style.css www/
           cp ./*.png ./*.mp3 ./*.mp4 www/
+          cp assets/mapa.png www/assets/mapa.png
           curl -fL --retry 3 https://aframe.io/releases/1.8.0/aframe.min.js -o www/vendor/aframe.min.js
           test -s www/vendor/aframe.min.js
+          sed -i 's#https://aframe.io/releases/1.8.0/aframe.min.js#vendor/aframe.min.js#g' www/index.html
           echo "Arquivos locais preparados:"
           du -sh www
 
