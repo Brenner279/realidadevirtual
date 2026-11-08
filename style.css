@@ -20,12 +20,12 @@ body{background:linear-gradient(180deg,#0b6fa4 0%,#0d5f3a 45%,#07381f 100%);colo
 .panel-heading h2,.legend-card h2{font:900 18px Montserrat,Manrope,sans-serif;color:#14492a;margin:5px 0 0}
 .panel-heading .section-kicker,.legend-card .section-kicker{color:#23804a}
 .map-hint{font-size:10px;color:#1d633a;background:#e6f3e8;padding:7px 10px;border-radius:20px}
-.map-container{position:relative;width:100%;max-width:580px;margin:0 auto}
-.brazil-map{width:100%;height:auto;display:block;filter:drop-shadow(0 12px 15px #0005)}
+.map-container{position:relative;width:100%;height:auto;max-width:640px;margin:0 auto}
+.brazil-map{display:block;width:100%;height:auto;max-height:none;object-fit:contain;filter:drop-shadow(0 12px 15px #0005)}
 .map-pin{position:absolute;transform:translate(-50%,-50%);display:flex;align-items:center;gap:5px;text-decoration:none;color:#fff;font-weight:800;font-size:10px;padding:6px 10px;border-radius:25px;box-shadow:0 4px 10px #0008;border:2px solid #ffffffdf;white-space:nowrap;transition:transform .2s;cursor:pointer}
 .map-pin:hover,.map-pin:focus-visible{transform:translate(-50%,-50%) scale(1.1);outline:2px solid #ffdc42;outline-offset:2px}
 .map-pin span{font-size:14px}
-.pin-amazonia{top:22%;left:24%;background:#1e8449}.pin-caatinga{top:26%;left:66%;background:#d68910}.pin-cerrado{top:44%;left:46%;background:#ba4a00}.pin-pantanal{top:58%;left:32%;background:#2874a6}.pin-mata{top:56%;left:72%;background:#117a65}.pin-pampa{top:76%;left:43%;background:#7d3c98}
+.pin-amazonia{top:23%;left:27%;background:#1e8449}.pin-caatinga{top:31%;left:78%;background:#d68910}.pin-cerrado{top:53%;left:55%;background:#ba4a00}.pin-pantanal{top:69%;left:44%;background:#2874a6}.pin-mata{top:69%;left:82%;background:#117a65}.pin-pampa{top:91%;left:58%;background:#7d3c98}
 .legend-card{width:auto;padding:18px}
 .legend-intro{font-size:11px;line-height:1.5;color:#41634c;margin:7px 0 12px}
 .legend-list{display:grid;gap:7px}
@@ -54,8 +54,8 @@ body{background:linear-gradient(180deg,#0b6fa4 0%,#0d5f3a 45%,#07381f 100%);colo
 .hybrid-note{background:#ffffffed;color:#16492e;border:1px solid #58d68d;border-radius:14px}
 .hybrid-note p{color:#42634d}
 .home-screen button:focus-visible,.cta-btn:focus-visible{outline:3px solid #ffdb35;outline-offset:3px}
-@media(max-width:850px){.map-section{grid-template-columns:1fr}.legend-list{grid-template-columns:1fr 1fr}.biomes-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.map-container{max-width:520px}}
-@media(max-width:600px){.home-screen{padding:18px 12px 42px}.hero{padding:14px 3px 18px}.main-title{letter-spacing:-1px}.main-title span{font-size:42px}.main-title strong{font-size:48px}.hero-desc{font-size:12px}.map-section{gap:12px}.map-panel{padding:10px}.panel-heading{padding:3px}.panel-heading h2{font-size:15px}.map-hint{font-size:9px}.map-pin{padding:5px 7px;gap:3px;font-size:8px}.map-pin span{font-size:11px}.legend-card{padding:14px}.legend-list{gap:5px}.legend-list button{padding:7px}.legend-list button span{font-size:10px}.biomes-grid{gap:9px}.biome-card{min-height:145px;padding:12px}.card-copy b{font-size:16px}.card-copy small{font-size:9px}.biome-card .explore-btn{font-size:9px;padding:6px 10px}.cta-btn{font-size:14px;padding:12px 20px}}
-@media(max-width:380px){.main-title span{font-size:36px}.main-title strong{font-size:42px}.map-pin b{font-size:7px}.biome-card{min-height:135px}}
+@media(max-width:850px){.map-section{grid-template-columns:1fr}.legend-list{grid-template-columns:1fr 1fr}.biomes-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.map-container{width:100%;height:auto;max-width:620px}}
+@media(max-width:600px){.home-screen{padding:18px 12px 42px}.hero{padding:14px 3px 18px}.main-title{letter-spacing:-1px}.main-title span{font-size:42px}.main-title strong{font-size:48px}.hero-desc{font-size:12px}.map-section{gap:12px}.map-panel{padding:10px}.map-container{height:auto;width:100%}.panel-heading{padding:3px}.panel-heading h2{font-size:15px}.map-hint{font-size:9px}.map-pin{padding:5px 7px;gap:3px;font-size:8px}.map-pin span{font-size:11px}.legend-card{padding:14px}.legend-list{gap:5px}.legend-list button{padding:7px}.legend-list button span{font-size:10px}.biomes-grid{gap:9px}.biome-card{min-height:145px;padding:12px}.card-copy b{font-size:16px}.card-copy small{font-size:9px}.biome-card .explore-btn{font-size:9px;padding:6px 10px}.cta-btn{font-size:14px;padding:12px 20px}}
+@media(max-width:380px){.main-title span{font-size:36px}.main-title strong{font-size:42px}.map-container{height:auto;width:100%}.map-pin b{font-size:7px}.biome-card{min-height:135px}}
 /* A tela da experiência 3D mantém o tema original do aplicativo */
 .experience-screen{color:#172923}
