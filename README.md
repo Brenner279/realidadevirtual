@@ -1,6 +1,9 @@
 # Brasil Imersivo — Realidade Virtual Geo
 
-Experiência educativa para explorar os **seis biomas brasileiros** por meio de ambientes tridimensionais, panoramas fotográficos em 360° e conteúdos de Geografia.
+Projeto educativo sobre os **seis biomas brasileiros**, com uma página inicial de mapa interativo e uma experiência independente de Realidade Virtual com panoramas em 360°.
+
+- **Página inicial (mapa interativo):** https://brenner279.github.io/realidadevirtual/
+- **Experiência de Realidade Virtual:** https://brenner279.github.io/realidadevirtual/experiencia.html
 
 ## Estrutura e acesso
 
