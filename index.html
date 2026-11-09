@@ -9,7 +9,12 @@
   <script src="https://cdn.jsdelivr.net/npm/webxr-polyfill@2.0.3/build/webxr-polyfill.min.js"></script>
   <script>
     // Inicializar antes do A-Frame permite que ele detecte a compatibilidade Cardboard.
-    window.webxrPolyfill = new WebXRPolyfill({ cardboard: true });
+    window.webxrPolyfill = new WebXRPolyfill({
+      cardboard: true,
+      // Os controles nativos do Cardboard não respondem de forma confiável no WebView.
+      // A saída será feita pelo botão 3D acionado com o olhar.
+      cardboardConfig: { CARDBOARD_UI_DISABLED: true }
+    });
   </script>
   <script src="https://aframe.io/releases/1.8.0/aframe.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -185,6 +190,13 @@
               <a-entity id="camera-rig" position="0 1.6 8">
                 <a-camera id="main-camera" look-controls>
                   <a-cursor raycaster="objects: .interactive" fuse="true" fuse-timeout="1000" color="#f4e9a7" geometry="primitive: ring; radiusInner: 0.008; radiusOuter: 0.013"></a-cursor>
+                  <a-entity id="vr-exit-control" position="0 -0.52 -1.45" visible="false">
+                    <a-plane id="vr-exit-hitbox" class="interactive" width="1.05" height="0.30"
+                      material="shader: flat; color: #1f624b; opacity: 0.97; side: double">
+                      <a-text value="SAIR DO VR" align="center" color="#ffffff" width="2.4"
+                        position="0 0 0.015"></a-text>
+                    </a-plane>
+                  </a-entity>
                 </a-camera>
               </a-entity>
               <a-entity light="type: ambient; intensity: 1.15"></a-entity>
@@ -734,12 +746,29 @@
     });
     document.querySelector("#reset-view").addEventListener("click",resetPosition);
     const scene=document.querySelector("a-scene");
+    const vrExitControl=document.querySelector("#vr-exit-control");
+    const vrExitHitbox=document.querySelector("#vr-exit-hitbox");
+
+    // O botão fica preso à câmera e é selecionado por gaze/fuse (olhar fixo por 1 s).
+    vrExitHitbox.addEventListener("click",()=>{
+      if(scene.is("vr-mode"))scene.exitVR();
+    });
+    // Tecla Escape também permite sair quando houver teclado físico.
+    document.addEventListener("keydown",event=>{
+      if((event.key==="Escape"||event.key==="Backspace")&&scene.is("vr-mode")){
+        event.preventDefault();
+        scene.exitVR();
+      }
+    });
+
     scene.addEventListener("enter-vr",()=>{
+      vrExitControl.setAttribute("visible",true);
       document.querySelector("#mode-chip").textContent=faunaVRActive?"MODO FAUNA VR":"MODO REALIDADE VIRTUAL";
 
       if(faunaVRActive&&activeFaunaVideo)activeFaunaVideo.play().catch(()=>{});
     });
     scene.addEventListener("exit-vr",()=>{
+      vrExitControl.setAttribute("visible",false);
       if(faunaVRActive){
         if(activeFaunaVideo){
           activeFaunaVideo.pause();
