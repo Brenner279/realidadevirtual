@@ -175,16 +175,17 @@
                 <a-sky id="sky" material="shader: flat; toneMapped: false" color="#9fc8b5"></a-sky>
                 <a-plane id="ground" class="walkable" rotation="-90 0 0" width="180" height="180" color="#456c49" position="0 0 0"></a-plane>
                 <a-entity id="environment"></a-entity>
+                <a-videosphere id="fauna-video-sphere" radius="500" rotation="0 -90 0" visible="false" material="shader: flat; side: back"></a-videosphere>
               </a-entity>
               <a-entity id="camera-rig" position="0 1.6 8">
                 <a-camera id="main-camera" look-controls>
-                  <a-image id="fauna-image-panel" position="0 0 -2.5" width="2.2" height="1.65" visible="false" material="shader: flat; transparent: true; side: double"></a-image>
                   <a-cursor raycaster="objects: .interactive" fuse="true" fuse-timeout="1000" color="#f4e9a7" geometry="primitive: ring; radiusInner: 0.008; radiusOuter: 0.013"></a-cursor>
                 </a-camera>
               </a-entity>
               <a-entity light="type: ambient; intensity: 1.15"></a-entity>
               <a-entity light="type: directional; intensity: 1.2" position="-3 8 5"></a-entity>
             </a-scene>
+            <video id="fauna-video" preload="none" playsinline webkit-playsinline loop crossorigin="anonymous" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;left:-9999px;top:-9999px"></video>
             <div class="static-info-view" id="static-info-view" hidden>
               <button class="static-info-close" id="close-static-info" type="button">← Voltar ao panorama 360°</button>
               <div class="static-info-content">
@@ -550,14 +551,84 @@
       cerrado:{asset:"#cerrado-panorama",file:"Cer.png"}
     };
     const faunaVRButton=document.querySelector("#fauna-vr");
-    const faunaImagePanel=document.querySelector("#fauna-image-panel");
-    let faunaImageLoadToken=0;
+    const faunaVideo=document.querySelector("#fauna-video");
+    const faunaVideoSphere=document.querySelector("#fauna-video-sphere");
+    const faunaVideos={
+      amazonia:"assets/biomas/amazonia/fauna-vr.mp4",
+      cerrado:"assets/biomas/cerrado/fauna-vr.mp4",
+      caatinga:"assets/biomas/caatinga/fauna-vr.mp4",
+      "mata-atlantica":"assets/biomas/mata-atlantica/fauna-vr.mp4",
+      pantanal:"assets/biomas/pantanal/fauna-vr.mp4",
+      pampa:"assets/biomas/pampa/fauna-vr.mp4"
+    };
+    let faunaVideoLoadToken=0;
     let faunaVRActive=false;
+    let faunaPreviousVisibility=null;
+
+    function stopFaunaVideo(){
+      faunaVideoLoadToken++;
+      faunaVRActive=false;
+      faunaVideo.pause();
+      faunaVideo.removeAttribute("src");
+      faunaVideo.load();
+      faunaVideoSphere.removeAttribute("src");
+      faunaVideoSphere.setAttribute("visible",false);
+      if(faunaPreviousVisibility){
+        sky.object3D.visible=faunaPreviousVisibility.sky;
+        ground.object3D.visible=faunaPreviousVisibility.ground;
+        env.object3D.visible=faunaPreviousVisibility.environment;
+        faunaPreviousVisibility=null;
+      }
+      const title=document.querySelector("#viewer-title");
+      if(title&&biomes[current])title.textContent=biomes[current].name+" · panorama 360°";
+    }
+
+    function failFaunaVideo(requestToken,path){
+      if(requestToken!==faunaVideoLoadToken||!faunaVRActive)return;
+      stopFaunaVideo();
+      alert("Não foi possível reproduzir o vídeo de fauna deste bioma. Verifique o arquivo:\n"+path);
+    }
+
+    function showFaunaVideo(id){
+      if(faunaPreviousVisibility)stopFaunaVideo();
+      const path=faunaVideos[id];
+      const requestToken=++faunaVideoLoadToken;
+      if(!path){
+        failFaunaVideo(requestToken,"assets/biomas/"+id+"/fauna-vr.mp4");
+        return;
+      }
+      faunaVRActive=true;
+      faunaPreviousVisibility={
+        sky:sky.object3D.visible,
+        ground:ground.object3D.visible,
+        environment:env.object3D.visible
+      };
+      // O vídeo 360 substitui o panorama e o cenário 3D durante a experiência Fauna VR.
+      sky.object3D.visible=false;
+      ground.object3D.visible=false;
+      env.object3D.visible=false;
+      faunaVideoSphere.setAttribute("visible",false);
+      faunaVideo.pause();
+      faunaVideo.onerror=()=>failFaunaVideo(requestToken,path);
+      faunaVideo.onloadeddata=()=>{
+        if(requestToken!==faunaVideoLoadToken||!faunaVRActive||current!==id)return;
+        faunaVideoSphere.setAttribute("src","#fauna-video");
+        faunaVideoSphere.setAttribute("visible",true);
+        document.querySelector("#viewer-title").textContent=biomes[id].name+" · Fauna VR 360°";
+      };
+      faunaVideo.src=path;
+      faunaVideo.load();
+      // A reprodução é solicitada diretamente no toque do usuário.
+      try{
+        const playback=faunaVideo.play();
+        if(playback&&typeof playback.catch==="function")playback.catch(()=>failFaunaVideo(requestToken,path));
+      }catch(error){
+        failFaunaVideo(requestToken,path);
+      }
+    }
 
     function selectBiome(id){
-      faunaVRActive=false;
-      faunaImageLoadToken++;
-      faunaImagePanel.setAttribute("visible",false);
+      stopFaunaVideo();
       current=id;
       const b=biomes[id];
       const title=document.querySelector("#viewer-title");
@@ -602,40 +673,6 @@
       document.querySelector("#biome-facts").innerHTML=b.facts.map(x=>'<span class="fact">'+x+'</span>').join("");
       faunaVRButton.hidden=false;
       document.querySelectorAll("[data-biome]").forEach(el=>el.classList.toggle("selected",el.dataset.biome===id));
-    }
-    function showFaunaImage(id){
-      const requestToken=++faunaImageLoadToken;
-      const path=`assets/biomas/${id}/fauna-flora.jpg`;
-      const probe=new Image();
-
-      probe.onload=()=>{
-        if(requestToken!==faunaImageLoadToken||!faunaVRActive||current!==id)return;
-
-        // Ajusta o painel à proporção original da imagem, sem deformá-la.
-        const aspect=probe.naturalWidth/probe.naturalHeight||1;
-        const maxWidth=2.35;
-        const maxHeight=1.75;
-        let width=maxWidth;
-        let height=width/aspect;
-        if(height>maxHeight){
-          height=maxHeight;
-          width=height*aspect;
-        }
-
-        faunaImagePanel.setAttribute("width",width);
-        faunaImagePanel.setAttribute("height",height);
-        faunaImagePanel.setAttribute("src",path);
-        faunaImagePanel.setAttribute("visible",true);
-      };
-
-      probe.onerror=()=>{
-        if(requestToken!==faunaImageLoadToken||!faunaVRActive)return;
-        faunaVRActive=false;
-        faunaImagePanel.setAttribute("visible",false);
-        alert("Não foi possível carregar a imagem de fauna e flora deste bioma:\n"+path);
-      };
-
-      probe.src=path;
     }
 
     function openInfo(){showDiscovery(biomes[current].name+" · você sabia?",biomes[current].detail)}
@@ -708,17 +745,13 @@
     document.querySelector("#info-modal").addEventListener("click",e=>{if(e.target.id==="info-modal")e.currentTarget.classList.remove("open")});
     faunaVRButton.addEventListener("click",()=>{
       const scene=document.querySelector("a-scene");
-      faunaVRActive=true;
-      faunaImagePanel.setAttribute("visible",false);
-      showFaunaImage(current);
-
-      // Usa a mesma chamada de entrada VR do botão principal.
+      showFaunaVideo(current);
+      // Mantém a mesma chamada de entrada VR usada pelo botão principal.
       if(!scene.is("vr-mode")){
         const vrRequest=scene.enterVR();
         if(vrRequest&&typeof vrRequest.catch==="function")vrRequest.catch(()=>{
-          faunaVRActive=false;
-          faunaImageLoadToken++;
-          faunaImagePanel.setAttribute("visible",false);
+          if(!faunaVRActive)return;
+          stopFaunaVideo();
           alert("Não foi possível iniciar o modo VR. Verifique se o navegador e o dispositivo oferecem suporte a WebXR e se o acesso está em HTTPS.");
         });
       }
@@ -735,11 +768,7 @@
       document.querySelector("#mode-chip").textContent=faunaVRActive?"MODO FAUNA VR":"MODO REALIDADE VIRTUAL";
     });
     scene.addEventListener("exit-vr",()=>{
-      if(faunaVRActive){
-        faunaVRActive=false;
-        faunaImageLoadToken++;
-        faunaImagePanel.setAttribute("visible",false);
-      }
+      stopFaunaVideo();
       document.querySelector("#mode-chip").textContent="MODO EXPLORAÇÃO";
     });selectBiome("amazonia");
   
