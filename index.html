@@ -186,17 +186,17 @@
                 <a-sky id="sky" material="shader: flat; toneMapped: false" color="#9fc8b5"></a-sky>
                 <a-plane id="ground" class="walkable" rotation="-90 0 0" width="180" height="180" color="#456c49" position="0 0 0"></a-plane>
                 <a-entity id="environment"></a-entity>
+                <a-entity id="vr-exit-control" position="0 2.25 1.5" visible="false">
+                  <a-plane id="vr-exit-hitbox" class="interactive" width="1.05" height="0.30"
+                    material="shader: flat; color: #1f624b; opacity: 0.97; side: double">
+                    <a-text value="SAIR DO VR" align="center" color="#ffffff" width="2.4"
+                      position="0 0 0.015"></a-text>
+                  </a-plane>
+                </a-entity>
               </a-entity>
               <a-entity id="camera-rig" position="0 1.6 8">
                 <a-camera id="main-camera" look-controls>
                   <a-cursor raycaster="objects: .interactive" fuse="true" fuse-timeout="1000" color="#f4e9a7" geometry="primitive: ring; radiusInner: 0.008; radiusOuter: 0.013"></a-cursor>
-                  <a-entity id="vr-exit-control" position="0 -0.52 -1.45" visible="false">
-                    <a-plane id="vr-exit-hitbox" class="interactive" width="1.05" height="0.30"
-                      material="shader: flat; color: #1f624b; opacity: 0.97; side: double">
-                      <a-text value="SAIR DO VR" align="center" color="#ffffff" width="2.4"
-                        position="0 0 0.015"></a-text>
-                    </a-plane>
-                  </a-entity>
                 </a-camera>
               </a-entity>
               <a-entity light="type: ambient; intensity: 1.15"></a-entity>
