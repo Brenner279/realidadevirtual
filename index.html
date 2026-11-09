@@ -59,16 +59,15 @@
     .hybrid-note{display:flex;align-items:center;gap:13px;margin-top:19px;padding:15px 18px;background:#e8f0e4;border-radius:15px}.hybrid-note>span{width:38px;height:38px;display:grid;place-items:center;background:#d2e5c5;border-radius:12px;font-size:23px;color:#28583d}.hybrid-note b{font:700 13px Manrope,sans-serif}.hybrid-note p{font-size:11px;color:#627368;margin:4px 0 0;line-height:1.45}
     .experience-screen[hidden],.home-screen[hidden]{display:none!important}.experience-top{display:flex;align-items:center;gap:16px;margin-bottom:18px}.back-button{border:1px solid #dce5d9;background:#fff;color:#345744;padding:10px 13px;border-radius:11px;font-weight:700;font-size:12px}.experience-context{display:flex;flex-direction:column;gap:3px}.experience-context b{font:800 17px Manrope,sans-serif}.mode-chip{margin-left:auto;background:#e6f0e6;color:#35694b;padding:8px 11px;border-radius:25px;font-size:10px;font-weight:800;letter-spacing:.05em}
     .experience-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(290px,.65fr);gap:20px;align-items:start}.experience-layout .viewer-card{min-width:0}.viewer-head{padding:17px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--line)}.viewer-head>div{display:flex;flex-direction:column;gap:4px}.viewer-head strong{font:800 15px Manrope,sans-serif}.live{font-size:10px;color:#28714e;background:#eaf4e9;padding:7px 10px;border-radius:30px;font-weight:700;white-space:nowrap}
-    .scene-wrap{height:490px;position:relative;background:#b8cbb2;overflow:hidden}.scene-wrap a-scene{width:100%;height:100%;display:block}.scene-hint,.vr-hint{position:absolute;z-index:3;left:13px;bottom:13px;max-width:72%;background:#102b27dd;color:#fff;padding:9px 12px;border-radius:10px;font-size:10px;pointer-events:none}.vr-hint{display:none;bottom:63px;max-width:80%;color:#e9f5df}
-    .touch-pad{display:none;position:absolute;right:14px;bottom:13px;width:144px;height:144px;z-index:5;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:4px;touch-action:none}.pad-button{border:1px solid #ffffff90;border-radius:12px;background:#102b27c9;color:#fff;font-size:18px;font-weight:800;box-shadow:0 3px 10px #0002;touch-action:none;user-select:none;-webkit-user-select:none}.pad-button:active,.pad-button.is-pressed{background:#63905d}.pad-up{grid-area:1/2}.pad-left{grid-area:2/1}.pad-center{grid-area:2/2;font-size:11px;opacity:.8}.pad-right{grid-area:2/3}.pad-down{grid-area:3/2}
-    .viewer-actions{display:flex;gap:8px;padding:13px 16px;flex-wrap:wrap}.btn{border:0;border-radius:11px;padding:10px 13px;font-weight:700;font-size:12px;transition:.2s}.btn-primary{background:var(--green);color:white}.btn-soft{background:#edf2eb;color:#254637}.btn:focus-visible,.pad-button:focus-visible,.destination-option:focus-visible,.map-marker:focus-visible{outline:3px solid #a2c66f;outline-offset:3px}
+    .scene-wrap{height:490px;position:relative;background:#b8cbb2;overflow:hidden}.scene-wrap a-scene{width:100%;height:100%;display:block}.scene-hint{display:none}
+        .viewer-actions{display:flex;gap:8px;padding:13px 16px;flex-wrap:wrap}.btn{border:0;border-radius:11px;padding:10px 13px;font-weight:700;font-size:12px;transition:.2s}.btn-primary{background:var(--green);color:white}.btn-soft{background:#edf2eb;color:#254637}.btn:focus-visible,.destination-option:focus-visible,.map-marker:focus-visible{outline:3px solid #a2c66f;outline-offset:3px}
     .control-legend{display:flex;gap:8px 16px;flex-wrap:wrap;padding:0 17px 16px;font-size:10px;color:#66776d}.control-legend b{color:#345743}
     .learning-card{padding:21px;position:sticky;top:15px}.learning-header h2{font:800 22px/1.15 Manrope,sans-serif;margin:8px 0}.learning-header p{color:#66766c;font-size:12px;line-height:1.65;margin:0}.facts{display:flex;flex-wrap:wrap;gap:6px;margin:13px 0 19px}.fact{font-size:10px;background:#f2f6ef;border:1px solid #e2e9dc;padding:6px 9px;border-radius:30px;color:#385847}
     .modal{position:fixed;inset:0;background:#071b16b8;display:none;place-items:center;padding:20px;z-index:20}.modal.open{display:grid}.modal-panel{max-width:520px;width:100%;background:white;border-radius:20px;padding:24px}.modal-panel h2{font:800 23px Manrope,sans-serif;margin:0 0 10px}.modal-panel p{font-size:14px;line-height:1.65;color:var(--muted)}.modal-close{float:right;border:0;background:#edf2eb;border-radius:50%;width:34px;height:34px;font-size:18px}
     .map-marker.selected{background:#dcebd7;border-color:#4d815b;box-shadow:0 5px 16px #183e2b36}.destination-option.selected{background:#edf5e9;border-color:#82ad7b}
     @media(max-width:980px){.home-grid,.experience-layout{grid-template-columns:1fr}.map-canvas{height:440px}.learning-card{position:static}.experience-layout{gap:14px}}
-    @media(max-width:700px){.home-screen,.experience-screen{padding:22px 13px 42px}.home-hero{padding:4px 4px 23px}.home-hero p{font-size:13px}.home-grid{gap:13px}.map-card-head{padding:15px 15px 0}.map-card-head h2,.destination-card h2{font-size:18px}.map-canvas{height:360px}.map-legend{padding:0 13px 15px;gap:7px 10px}.destination-card{padding:17px}.destination-list{grid-template-columns:1fr 1fr}.destination-option{padding:8px;gap:7px}.dest-icon{width:31px;height:31px;font-size:17px}.destination-option b{font-size:11px}.destination-option small{font-size:8px}.dest-arrow{font-size:13px}.hybrid-note{align-items:flex-start;padding:13px}.experience-top{gap:8px;flex-wrap:wrap}.experience-context b{font-size:14px}.mode-chip{font-size:8px;padding:7px 8px}.scene-wrap{height:min(64vh,430px);min-height:310px}.touch-pad{display:grid}.scene-hint{bottom:13px;max-width:52%;font-size:9px;padding:8px}.vr-hint{bottom:165px;max-width:90%;font-size:9px}.viewer-actions{padding:11px}.viewer-actions .btn{font-size:10px;padding:9px 10px}.control-legend{font-size:9px}.learning-card{padding:17px}}
-    @media(max-width:390px){.map-canvas{height:320px}.map-marker{padding:5px 6px;gap:3px}.map-marker b{font-size:8px}.map-marker span{font-size:12px}.destination-list{grid-template-columns:1fr}.scene-wrap{height:350px}.touch-pad{width:124px;height:124px}.scene-hint{max-width:45%}}
+    @media(max-width:700px){.home-screen,.experience-screen{padding:22px 13px 42px}.home-hero{padding:4px 4px 23px}.home-hero p{font-size:13px}.home-grid{gap:13px}.map-card-head{padding:15px 15px 0}.map-card-head h2,.destination-card h2{font-size:18px}.map-canvas{height:360px}.map-legend{padding:0 13px 15px;gap:7px 10px}.destination-card{padding:17px}.destination-list{grid-template-columns:1fr 1fr}.destination-option{padding:8px;gap:7px}.dest-icon{width:31px;height:31px;font-size:17px}.destination-option b{font-size:11px}.destination-option small{font-size:8px}.dest-arrow{font-size:13px}.hybrid-note{align-items:flex-start;padding:13px}.experience-top{gap:8px;flex-wrap:wrap}.experience-context b{font-size:14px}.mode-chip{font-size:8px;padding:7px 8px}.scene-wrap{height:min(64vh,430px);min-height:310px}.scene-hint{bottom:13px;max-width:52%;font-size:9px;padding:8px}.viewer-actions{padding:11px}.viewer-actions .btn{font-size:10px;padding:9px 10px}.control-legend{font-size:9px}.learning-card{padding:17px}}
+    @media(max-width:390px){.map-canvas{height:320px}.map-marker{padding:5px 6px;gap:3px}.map-marker b{font-size:8px}.map-marker span{font-size:12px}.destination-list{grid-template-columns:1fr}.scene-wrap{height:350px}.scene-hint{max-width:45%}}
 
   
     /* Página inicial experimental inspirada no novo layout enviado */
@@ -104,6 +103,27 @@
     @media(max-width:900px){.map-section{grid-template-columns:minmax(0,1fr)}.map-panel{max-width:900px}.map-container{height:auto}.biomes-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
     @media(max-width:600px){.home-screen{padding:22px 13px 42px}.main-title{font-size:48px}.hero{padding-bottom:20px}.hero-desc{font-size:12px}.panel-heading{padding:15px 14px 0}.panel-heading h2{font-size:17px}.map-container{height:auto}.map-pin{padding:5px 6px;gap:3px}.map-pin b{font-size:8px}.map-pin span{font-size:12px}biomes-grid{gap:9px}.biome-card{min-height:145px;padding:13px}.card-copy b{font-size:16px}.card-copy small{font-size:9px}.explore-btn{font-size:9px}.cta-wrapper{padding:20px 0}.top-note{display:none}}
     @media(max-width:390px){.main-title{font-size:42px}.map-container{height:auto}.map-pin b{font-size:7px}.biomes-grid{grid-template-columns:1fr 1fr}}
+
+  
+    /* Modo Cardboard estereoscópico para Android WebView, sem WebXR. */
+    #exit-vr{display:none;position:absolute;top:12px;right:12px;z-index:12;border:1px solid #ffffff80;border-radius:10px;padding:10px 13px;background:#102b27dd;color:#fff;font-size:12px;font-weight:800}
+    body.cardboard-mode{overflow:hidden;background:#000}
+    body.cardboard-mode .topbar,
+    body.cardboard-mode .home-screen,
+    body.cardboard-mode .experience-top,
+    body.cardboard-mode .viewer-head,
+    body.cardboard-mode .viewer-actions,
+    body.cardboard-mode .learning-card,
+    body.cardboard-mode .control-legend,
+    body.cardboard-mode footer{display:none!important}
+    body.cardboard-mode .experience-screen{position:fixed;inset:0;z-index:9998;width:100vw;height:100dvh;max-width:none;margin:0;padding:0;background:#000;overflow:hidden}
+    body.cardboard-mode .experience-layout,
+    body.cardboard-mode .viewer-card{display:block;width:100%;height:100%;border:0;border-radius:0;box-shadow:none;background:#000}
+    body.cardboard-mode .scene-wrap{position:absolute;inset:0;width:100vw;height:100dvh;min-height:0;margin:0;background:#000;overflow:hidden}
+    body.cardboard-mode .scene-wrap a-scene,
+    body.cardboard-mode .scene-wrap canvas{display:block;width:100%!important;height:100%!important}
+    body.cardboard-mode #exit-vr{display:block}
+    body.cardboard-mode .static-info-view{position:absolute;inset:0}
 
   </style>
   <link rel="stylesheet" href="style.css">
@@ -157,7 +177,7 @@
         <article class="viewer-card">
           <div class="viewer-head"><div><span class="eyebrow">AMBIENTE INTERATIVO</span><strong id="viewer-title">Amazônia · ambiente imersivo</strong></div><span class="live">● PANORAMA 360°</span></div>
           <div class="scene-wrap">
-            <a-scene embedded vr-mode-ui="enabled: true" renderer="colorManagement: true; physicallyCorrectLights: true" background="color: #b7cbb8">
+            <a-scene embedded vr-mode-ui="enabled: false" renderer="colorManagement: true; physicallyCorrectLights: true" background="color: #b7cbb8">
               <a-assets timeout="60000">
                 <img id="amazon-panorama" src="amaz.png">
                 <video id="fauna-amazonia-video" src="assets/biomas/amazonia/fauna-vr.mp4" preload="none" loop playsinline webkit-playsinline crossorigin="anonymous"></video>
@@ -191,15 +211,7 @@
                 <img id="static-info-image" alt="" hidden>
               </div>
             </div>
-            <div class="scene-hint" id="scene-hint">WASD / setas para caminhar • Arraste para olhar</div>
-            <div class="touch-pad" id="touch-pad" aria-label="Controles direcionais para caminhar">
-              <button class="pad-button pad-up" data-move="forward" aria-label="Avançar">▲</button>
-              <button class="pad-button pad-left" data-move="left" aria-label="Mover para a esquerda">◀</button>
-              <button class="pad-button pad-center" data-move="stop" aria-label="Parar">●</button>
-              <button class="pad-button pad-right" data-move="right" aria-label="Mover para a direita">▶</button>
-              <button class="pad-button pad-down" data-move="back" aria-label="Recuar">▼</button>
-            </div>
-            <div class="vr-hint" id="vr-hint">No modo VR, olhe para um ponto dourado para selecioná-lo. Olhe para o chão e acione o seletor para se deslocar.</div>
+            <button id="exit-vr" type="button" aria-label="Sair do modo VR">Sair do VR</button>
           </div>
           <div id="panorama-credit" class="panorama-credit" hidden></div>
           <div class="viewer-actions">
@@ -211,7 +223,7 @@
             <button class="btn btn-soft" data-info-category="clima">☀️ Clima</button>
             <button class="btn btn-soft" data-info-category="vegetacao">🌳 Vegetação</button>
           </div>
-          <div class="control-legend"><span><b>Computador</b> WASD / setas + mouse</span><span><b>Celular</b> botões direcionais + toque para olhar</span><span><b>Óculos VR</b> olhar e selecionar pontos</span></div>
+          <div class="control-legend"><span><b>Óculos VR</b> movimente a cabeça para observar o ambiente e fixe o olhar nos pontos interativos para selecioná-los. Não é necessário controle manual.</span></div>
         </article>
         <aside class="learning-card">
           <div class="learning-header"><span class="eyebrow">GUIA DE DESCOBERTA</span><h2 id="biome-heading">A maior floresta tropical</h2><p id="biome-description"></p></div>
@@ -660,19 +672,10 @@
     function resetPosition(){
       const rig=document.querySelector("#camera-rig");
       const camera=document.querySelector("#main-camera");
-
-      // Interrompe qualquer deslocamento que ainda esteja ativo.
-      if(typeof pressed!=="undefined")pressed.clear();
-      document.querySelectorAll("#touch-pad [data-move]").forEach(button=>button.classList.remove("is-pressed"));
-
-      // Retorna o conjunto câmera/corpo à posição inicial.
       rig.object3D.position.set(0,1.6,8);
       rig.object3D.rotation.set(0,0,0);
       camera.object3D.position.set(0,0,0);
       camera.object3D.rotation.set(0,0,0);
-
-      // O look-controls mantém a orientação em objetos internos próprios.
-      // Zerar apenas camera.object3D.rotation não reinicia esses controles.
       const lookControls=camera.components&&camera.components["look-controls"];
       if(lookControls){
         if(lookControls.yawObject)lookControls.yawObject.rotation.set(0,0,0);
@@ -683,19 +686,103 @@
     }
     document.querySelectorAll("[data-biome]").forEach(el=>el.addEventListener("click",()=>startBiome(el.dataset.biome)));
     document.querySelector("#back-to-map").addEventListener("click",()=>{
-      const scene=document.querySelector("a-scene");
-      if(scene.is("vr-mode"))scene.exitVR();
+      exitCardboardMode();
       document.querySelector("#experience-screen").hidden=true;
       document.querySelector("#home-screen").hidden=false;
-      document.querySelector("#touch-pad").style.display="";
       window.scrollTo({top:0,behavior:"smooth"});
     });
     document.querySelector("#close-modal").addEventListener("click",()=>document.querySelector("#info-modal").classList.remove("open"));
     document.querySelector("#info-modal").addEventListener("click",e=>{if(e.target.id==="info-modal")e.currentTarget.classList.remove("open")});
+    const scene=document.querySelector("a-scene");
+    let cardboardMode=false;
+    let cardboardRendererInstalled=false;
+    let stereoCamera=null;
+
+    function installCardboardRenderer(){
+      if(cardboardRendererInstalled)return true;
+      const renderer=scene.renderer;
+      const THREE=AFRAME.THREE;
+      if(!renderer||!THREE||!THREE.StereoCamera)return false;
+      stereoCamera=new THREE.StereoCamera();
+      stereoCamera.eyeSep=0.064;
+      const originalRender=renderer.render.bind(renderer);
+      renderer.render=function(sceneObject,camera){
+        if(!cardboardMode||!camera||camera.isArrayCamera){
+          return originalRender(sceneObject,camera);
+        }
+        const size=renderer.getDrawingBufferSize(new THREE.Vector2());
+        const width=Math.max(1,Math.floor(size.x/2));
+        const height=Math.max(1,size.y);
+        const previousAspect=camera.aspect;
+        const previousAutoClear=renderer.autoClear;
+        const previousScissorTest=renderer.getScissorTest();
+        const previousViewport=renderer.getViewport(new THREE.Vector4());
+        const previousScissor=renderer.getScissor(new THREE.Vector4());
+
+        camera.aspect=width/height;
+        camera.updateProjectionMatrix();
+        stereoCamera.update(camera);
+        camera.aspect=previousAspect;
+        camera.updateProjectionMatrix();
+
+        renderer.autoClear=false;
+        renderer.setScissorTest(false);
+        renderer.clear(true,true,true);
+        renderer.setScissorTest(true);
+
+        renderer.setViewport(0,0,width,height);
+        renderer.setScissor(0,0,width,height);
+        originalRender(sceneObject,stereoCamera.cameraL);
+
+        const rightWidth=Math.max(1,size.x-width);
+        renderer.setViewport(width,0,rightWidth,height);
+        renderer.setScissor(width,0,rightWidth,height);
+        originalRender(sceneObject,stereoCamera.cameraR);
+
+        renderer.setScissorTest(previousScissorTest);
+        renderer.setViewport(previousViewport);
+        renderer.setScissor(previousScissor);
+        renderer.autoClear=previousAutoClear;
+      };
+      cardboardRendererInstalled=true;
+      return true;
+    }
+
+    function startCardboardMode(){
+      if(!installCardboardRenderer()){
+        alert("Não foi possível preparar a visualização estereoscópica neste dispositivo.");
+        return false;
+      }
+      cardboardMode=true;
+      document.body.classList.add("cardboard-mode");
+      document.querySelector("#mode-chip").textContent="MODO ÓCULOS VR";
+      const orientation=screen.orientation;
+      if(orientation&&orientation.lock)orientation.lock("landscape").catch(()=>{});
+      if(scene.resize)scene.resize();
+      setTimeout(()=>{if(scene.resize)scene.resize();},250);
+      return true;
+    }
+
+    function exitCardboardMode(){
+      if(!cardboardMode)return;
+      cardboardMode=false;
+      document.body.classList.remove("cardboard-mode");
+      if(activeFaunaVideo){
+        activeFaunaVideo.pause();
+        activeFaunaVideo.currentTime=0;
+        activeFaunaVideo=null;
+        faunaVRActive=false;
+        const panorama=panoramas[current];
+        if(panorama)sky.setAttribute("src",panorama.asset);
+      }
+      document.querySelector("#mode-chip").textContent="MODO EXPLORAÇÃO";
+      if(screen.orientation&&screen.orientation.unlock)screen.orientation.unlock();
+      if(scene.resize)scene.resize();
+    }
+
     faunaVRButton.addEventListener("click",()=>{
       const video=faunaVideos[current];
       if(!video)return;
-
       const videoPath=video.getAttribute("src");
       activeFaunaVideo=video;
       faunaVRActive=true;
@@ -715,114 +802,20 @@
       };
       video.addEventListener("error",handleVideoError,{once:true});
       video.addEventListener("playing",()=>video.removeEventListener("error",handleVideoError),{once:true});
-
       const playback=video.play();
-      if(playback&&typeof playback.catch==="function")playback.catch(handleVideoError);
+      if(playback&&typeof playback.catch==="function"){
+        playback.catch(handleVideoError);
+        if(!startCardboardMode())handleVideoError();
+      }else if(!startCardboardMode()){
+        handleVideoError();
+      }
+    });
 
-      const scene=document.querySelector("a-scene");
-      if(!scene.is("vr-mode")){
-        const vrRequest=scene.enterVR();
-        if(vrRequest&&typeof vrRequest.catch==="function")vrRequest.catch(()=>{
-          video.pause();
-          faunaVRActive=false;
-          activeFaunaVideo=null;
-          const panorama=panoramas[current];
-          if(panorama)sky.setAttribute("src",panorama.asset);
-          alert("Não foi possível iniciar o modo VR neste navegador ou dispositivo.");
-        });
-      }
-    });
-    document.querySelector("#enter-vr").addEventListener("click",()=>{
-      const scene=document.querySelector("a-scene");
-      if(scene.is("vr-mode")){scene.exitVR();return;}
-      const vrRequest=scene.enterVR();
-      if(vrRequest&&typeof vrRequest.catch==="function")vrRequest.catch(()=>alert("Não foi possível iniciar o modo VR. Verifique se o navegador e o dispositivo oferecem suporte a WebXR e se o acesso está em HTTPS."));
-    });
-    document.querySelector("#reset-view").addEventListener("click",resetPosition);
-    // Movimento por teclado e por botões de toque, com direção relativa ao olhar da câmera.
-    const pressed=new Set();
-    const keyDirections={w:"forward",arrowup:"forward",s:"back",arrowdown:"back",a:"left",arrowleft:"left",d:"right",arrowright:"right"};
-    document.addEventListener("keydown",event=>{
-      const key=event.key.toLowerCase();
-      if(keyDirections[key]&& !document.querySelector("#experience-screen").hidden){
-        pressed.add(keyDirections[key]);
-        event.preventDefault();
-      }
-    });
-    document.addEventListener("keyup",event=>{
-      const key=event.key.toLowerCase();
-      if(keyDirections[key])pressed.delete(keyDirections[key]);
-    });
-    window.addEventListener("blur",()=>pressed.clear());
-    const touchPad=document.querySelector("#touch-pad");
-    touchPad.querySelectorAll("[data-move]").forEach(button=>{
-      const move=button.dataset.move;
-      button.addEventListener("pointerdown",event=>{
-        event.preventDefault();
-        if(move==="stop")pressed.clear();
-        else pressed.add(move);
-        button.classList.add("is-pressed");
-        if(button.setPointerCapture)button.setPointerCapture(event.pointerId);
-      });
-      ["pointerup","pointercancel","lostpointercapture","pointerleave"].forEach(name=>button.addEventListener(name,()=>{
-        if(move!=="stop")pressed.delete(move);
-        button.classList.remove("is-pressed");
-      }));
-    });
-    let previousFrame=0;
-    function movementFrame(timestamp){
-      const delta=Math.min((timestamp-previousFrame)/1000,.05)||0;
-      previousFrame=timestamp;
-      if(pressed.size&&!document.querySelector("#experience-screen").hidden){
-        const camera=document.querySelector("#main-camera");
-        const rig=document.querySelector("#camera-rig");
-        const yaw=camera.object3D.rotation.y+rig.object3D.rotation.y;
-        const forward={x:-Math.sin(yaw),z:-Math.cos(yaw)};
-        const right={x:Math.cos(yaw),z:-Math.sin(yaw)};
-        let dx=0,dz=0;
-        if(pressed.has("forward")){dx+=forward.x;dz+=forward.z;}
-        if(pressed.has("back")){dx-=forward.x;dz-=forward.z;}
-        if(pressed.has("right")){dx+=right.x;dz+=right.z;}
-        if(pressed.has("left")){dx-=right.x;dz-=right.z;}
-        const length=Math.hypot(dx,dz)||1;
-        const speed=4.2*delta/length;
-        rig.object3D.position.x=Math.max(-32,Math.min(32,rig.object3D.position.x+dx*speed));
-        rig.object3D.position.z=Math.max(-42,Math.min(12,rig.object3D.position.z+dz*speed));
-      }
-      requestAnimationFrame(movementFrame);
-    }
-    requestAnimationFrame(movementFrame);
+    document.querySelector("#enter-vr").addEventListener("click",()=>startCardboardMode());
+    document.querySelector("#exit-vr").addEventListener("click",exitCardboardMode);
 
-    const scene=document.querySelector("a-scene");
-    scene.addEventListener("enter-vr",()=>{
-      document.querySelector("#mode-chip").textContent=faunaVRActive?"MODO FAUNA VR":"MODO REALIDADE VIRTUAL";
-      touchPad.style.display="none";
-      if(faunaVRActive&&activeFaunaVideo)activeFaunaVideo.play().catch(()=>{});
-    });
-    scene.addEventListener("exit-vr",()=>{
-      if(faunaVRActive){
-        if(activeFaunaVideo){
-          activeFaunaVideo.pause();
-          activeFaunaVideo.currentTime=0;
-        }
-        faunaVRActive=false;
-        activeFaunaVideo=null;
-        const panorama=panoramas[current];
-        if(panorama)sky.setAttribute("src",panorama.asset);
-        sky.setAttribute("rotation","0 -90 0");
-      }
-      document.querySelector("#mode-chip").textContent="MODO EXPLORAÇÃO";
-      touchPad.style.display="";
-    });
-    // No modo VR sem controles, olhar para o chão e aguardar o clique por foco desloca o visitante.
-    ground.addEventListener("click",event=>{
-      if(!scene.is("vr-mode"))return;
-      const point=event.detail&&event.detail.intersection&&event.detail.intersection.point;
-      if(!point)return;
-      const rig=document.querySelector("#camera-rig").object3D.position;
-      rig.x=Math.max(-28,Math.min(28,point.x));
-      rig.z=Math.max(-38,Math.min(10,point.z));
-    });
+    scene.addEventListener("loaded",()=>installCardboardRenderer());
+    if(scene.hasLoaded)installCardboardRenderer();
     selectBiome("amazonia");
   
   </script>
