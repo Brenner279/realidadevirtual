@@ -6,6 +6,8 @@ on:
     branches: [main]
     paths:
       - 'index.html'
+      - 'style.css'
+      - 'assets/**'
       - 'package.json'
       - 'capacitor.config.json'
       - 'scripts/**'
@@ -43,10 +45,25 @@ jobs:
           mkdir -p www/vendor www/assets
           cp index.html style.css www/
           cp ./*.png ./*.mp3 ./*.mp4 www/
-          cp assets/mapa.png www/assets/mapa.png
+          cp -R assets/. www/assets/
+
           curl -fL --retry 3 https://aframe.io/releases/1.8.0/aframe.min.js -o www/vendor/aframe.min.js
           test -s www/vendor/aframe.min.js
-          sed -i 's#https://aframe.io/releases/1.8.0/aframe.min.js#vendor/aframe.min.js#g' www/index.html
+          sed -i \
+            -e 's#https://aframe.io/releases/1.8.0/aframe.min.js#vendor/aframe.min.js#g' \
+            -e '/fonts.googleapis.com/d' \
+            -e '/fonts.gstatic.com/d' \
+            www/index.html
+          echo "Verificando arquivos offline obrigatórios:"
+          test -s www/vendor/aframe.min.js
+          test -s www/assets/mapa.png
+          test -s www/assets/biomas/amazonia/fauna-flora.jpg
+          test -s www/assets/biomas/amazonia/fauna-vr.mp4
+          test -s www/Mata.png
+          if grep -E 'https?://' www/index.html | grep -v 'http-equiv'; then
+            echo 'Foram encontradas referências HTTP externas no aplicativo.'
+            exit 1
+          fi
           echo "Arquivos locais preparados:"
           du -sh www
 
