@@ -110,24 +110,6 @@
     @media(max-width:600px){.home-screen{padding:22px 13px 42px}.main-title{font-size:48px}.hero{padding-bottom:20px}.hero-desc{font-size:12px}.panel-heading{padding:15px 14px 0}.panel-heading h2{font-size:17px}.map-container{height:auto}.map-pin{padding:5px 6px;gap:3px}.map-pin b{font-size:8px}.map-pin span{font-size:12px}biomes-grid{gap:9px}.biome-card{min-height:145px;padding:13px}.card-copy b{font-size:16px}.card-copy small{font-size:9px}.explore-btn{font-size:9px}.cta-wrapper{padding:20px 0}.top-note{display:none}}
     @media(max-width:390px){.main-title{font-size:42px}.map-container{height:auto}.map-pin b{font-size:7px}.biomes-grid{grid-template-columns:1fr 1fr}}
 
-    /* Modo imersivo nativo exclusivo do APK: panorama 360° sem divisão estereoscópica. */
-    .apk-vr-exit{display:none;position:absolute;top:calc(env(safe-area-inset-top, 0px) + 14px);right:14px;z-index:100001;border:1px solid #ffffff70;border-radius:12px;background:#102b27eF;color:#fff;padding:11px 14px;font:700 12px "DM Sans",sans-serif;box-shadow:0 3px 14px #0005}
-    body.apk-immersive-mode{overflow:hidden!important;background:#000!important}
-    body.apk-immersive-mode>.topbar,
-    body.apk-immersive-mode>#home-screen,
-    body.apk-immersive-mode>#experience-screen .experience-top,
-    body.apk-immersive-mode>#experience-screen .viewer-head,
-    body.apk-immersive-mode>#experience-screen .learning-card,
-    body.apk-immersive-mode>#experience-screen .viewer-actions,
-    body.apk-immersive-mode>#experience-screen .control-legend,
-    body.apk-immersive-mode>footer{display:none!important}
-    body.apk-immersive-mode>#experience-screen{display:block!important;position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;height:100dvh!important;max-width:none!important;margin:0!important;padding:0!important;overflow:hidden!important;z-index:99999!important}
-    body.apk-immersive-mode>#experience-screen .experience-layout,
-    body.apk-immersive-mode>#experience-screen .viewer-card{display:block!important;position:static!important;width:100%!important;height:100%!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;overflow:visible!important}
-    body.apk-immersive-mode>#experience-screen .scene-wrap{position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;height:100dvh!important;min-height:0!important;max-height:none!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;overflow:hidden!important;background:#000!important;z-index:100000!important}
-    body.apk-immersive-mode>#experience-screen .scene-wrap a-scene{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;margin:0!important}
-    body.apk-immersive-mode>#experience-screen .scene-hint{display:none!important}
-    body.apk-immersive-mode .apk-vr-exit{display:block!important}
   </style>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -211,7 +193,6 @@
               </div>
             </div>
             <div class="scene-hint" id="scene-hint">Gire a cabeça para observar o ambiente e fixe o olhar nos pontos interativos para selecioná-los.</div>
-            <button class="apk-vr-exit" id="exit-apk-vr" type="button" aria-label="Sair do modo imersivo">✕ Sair</button>
             </div>
           <div id="panorama-credit" class="panorama-credit" hidden></div>
           <div class="viewer-actions">
@@ -753,9 +734,8 @@
       camera.object3D.updateMatrixWorld(true);
     }
     document.querySelectorAll("[data-biome]").forEach(el=>el.addEventListener("click",()=>startBiome(el.dataset.biome)));
-    document.querySelector("#back-to-map").addEventListener("click",async()=>{
+    document.querySelector("#back-to-map").addEventListener("click",()=>{
       const scene=document.querySelector("a-scene");
-      if(nativeImmersiveActive)await exitNativeImmersiveMode();
       if(scene.is("vr-mode"))scene.exitVR();
       document.querySelector("#experience-screen").hidden=true;
       document.querySelector("#home-screen").hidden=false;
@@ -763,60 +743,41 @@
     });
     document.querySelector("#close-modal").addEventListener("click",()=>document.querySelector("#info-modal").classList.remove("open"));
     document.querySelector("#info-modal").addEventListener("click",e=>{if(e.target.id==="info-modal")e.currentTarget.classList.remove("open")});
-    // O APK usa um plugin Android nativo para tela imersiva. O site continua usando WebXR.
+    // No APK, os panoramas e vídeos são abertos por um visualizador Android nativo.
+    // No site, o A-Frame continua utilizando a entrada WebXR existente.
     const capacitorRuntime=window.Capacitor;
     const isAndroidApk=!!(capacitorRuntime&&
       typeof capacitorRuntime.isNativePlatform==="function"&&capacitorRuntime.isNativePlatform()&&
       typeof capacitorRuntime.getPlatform==="function"&&capacitorRuntime.getPlatform()==="android"&&
       typeof capacitorRuntime.registerPlugin==="function");
-    const NativeImmersiveMode=isAndroidApk?capacitorRuntime.registerPlugin("ImmersiveMode"):null;
-    let nativeImmersiveActive=false;
+    const NativePanoramaViewer=isAndroidApk?capacitorRuntime.registerPlugin("ImmersiveMode"):null;
 
-    async function enterNativeImmersiveMode(){
-      if(!NativeImmersiveMode)throw new Error("Plugin nativo de tela imersiva indisponível.");
-      resetPosition();
-      await NativeImmersiveMode.enter();
-      nativeImmersiveActive=true;
-      document.body.classList.add("apk-immersive-mode");
-      document.querySelector("#mode-chip").textContent=faunaVRActive?"MODO FAUNA 360°":"MODO IMERSIVO 360°";
-      document.querySelector("#enter-vr").textContent="✕ Sair do modo 360°";
-      setTimeout(()=>{if(scene&&scene.resize)scene.resize();},120);
-    }
-
-    async function exitNativeImmersiveMode(){
-      if(!nativeImmersiveActive)return;
-      nativeImmersiveActive=false;
-      document.body.classList.remove("apk-immersive-mode");
-      if(faunaVRActive)stopFaunaVideo();
-      document.querySelector("#mode-chip").textContent="MODO EXPLORAÇÃO";
-      document.querySelector("#enter-vr").textContent=isAndroidApk?"◉ Entrar em modo imersivo 360°":"◉ Entrar em modo VR";
-      try{
-        if(NativeImmersiveMode)await NativeImmersiveMode.exit();
-      }catch(error){
-        console.error("Não foi possível restaurar as barras do Android:",error);
-      }
-      setTimeout(()=>{if(scene&&scene.resize)scene.resize();},120);
+    async function openNativePanorama(path,title,mediaType){
+      if(!NativePanoramaViewer)throw new Error("Visualizador Android nativo indisponível.");
+      await NativePanoramaViewer.openPanorama({path,title,mediaType});
     }
 
     if(isAndroidApk){
-      document.querySelector("#enter-vr").textContent="◉ Entrar em modo imersivo 360°";
-      document.querySelector("#scene-hint").textContent="Mova o celular para observar o ambiente em 360°.";
+      document.querySelector("#enter-vr").textContent="◉ Abrir panorama 360° nativo";
+      document.querySelector("#scene-hint").textContent="No APK, o modo 360° abre um visualizador Android nativo.";
     }
 
-    document.querySelector("#exit-apk-vr").addEventListener("click",exitNativeImmersiveMode);
-
     faunaVRButton.addEventListener("click",async()=>{
-      const scene=document.querySelector("a-scene");
-      showFaunaVideo(current);
       if(isAndroidApk){
         try{
-          await enterNativeImmersiveMode();
+          await openNativePanorama(
+            faunaVideos[current],
+            biomes[current].name+" · Fauna 360°",
+            "video"
+          );
         }catch(error){
-          stopFaunaVideo();
-          alert("Não foi possível iniciar o modo imersivo do Android. "+(error&&error.message?error.message:""));
+          alert("Não foi possível abrir o vídeo 360° da fauna. "+(error&&error.message?error.message:""));
         }
         return;
       }
+
+      const scene=document.querySelector("a-scene");
+      showFaunaVideo(current);
       if(!scene.is("vr-mode")){
         const vrRequest=scene.enterVR();
         if(vrRequest&&typeof vrRequest.catch==="function")vrRequest.catch(()=>{
@@ -826,17 +787,27 @@
         });
       }
     });
+
     document.querySelector("#enter-vr").addEventListener("click",async()=>{
-      const scene=document.querySelector("a-scene");
       if(isAndroidApk){
-        if(nativeImmersiveActive){await exitNativeImmersiveMode();return;}
+        const panorama=panoramas[current];
+        if(!panorama){
+          alert("Não há panorama 360° cadastrado para este bioma.");
+          return;
+        }
         try{
-          await enterNativeImmersiveMode();
+          await openNativePanorama(
+            panorama.file,
+            biomes[current].name+" · Panorama 360°",
+            "image"
+          );
         }catch(error){
-          alert("Não foi possível iniciar o modo imersivo do Android. "+(error&&error.message?error.message:""));
+          alert("Não foi possível abrir o panorama 360° nativo. "+(error&&error.message?error.message:""));
         }
         return;
       }
+
+      const scene=document.querySelector("a-scene");
       if(scene.is("vr-mode")){scene.exitVR();return;}
       const vrRequest=scene.enterVR();
       if(vrRequest&&typeof vrRequest.catch==="function")vrRequest.catch(()=>alert("Não foi possível iniciar o modo VR. Verifique se o navegador e o dispositivo oferecem suporte a WebXR e se o acesso está em HTTPS."));
