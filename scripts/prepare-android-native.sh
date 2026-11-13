@@ -633,7 +633,7 @@ activity = '''
             android:name=".PanoramaActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="false"
-            android:screenOrientation="sensor" />
+            android:screenOrientation="landscape" />
 '''
 if ".PanoramaActivity" not in text:
     if "</application>" not in text:
