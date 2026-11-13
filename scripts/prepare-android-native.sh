@@ -121,7 +121,7 @@ public class PanoramaActivity extends Activity implements SensorEventListener {
         }
 
         Window window = getWindow();
-        window.addFlags(Window.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         WindowCompat.setDecorFitsSystemWindows(window, false);
         WindowInsetsControllerCompat bars =
             WindowCompat.getInsetsController(window, window.getDecorView());
