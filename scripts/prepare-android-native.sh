@@ -99,7 +99,6 @@ public class PanoramaActivity extends Activity implements SensorEventListener {
     public static final String EXTRA_TITLE = "viewerTitle";
     public static final String EXTRA_MEDIA_TYPE = "mediaType";
 
-    private GLSurfaceViewPlaceholder placeholder;
     private android.opengl.GLSurfaceView glView;
     private PanoramaRenderer renderer;
     private SensorManager sensorManager;
@@ -286,9 +285,6 @@ public class PanoramaActivity extends Activity implements SensorEventListener {
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) { }
 }
-
-/* Apenas um tipo auxiliar para manter a Activity autocontida. */
-class GLSurfaceViewPlaceholder { }
 JAVA
 
 cat > "$JAVA_DIR/PanoramaRenderer.java" <<'JAVA'
@@ -420,7 +416,7 @@ public class PanoramaRenderer implements GLSurfaceView.Renderer {
         GLES20.glBindTexture(textureTarget, textureId);
         GLES20.glTexParameteri(textureTarget, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
         GLES20.glTexParameteri(textureTarget, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-        GLES20.glTexParameteri(textureTarget, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_REPEAT);
+        GLES20.glTexParameteri(textureTarget, GLES20.GL_TEXTURE_WRAP_S, video ? GLES20.GL_CLAMP_TO_EDGE : GLES20.GL_REPEAT);
         GLES20.glTexParameteri(textureTarget, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
 
         if (video) {
