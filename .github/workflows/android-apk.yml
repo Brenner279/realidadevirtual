@@ -75,7 +75,7 @@ jobs:
           html = "\n".join(
               line for line in html.splitlines()
               if "fonts.googleapis.com" not in line and "fonts.gstatic.com" not in line
-          ) + "\\n"
+          ) + "\n"
           if any(token in html for token in (
               "webxr-polyfill", "WebXRPolyfill", "cardboard: true"
           )):
