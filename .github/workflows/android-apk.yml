@@ -49,7 +49,6 @@ jobs:
 
           curl -fL --retry 3 https://aframe.io/releases/1.8.0/aframe.min.js -o www/vendor/aframe.min.js
           test -s www/vendor/aframe.min.js
-          test -s www/vendor/capacitor.js
           # O HTML é clássico (sem bundler): inclui explicitamente o runtime JS do Capacitor.
           cp node_modules/@capacitor/core/dist/capacitor.js www/vendor/capacitor.js
           test -s www/vendor/capacitor.js
