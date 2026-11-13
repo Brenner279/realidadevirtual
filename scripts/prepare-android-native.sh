@@ -144,7 +144,7 @@ public class PanoramaActivity extends Activity implements SensorEventListener {
         ));
 
         TextView heading = new TextView(this);
-        heading.setText(title == null ? "Brasil Imersivo · 360°" : title);
+        heading.setText(title == null ? "Brasil Imersivo · VR" : title);
         heading.setTextColor(Color.WHITE);
         heading.setTextSize(15);
         heading.setTypeface(null, android.graphics.Typeface.BOLD);
@@ -173,7 +173,7 @@ public class PanoramaActivity extends Activity implements SensorEventListener {
         close.setOnClickListener(view -> finish());
 
         TextView hint = new TextView(this);
-        hint.setText("Mova o celular para explorar o ambiente em 360°");
+        hint.setText("VR com duas lentes: mova a cabeça para explorar em 360°");
         hint.setTextColor(Color.WHITE);
         hint.setTextSize(12);
         hint.setGravity(Gravity.CENTER);
@@ -210,7 +210,7 @@ public class PanoramaActivity extends Activity implements SensorEventListener {
         rotationSensor = sensorManager == null ? null :
             sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
         if (rotationSensor == null) {
-            hint.setText("Sensor de rotação não detectado. Arraste a tela para olhar ao redor.");
+            hint.setText("Giroscópio não detectado. Arraste a tela para olhar ao redor.");
         }
     }
 
@@ -435,6 +435,7 @@ public class PanoramaRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl) {
+        GLES20.glViewport(0, 0, width, height);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
         if (video && surfaceTexture != null && frameAvailable.compareAndSet(true, false)) {
             try {
@@ -461,15 +462,28 @@ public class PanoramaRenderer implements GLSurfaceView.Renderer {
         GLES20.glUniform1f(GLES20.glGetUniformLocation(program, "uYaw"), sensorYaw + touchYaw);
         GLES20.glUniform1f(GLES20.glGetUniformLocation(program, "uPitch"),
             Math.max(-1.35f, Math.min(1.35f, sensorPitch + touchPitch)));
-        GLES20.glUniform1f(GLES20.glGetUniformLocation(program, "uAspect"),
-            (float) width / (float) height);
 
         if (video) {
             int matrixLocation = GLES20.glGetUniformLocation(program, "uTexMatrix");
             GLES20.glUniformMatrix4fv(matrixLocation, 1, false, textureMatrix, 0);
         }
 
+        // Renderiza o mesmo panorama em dois viewports independentes:
+        // metade esquerda para o olho esquerdo e metade direita para o olho direito.
+        // As fontes atuais são panoramas mono; a duplicação permite o uso nos óculos
+        // de duas lentes, mas não cria profundidade 3D inexistente na fonte.
+        int leftWidth = Math.max(1, width / 2);
+        int rightWidth = Math.max(1, width - leftWidth);
+        float eyeAspect = (float) leftWidth / (float) height;
+        GLES20.glUniform1f(GLES20.glGetUniformLocation(program, "uAspect"), eyeAspect);
+
+        GLES20.glViewport(0, 0, leftWidth, height);
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
+
+        GLES20.glViewport(leftWidth, 0, rightWidth, height);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
+
+        GLES20.glViewport(0, 0, width, height);
         GLES20.glDisableVertexAttribArray(position);
         GLES20.glDisableVertexAttribArray(uv);
     }
