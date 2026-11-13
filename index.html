@@ -759,9 +759,9 @@
 
     if(isAndroidApk){
       document.querySelector("#enter-vr").textContent="◉ Entrar em VR (duas lentes)";
-      document.querySelector("#scene-hint").textContent="No APK, o modo 360° abre um visualizador Android nativo.";
+      document.querySelector("#scene-hint").textContent="No APK, o modo VR usa duas imagens lado a lado e giroscópio.";
       document.querySelector(".control-legend span").innerHTML=
-        "<b>Visualizador Android nativo</b> A imagem ou o vídeo 360° é renderizado fora da página web. Mova o celular para olhar ao redor ou arraste a tela; pressione Voltar para retornar ao projeto.";
+        "<b>VR nativo para óculos de duas lentes</b> A imagem 360° é exibida em duas metades lado a lado. Mova a cabeça para explorar; pressione Voltar para retornar ao projeto.";
     }
 
     faunaVRButton.addEventListener("click",async()=>{
