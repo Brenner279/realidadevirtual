@@ -49,6 +49,10 @@ jobs:
 
           curl -fL --retry 3 https://aframe.io/releases/1.8.0/aframe.min.js -o www/vendor/aframe.min.js
           test -s www/vendor/aframe.min.js
+          test -s www/vendor/capacitor.js
+          # O HTML é clássico (sem bundler): inclui explicitamente o runtime JS do Capacitor.
+          cp node_modules/@capacitor/core/dist/capacitor.js www/vendor/capacitor.js
+          test -s www/vendor/capacitor.js
 
           # O APK não usa WebXR Polyfill/Cardboard: o botão VR chama o plugin Android nativo.
           python3 - <<'PY'
@@ -72,6 +76,11 @@ jobs:
               'https://aframe.io/releases/1.8.0/aframe.min.js',
               'vendor/aframe.min.js'
           )
+          # Carrega o runtime Capacitor antes do JavaScript do projeto.
+          if 'vendor/capacitor.js' not in html:
+              html = html.replace('<head>', '<head>\n  <script src="vendor/capacitor.js"></script>', 1)
+          if 'vendor/capacitor.js' not in html:
+              raise SystemExit('Runtime do Capacitor não foi incluído no index.html do APK.')
           html = "\n".join(
               line for line in html.splitlines()
               if "fonts.googleapis.com" not in line and "fonts.gstatic.com" not in line
