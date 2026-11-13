@@ -72,7 +72,7 @@ jobs:
               'https://aframe.io/releases/1.8.0/aframe.min.js',
               'vendor/aframe.min.js'
           )
-          html = "\\n".join(
+          html = "\n".join(
               line for line in html.splitlines()
               if "fonts.googleapis.com" not in line and "fonts.gstatic.com" not in line
           ) + "\\n"
