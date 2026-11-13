@@ -746,14 +746,20 @@
     // No APK, os panoramas e vídeos são abertos por um visualizador Android nativo.
     // No site, o A-Frame continua utilizando a entrada WebXR existente.
     const capacitorRuntime=window.Capacitor;
-    const isAndroidApk=!!(capacitorRuntime&&
-      typeof capacitorRuntime.isNativePlatform==="function"&&capacitorRuntime.isNativePlatform()&&
-      typeof capacitorRuntime.getPlatform==="function"&&capacitorRuntime.getPlatform()==="android"&&
-      typeof capacitorRuntime.registerPlugin==="function");
-    const NativePanoramaViewer=isAndroidApk?capacitorRuntime.registerPlugin("ImmersiveMode"):null;
+    const capacitorPlatform=capacitorRuntime&&typeof capacitorRuntime.getPlatform==="function"
+      ?capacitorRuntime.getPlatform():"web";
+    const isAndroidApk=!!(capacitorRuntime&&capacitorPlatform==="android"&&
+      typeof capacitorRuntime.isNativePlatform==="function"&&capacitorRuntime.isNativePlatform());
+    const NativePanoramaViewer=isAndroidApk&&typeof capacitorRuntime.registerPlugin==="function"
+      ?capacitorRuntime.registerPlugin("ImmersiveMode"):null;
 
     async function openNativePanorama(path,title,mediaType){
-      if(!NativePanoramaViewer)throw new Error("Visualizador Android nativo indisponível.");
+      if(!isAndroidApk)throw new Error("Este comando deve ser executado pelo APK Android.");
+      if(!NativePanoramaViewer)throw new Error("Runtime Capacitor não carregado. Reinstale a versão atualizada do APK.");
+      if(typeof capacitorRuntime.isPluginAvailable==="function"&&
+        !capacitorRuntime.isPluginAvailable("ImmersiveMode")){
+        throw new Error("Plugin Android ImmersiveMode não registrado no aplicativo.");
+      }
       await NativePanoramaViewer.openPanorama({path,title,mediaType});
     }
 
