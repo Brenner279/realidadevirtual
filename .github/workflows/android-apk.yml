@@ -47,18 +47,41 @@ jobs:
           cp ./*.png ./*.mp3 ./*.mp4 www/
           cp -R assets/. www/assets/
 
-          cp node_modules/webxr-polyfill/build/webxr-polyfill.min.js www/vendor/webxr-polyfill.min.js
-          test -s www/vendor/webxr-polyfill.min.js
-
           curl -fL --retry 3 https://aframe.io/releases/1.8.0/aframe.min.js -o www/vendor/aframe.min.js
           test -s www/vendor/aframe.min.js
-          test -s www/vendor/webxr-polyfill.min.js
-          sed -i \
-            -e 's#https://cdn.jsdelivr.net/npm/webxr-polyfill@2.0.3/build/webxr-polyfill.min.js#vendor/webxr-polyfill.min.js#g' \
-            -e 's#https://aframe.io/releases/1.8.0/aframe.min.js#vendor/aframe.min.js#g' \
-            -e '/fonts.googleapis.com/d' \
-            -e '/fonts.gstatic.com/d' \
-            www/index.html
+
+          # O APK não usa WebXR Polyfill/Cardboard: o botão VR chama o plugin Android nativo.
+          python3 - <<'PY'
+          from pathlib import Path
+
+          page = Path("www/index.html")
+          html = page.read_text(encoding="utf-8")
+          polyfill_tag = '<script src="https://cdn.jsdelivr.net/npm/webxr-polyfill@2.0.3/build/webxr-polyfill.min.js"></script>'
+          start = html.find(polyfill_tag)
+          if start < 0:
+              raise SystemExit("Tag do WebXR Polyfill não encontrada.")
+          init_start = html.find("window.webxrPolyfill", start)
+          if init_start < 0:
+              raise SystemExit("Inicialização do WebXR Polyfill não encontrada.")
+          end = html.find("</script>", init_start)
+          if end < 0:
+              raise SystemExit("Fechamento da inicialização do WebXR Polyfill não encontrado.")
+          html = html[:start] + html[end + len("</script>"):]
+          html = html.replace('vr-mode-ui="enabled: true"', 'vr-mode-ui="enabled: false"')
+          html = html.replace(
+              'https://aframe.io/releases/1.8.0/aframe.min.js',
+              'vendor/aframe.min.js'
+          )
+          html = "\\n".join(
+              line for line in html.splitlines()
+              if "fonts.googleapis.com" not in line and "fonts.gstatic.com" not in line
+          ) + "\\n"
+          if any(token in html for token in (
+              "webxr-polyfill", "WebXRPolyfill", "cardboard: true"
+          )):
+              raise SystemExit("O APK ainda contém referência ao Cardboard/WebXR Polyfill.")
+          page.write_text(html, encoding="utf-8")
+          PY
           echo "Verificando arquivos offline obrigatórios:"
           test -s www/vendor/aframe.min.js
           test -s www/assets/mapa.png
@@ -74,6 +97,9 @@ jobs:
 
       - name: Criar projeto Android
         run: npx cap add android
+
+      - name: Registrar modo imersivo nativo
+        run: bash scripts/prepare-android-native.sh
 
       - name: Sincronizar aplicação
         run: npx cap sync android
