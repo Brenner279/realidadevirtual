@@ -87,11 +87,15 @@ jobs:
           html = html.replace(old_init, new_init)
 
           # O APK usa a mesma cena A-Frame do navegador, não o visualizador PanoramaActivity.
-          native_detection = '''const isAndroidApk=!!(capacitorRuntime&&capacitorPlatform==="android"&&
-        typeof capacitorRuntime.isNativePlatform==="function"&&capacitorRuntime.isNativePlatform());'''
-          if native_detection not in html:
+          import re
+          html, native_matches = re.subn(
+              r'const isAndroidApk=!!\\(capacitorRuntime&&capacitorPlatform==="android"&&\\s*typeof capacitorRuntime\\.isNativePlatform==="function"&&capacitorRuntime\\.isNativePlatform\\(\\)\\);',
+              "const isAndroidApk=false;",
+              html,
+              count=1
+          )
+          if native_matches != 1:
               raise SystemExit("Não foi possível desativar a rota do visualizador nativo antigo.")
-          html = html.replace(native_detection, "const isAndroidApk=false;")
 
           # Fontes externas são opcionais; removê-las mantém a experiência sem rede.
           html = "\n".join(
