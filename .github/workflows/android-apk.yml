@@ -58,6 +58,10 @@ jobs:
 
           page = Path("www/index.html")
           html = page.read_text(encoding="utf-8")
+          # O APK usa controles próprios acionados por gaze, pois o Cardboard UI
+          # legado depende de toque direto, que não é entregue de forma consistente no WebView.
+          if "window.BRASIL_IMERSIVO_APK = true;" not in html:
+              html = html.replace("<head>", "<head>\\n  <script>window.BRASIL_IMERSIVO_APK = true;</script>", 1)
 
           polyfill_cdn = "https://cdn.jsdelivr.net/npm/webxr-polyfill@2.0.3/build/webxr-polyfill.min.js"
           if polyfill_cdn not in html:
@@ -77,7 +81,7 @@ jobs:
                 DPDB_URL: null,
                 DEFAULT_VIEWER: "CardboardV1",
                 MOBILE_WAKE_LOCK: true,
-                CARDBOARD_UI_DISABLED: false,
+                CARDBOARD_UI_DISABLED: true,
                 ROTATE_INSTRUCTIONS_DISABLED: false,
                 BUFFER_SCALE: 0.5
               }
@@ -109,6 +113,8 @@ jobs:
               "new WebXRPolyfill(",
               "cardboard: true",
               "DPDB_URL: null",
+              "CARDBOARD_UI_DISABLED: true",
+              "window.BRASIL_IMERSIVO_APK = true;",
               'vr-mode-ui="enabled: true"',
               "const isAndroidApk=false;"
           ]
