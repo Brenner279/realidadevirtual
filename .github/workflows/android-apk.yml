@@ -58,11 +58,6 @@ jobs:
 
           page = Path("www/index.html")
           html = page.read_text(encoding="utf-8")
-          # O APK usa controles próprios acionados por gaze, pois o Cardboard UI
-          # legado depende de toque direto, que não é entregue de forma consistente no WebView.
-          if "window.BRASIL_IMERSIVO_APK = true;" not in html:
-              html = html.replace("<head>", "<head>\n  <script>window.BRASIL_IMERSIVO_APK = true;</script>", 1)
-
           polyfill_cdn = "https://cdn.jsdelivr.net/npm/webxr-polyfill@2.0.3/build/webxr-polyfill.min.js"
           if polyfill_cdn not in html:
               raise SystemExit("A referência ao WebXR Polyfill 2.0.3 não foi encontrada.")
@@ -81,7 +76,7 @@ jobs:
                 DPDB_URL: null,
                 DEFAULT_VIEWER: "CardboardV1",
                 MOBILE_WAKE_LOCK: true,
-                CARDBOARD_UI_DISABLED: true,
+                CARDBOARD_UI_DISABLED: false,
                 ROTATE_INSTRUCTIONS_DISABLED: false,
                 BUFFER_SCALE: 0.5
               }
@@ -102,8 +97,7 @@ jobs:
               "new WebXRPolyfill(",
               "cardboard: true",
               "DPDB_URL: null",
-              "CARDBOARD_UI_DISABLED: true",
-              "window.BRASIL_IMERSIVO_APK = true;",
+              "CARDBOARD_UI_DISABLED: false",
               'vr-mode-ui="enabled: true"',
           ]
           for token in required:
@@ -135,116 +129,6 @@ jobs:
 
       - name: Criar projeto Android
         run: npx cap add android
-
-      - name: Registrar botão nativo VOLTAR no Android
-        run: |
-          JAVA_DIR=android/app/src/main/java/com/michelbrenner/brasilimersivo
-          mkdir -p "$JAVA_DIR"
-
-          cat > "$JAVA_DIR/MainActivity.java" <<'JAVA'
-          package com.michelbrenner.brasilimersivo;
-
-          import android.os.Bundle;
-          import android.webkit.WebView;
-          import com.getcapacitor.BridgeActivity;
-
-          public class MainActivity extends BridgeActivity {
-              @Override
-              public void onCreate(Bundle savedInstanceState) {
-                  super.onCreate(savedInstanceState);
-                  WebView webView = getBridge().getWebView();
-                  webView.addJavascriptInterface(
-                      new VrBackButtonBridge(this, webView),
-                      "AndroidVrBackButton"
-                  );
-                  // Garante que a ponte esteja disponível antes dos scripts da experiência.
-                  webView.reload();
-              }
-          }
-          JAVA
-
-          cat > "$JAVA_DIR/VrBackButtonBridge.java" <<'JAVA'
-          package com.michelbrenner.brasilimersivo;
-
-          import android.graphics.Color;
-          import android.graphics.drawable.GradientDrawable;
-          import android.view.Gravity;
-          import android.view.View;
-          import android.webkit.JavascriptInterface;
-          import android.webkit.WebView;
-          import android.widget.Button;
-          import android.widget.FrameLayout;
-
-          public final class VrBackButtonBridge {
-              private final MainActivity activity;
-              private final WebView webView;
-              private Button backButton;
-
-              public VrBackButtonBridge(MainActivity activity, WebView webView) {
-                  this.activity = activity;
-                  this.webView = webView;
-              }
-
-              private int dp(float value) {
-                  return Math.round(value * activity.getResources().getDisplayMetrics().density);
-              }
-
-              @JavascriptInterface
-              public void show() {
-                  activity.runOnUiThread(() -> {
-                      FrameLayout root = activity.findViewById(android.R.id.content);
-                      if (root == null) return;
-
-                      if (backButton == null || backButton.getParent() != root) {
-                          Button button = new Button(activity);
-                          button.setText("← Voltar");
-                          button.setTextColor(Color.WHITE);
-                          button.setTextSize(14);
-                          button.setAllCaps(false);
-                          button.setGravity(Gravity.CENTER);
-                          button.setPadding(dp(10), 0, dp(10), 0);
-                          button.setMinimumWidth(dp(78));
-                          button.setMinWidth(dp(78));
-                          button.setMinHeight(dp(42));
-
-                          GradientDrawable background = new GradientDrawable();
-                          background.setColor(0xE6174A35);
-                          background.setCornerRadius(dp(10));
-                          button.setBackground(background);
-                          button.setElevation(dp(10));
-                          button.setContentDescription("Voltar e sair do modo VR");
-                          button.setClickable(true);
-                          button.setFocusable(true);
-                          button.setOnClickListener(view ->
-                              webView.evaluateJavascript(
-                                  "if (window.__brasilImersivoExitVR) { window.__brasilImersivoExitVR(); }",
-                                  null
-                              )
-                          );
-
-                          FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                              FrameLayout.LayoutParams.WRAP_CONTENT,
-                              dp(42),
-                              Gravity.TOP | Gravity.START
-                          );
-                          params.setMargins(dp(8), dp(2), 0, 0);
-                          root.addView(button, params);
-                          backButton = button;
-                      }
-
-                      backButton.setVisibility(View.VISIBLE);
-                      backButton.bringToFront();
-                  });
-              }
-
-              @JavascriptInterface
-              public void hide() {
-                  activity.runOnUiThread(() -> {
-                      if (backButton != null) backButton.setVisibility(View.GONE);
-                  });
-              }
-          }
-          JAVA
 
       - name: Sincronizar aplicação
         run: npx cap sync android
