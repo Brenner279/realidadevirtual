@@ -144,16 +144,8 @@ jobs:
           cat > "$JAVA_DIR/MainActivity.java" <<'JAVA'
           package com.michelbrenner.brasilimersivo;
 
-          import android.graphics.Color;
-          import android.graphics.drawable.GradientDrawable;
           import android.os.Bundle;
-          import android.view.Gravity;
-          import android.view.View;
-          import android.webkit.JavascriptInterface;
           import android.webkit.WebView;
-          import android.widget.Button;
-          import android.widget.FrameLayout;
-
           import com.getcapacitor.BridgeActivity;
 
           public class MainActivity extends BridgeActivity {
@@ -165,18 +157,30 @@ jobs:
                       new VrBackButtonBridge(this, webView),
                       "AndroidVrBackButton"
                   );
-                  // Recarrega a página para que a interface nativa esteja disponível
-                  // desde o início dos scripts do projeto.
+                  // Garante que a ponte esteja disponível antes dos scripts da experiência.
                   webView.reload();
               }
           }
+          JAVA
 
-          final class VrBackButtonBridge {
+          cat > "$JAVA_DIR/VrBackButtonBridge.java" <<'JAVA'
+          package com.michelbrenner.brasilimersivo;
+
+          import android.graphics.Color;
+          import android.graphics.drawable.GradientDrawable;
+          import android.view.Gravity;
+          import android.view.View;
+          import android.webkit.JavascriptInterface;
+          import android.webkit.WebView;
+          import android.widget.Button;
+          import android.widget.FrameLayout;
+
+          public final class VrBackButtonBridge {
               private final MainActivity activity;
               private final WebView webView;
               private Button backButton;
 
-              VrBackButtonBridge(MainActivity activity, WebView webView) {
+              public VrBackButtonBridge(MainActivity activity, WebView webView) {
                   this.activity = activity;
                   this.webView = webView;
               }
