@@ -61,7 +61,7 @@ jobs:
           # O APK usa controles próprios acionados por gaze, pois o Cardboard UI
           # legado depende de toque direto, que não é entregue de forma consistente no WebView.
           if "window.BRASIL_IMERSIVO_APK = true;" not in html:
-              html = html.replace("<head>", "<head>\\n  <script>window.BRASIL_IMERSIVO_APK = true;</script>", 1)
+              html = html.replace("<head>", "<head>\n  <script>window.BRASIL_IMERSIVO_APK = true;</script>", 1)
 
           polyfill_cdn = "https://cdn.jsdelivr.net/npm/webxr-polyfill@2.0.3/build/webxr-polyfill.min.js"
           if polyfill_cdn not in html:
