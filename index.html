@@ -746,9 +746,8 @@
     // No APK, o botão VOLTAR é um controle nativo Android sobreposto à cena A-Frame.
     // O navegador continua usando normalmente os controles do Cardboard/WebXR.
     const isOfflineApk=window.BRASIL_IMERSIVO_APK===true;
-    const VrBackButton=isOfflineApk&&window.Capacitor&&
-      typeof window.Capacitor.registerPlugin==="function"
-        ?window.Capacitor.registerPlugin("VrBackButton"):null;
+    const VrBackButton=isOfflineApk&&window.AndroidVrBackButton
+      ?window.AndroidVrBackButton:null;
 
     if(isOfflineApk){
       document.querySelector("#scene-hint").textContent=
@@ -784,14 +783,14 @@
     scene.addEventListener("enter-vr",()=>{
       document.querySelector("#mode-chip").textContent=faunaVRActive?"MODO FAUNA VR":"MODO REALIDADE VIRTUAL";
       if(isOfflineApk&&VrBackButton){
-        VrBackButton.show().catch(error=>console.error("Não foi possível mostrar o botão VOLTAR:",error));
+        VrBackButton.show();
       }
     });
     scene.addEventListener("exit-vr",()=>{
       stopFaunaVideo();
       document.querySelector("#mode-chip").textContent="MODO EXPLORAÇÃO";
       if(isOfflineApk&&VrBackButton){
-        VrBackButton.hide().catch(error=>console.error("Não foi possível ocultar o botão VOLTAR:",error));
+        VrBackButton.hide();
       }
     });selectBiome("amazonia");
   
