@@ -772,15 +772,15 @@
 
     document.querySelector("#enter-vr").addEventListener("click",async()=>{
       const scene=document.querySelector("a-scene");
-    window.__brasilImersivoExitVR=()=>{
-      if(scene.is("vr-mode"))scene.exitVR();
-    };
       if(scene.is("vr-mode")){scene.exitVR();return;}
       const vrRequest=scene.enterVR();
       if(vrRequest&&typeof vrRequest.catch==="function")vrRequest.catch(()=>alert("Não foi possível iniciar o modo VR. Verifique se o navegador e o dispositivo oferecem suporte a WebXR e se o acesso está em HTTPS."));
     });
     document.querySelector("#reset-view").addEventListener("click",resetPosition);
     const scene=document.querySelector("a-scene");
+    window.__brasilImersivoExitVR=()=>{
+      if(scene.is("vr-mode"))scene.exitVR();
+    };
     scene.addEventListener("enter-vr",()=>{
       document.querySelector("#mode-chip").textContent=faunaVRActive?"MODO FAUNA VR":"MODO REALIDADE VIRTUAL";
       if(isOfflineApk&&VrBackButton){
