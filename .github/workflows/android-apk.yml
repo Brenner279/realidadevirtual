@@ -40,64 +40,96 @@ jobs:
       - name: Instalar dependências
         run: npm install
 
-      - name: Montar arquivos locais para uso offline
+      - name: Montar experiência A-Frame VR para uso offline
         run: |
           mkdir -p www/vendor www/assets
           cp index.html style.css www/
           cp ./*.png ./*.mp3 ./*.mp4 www/
           cp -R assets/. www/assets/
 
+          # A-Frame e o fallback Cardboard ficam dentro do APK; não há CDN em tempo de execução.
           curl -fL --retry 3 https://aframe.io/releases/1.8.0/aframe.min.js -o www/vendor/aframe.min.js
+          curl -fL --retry 3 https://cdn.jsdelivr.net/npm/webxr-polyfill@2.0.3/build/webxr-polyfill.min.js -o www/vendor/webxr-polyfill.min.js
           test -s www/vendor/aframe.min.js
-          # O HTML é clássico (sem bundler): inclui explicitamente o runtime JS do Capacitor.
-          cp node_modules/@capacitor/core/dist/capacitor.js www/vendor/capacitor.js
-          test -s www/vendor/capacitor.js
+          test -s www/vendor/webxr-polyfill.min.js
 
-          # O APK não usa WebXR Polyfill/Cardboard: o botão VR chama o plugin Android nativo.
           python3 - <<'PY'
           from pathlib import Path
 
           page = Path("www/index.html")
           html = page.read_text(encoding="utf-8")
-          polyfill_tag = '<script src="https://cdn.jsdelivr.net/npm/webxr-polyfill@2.0.3/build/webxr-polyfill.min.js"></script>'
-          start = html.find(polyfill_tag)
-          if start < 0:
-              raise SystemExit("Tag do WebXR Polyfill não encontrada.")
-          init_start = html.find("window.webxrPolyfill", start)
-          if init_start < 0:
-              raise SystemExit("Inicialização do WebXR Polyfill não encontrada.")
-          end = html.find("</script>", init_start)
-          if end < 0:
-              raise SystemExit("Fechamento da inicialização do WebXR Polyfill não encontrado.")
-          html = html[:start] + html[end + len("</script>"):]
-          html = html.replace('vr-mode-ui="enabled: true"', 'vr-mode-ui="enabled: false"')
-          html = html.replace(
-              'https://aframe.io/releases/1.8.0/aframe.min.js',
-              'vendor/aframe.min.js'
-          )
-          # Carrega o runtime Capacitor antes do JavaScript do projeto.
-          if 'vendor/capacitor.js' not in html:
-              html = html.replace('<head>', '<head>\n  <script src="vendor/capacitor.js"></script>', 1)
-          if 'vendor/capacitor.js' not in html:
-              raise SystemExit('Runtime do Capacitor não foi incluído no index.html do APK.')
+
+          polyfill_cdn = "https://cdn.jsdelivr.net/npm/webxr-polyfill@2.0.3/build/webxr-polyfill.min.js"
+          if polyfill_cdn not in html:
+              raise SystemExit("A referência ao WebXR Polyfill 2.0.3 não foi encontrada.")
+          html = html.replace(polyfill_cdn, "vendor/webxr-polyfill.min.js")
+
+          aframe_cdn = "https://aframe.io/releases/1.8.0/aframe.min.js"
+          if aframe_cdn not in html:
+              raise SystemExit("A referência ao A-Frame 1.8.0 não foi encontrada.")
+          html = html.replace(aframe_cdn, "vendor/aframe.min.js")
+
+          # O fallback Cardboard usa parâmetros internos, sem consultar a base remota de aparelhos.
+          old_init = "window.webxrPolyfill = new WebXRPolyfill({ cardboard: true });"
+          new_init = """window.webxrPolyfill = new WebXRPolyfill({
+              cardboard: true,
+              cardboardConfig: {
+                DPDB_URL: null,
+                DEFAULT_VIEWER: "CardboardV1",
+                MOBILE_WAKE_LOCK: true,
+                CARDBOARD_UI_DISABLED: false,
+                ROTATE_INSTRUCTIONS_DISABLED: false,
+                BUFFER_SCALE: 0.5
+              }
+            });"""
+          if old_init not in html:
+              raise SystemExit("A inicialização padrão do WebXR Polyfill não foi encontrada.")
+          html = html.replace(old_init, new_init)
+
+          # O APK usa a mesma cena A-Frame do navegador, não o visualizador PanoramaActivity.
+          native_detection = '''const isAndroidApk=!!(capacitorRuntime&&capacitorPlatform==="android"&&
+        typeof capacitorRuntime.isNativePlatform==="function"&&capacitorRuntime.isNativePlatform());'''
+          if native_detection not in html:
+              raise SystemExit("Não foi possível desativar a rota do visualizador nativo antigo.")
+          html = html.replace(native_detection, "const isAndroidApk=false;")
+
+          # Fontes externas são opcionais; removê-las mantém a experiência sem rede.
           html = "\n".join(
               line for line in html.splitlines()
               if "fonts.googleapis.com" not in line and "fonts.gstatic.com" not in line
           ) + "\n"
-          if any(token in html for token in (
-              "webxr-polyfill", "WebXRPolyfill", "cardboard: true"
-          )):
-              raise SystemExit("O APK ainda contém referência ao Cardboard/WebXR Polyfill.")
+
+          required = [
+              "vendor/aframe.min.js",
+              "vendor/webxr-polyfill.min.js",
+              "new WebXRPolyfill(",
+              "cardboard: true",
+              "DPDB_URL: null",
+              'vr-mode-ui="enabled: true"',
+              "const isAndroidApk=false;"
+          ]
+          for token in required:
+              if token not in html:
+                  raise SystemExit(f"Configuração VR offline ausente: {token}")
+
+          if "https://cdn.jsdelivr.net/npm/webxr-polyfill" in html:
+              raise SystemExit("O APK ainda tenta carregar o WebXR Polyfill pela internet.")
+          if "https://aframe.io/releases/" in html:
+              raise SystemExit("O APK ainda tenta carregar A-Frame pela internet.")
+
           page.write_text(html, encoding="utf-8")
           PY
-          echo "Verificando arquivos offline obrigatórios:"
+
+          echo "Verificando arquivos locais obrigatórios:"
           test -s www/vendor/aframe.min.js
+          test -s www/vendor/webxr-polyfill.min.js
           test -s www/assets/mapa.png
           test -s www/assets/biomas/amazonia/fauna-flora.jpg
           test -s www/assets/biomas/amazonia/fauna-vr.mp4
           test -s www/Mata.png
+
           if grep -E 'https?://' www/index.html | grep -v 'http-equiv'; then
-            echo 'Foram encontradas referências HTTP externas no aplicativo.'
+            echo 'Foram encontradas referências HTTP externas no HTML do aplicativo.'
             exit 1
           fi
           echo "Arquivos locais preparados:"
@@ -105,9 +137,6 @@ jobs:
 
       - name: Criar projeto Android
         run: npx cap add android
-
-      - name: Registrar modo imersivo nativo
-        run: bash scripts/prepare-android-native.sh
 
       - name: Sincronizar aplicação
         run: npx cap sync android
