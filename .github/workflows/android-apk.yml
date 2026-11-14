@@ -89,7 +89,7 @@ jobs:
           # O APK usa a mesma cena A-Frame do navegador, não o visualizador PanoramaActivity.
           import re
           html, native_matches = re.subn(
-              r'const isAndroidApk=!!\\(capacitorRuntime&&capacitorPlatform==="android"&&\\s*typeof capacitorRuntime\\.isNativePlatform==="function"&&capacitorRuntime\\.isNativePlatform\\(\\)\\);',
+              r'const isAndroidApk=!!\(capacitorRuntime&&capacitorPlatform==="android"&&\s*typeof capacitorRuntime\.isNativePlatform==="function"&&capacitorRuntime\.isNativePlatform\(\)\);',
               "const isAndroidApk=false;",
               html,
               count=1
