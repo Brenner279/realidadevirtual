@@ -141,40 +141,55 @@ jobs:
           JAVA_DIR=android/app/src/main/java/com/michelbrenner/brasilimersivo
           mkdir -p "$JAVA_DIR"
 
-          cat > "$JAVA_DIR/VrBackButtonPlugin.java" <<'JAVA'
+          cat > "$JAVA_DIR/MainActivity.java" <<'JAVA'
           package com.michelbrenner.brasilimersivo;
 
           import android.graphics.Color;
           import android.graphics.drawable.GradientDrawable;
+          import android.os.Bundle;
           import android.view.Gravity;
           import android.view.View;
+          import android.webkit.JavascriptInterface;
+          import android.webkit.WebView;
           import android.widget.Button;
           import android.widget.FrameLayout;
 
-          import com.getcapacitor.Plugin;
-          import com.getcapacitor.PluginCall;
-          import com.getcapacitor.PluginMethod;
-          import com.getcapacitor.annotation.CapacitorPlugin;
+          import com.getcapacitor.BridgeActivity;
 
-          @CapacitorPlugin(name = "VrBackButton")
-          public class VrBackButtonPlugin extends Plugin {
+          public class MainActivity extends BridgeActivity {
+              @Override
+              public void onCreate(Bundle savedInstanceState) {
+                  super.onCreate(savedInstanceState);
+                  WebView webView = getBridge().getWebView();
+                  webView.addJavascriptInterface(
+                      new VrBackButtonBridge(this, webView),
+                      "AndroidVrBackButton"
+                  );
+              }
+          }
+
+          final class VrBackButtonBridge {
+              private final MainActivity activity;
+              private final WebView webView;
               private Button backButton;
 
-              private int dp(float value) {
-                  return Math.round(value * getContext().getResources().getDisplayMetrics().density);
+              VrBackButtonBridge(MainActivity activity, WebView webView) {
+                  this.activity = activity;
+                  this.webView = webView;
               }
 
-              @PluginMethod
-              public void show(PluginCall call) {
-                  getActivity().runOnUiThread(() -> {
-                      FrameLayout root = getActivity().findViewById(android.R.id.content);
-                      if (root == null) {
-                          call.reject("Não foi possível localizar a tela do aplicativo.");
-                          return;
-                      }
+              private int dp(float value) {
+                  return Math.round(value * activity.getResources().getDisplayMetrics().density);
+              }
+
+              @JavascriptInterface
+              public void show() {
+                  activity.runOnUiThread(() -> {
+                      FrameLayout root = activity.findViewById(android.R.id.content);
+                      if (root == null) return;
 
                       if (backButton == null || backButton.getParent() != root) {
-                          Button button = new Button(getActivity());
+                          Button button = new Button(activity);
                           button.setText("← Voltar");
                           button.setTextColor(Color.WHITE);
                           button.setTextSize(14);
@@ -194,7 +209,7 @@ jobs:
                           button.setClickable(true);
                           button.setFocusable(true);
                           button.setOnClickListener(view ->
-                              getBridge().eval(
+                              webView.evaluateJavascript(
                                   "if (window.__brasilImersivoExitVR) { window.__brasilImersivoExitVR(); }",
                                   null
                               )
@@ -212,33 +227,14 @@ jobs:
 
                       backButton.setVisibility(View.VISIBLE);
                       backButton.bringToFront();
-                      call.resolve();
                   });
               }
 
-              @PluginMethod
-              public void hide(PluginCall call) {
-                  getActivity().runOnUiThread(() -> {
-                      if (backButton != null) {
-                          backButton.setVisibility(View.GONE);
-                      }
-                      call.resolve();
+              @JavascriptInterface
+              public void hide() {
+                  activity.runOnUiThread(() -> {
+                      if (backButton != null) backButton.setVisibility(View.GONE);
                   });
-              }
-          }
-          JAVA
-
-          cat > "$JAVA_DIR/MainActivity.java" <<'JAVA'
-          package com.michelbrenner.brasilimersivo;
-
-          import android.os.Bundle;
-          import com.getcapacitor.BridgeActivity;
-
-          public class MainActivity extends BridgeActivity {
-              @Override
-              public void onCreate(Bundle savedInstanceState) {
-                  registerPlugin(VrBackButtonPlugin.class);
-                  super.onCreate(savedInstanceState);
               }
           }
           JAVA
