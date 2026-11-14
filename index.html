@@ -180,38 +180,6 @@
               <a-entity id="camera-rig" position="0 1.6 8">
                 <a-camera id="main-camera" look-controls>
                   <a-cursor raycaster="objects: .interactive" fuse="true" fuse-timeout="1000" color="#f4e9a7" geometry="primitive: ring; radiusInner: 0.008; radiusOuter: 0.013"></a-cursor>
-                  <a-entity id="vr-hud" visible="false">
-                    <a-plane id="vr-exit-button" class="interactive" position="-0.48 0.58 -1.45"
-                      width="0.86" height="0.30" material="shader: flat; color: #174a35; opacity: 0.96; transparent: true; side: double">
-                      <a-text value="← VOLTAR" align="center" anchor="center" width="2.2"
-                        color="#ffffff" position="0 0 0.012"></a-text>
-                    </a-plane>
-                    <a-plane id="vr-settings-button" class="interactive" position="0 -0.66 -1.45"
-                      width="0.98" height="0.32" material="shader: flat; color: #174a35; opacity: 0.96; transparent: true; side: double">
-                      <a-text value="⚙ AJUSTES" align="center" anchor="center" width="2.2"
-                        color="#ffffff" position="0 0 0.012"></a-text>
-                    </a-plane>
-                    <a-entity id="vr-settings-panel" visible="false" position="0 0 -1.55">
-                      <a-plane width="1.72" height="1.00"
-                        material="shader: flat; color: #102b27; opacity: 0.97; transparent: true; side: double"></a-plane>
-                      <a-text value="AJUSTES DO VISOR" align="center" anchor="center" width="2.1"
-                        color="#c6df91" position="0 0.34 0.012"></a-text>
-                      <a-text value="Perfil ativo: Cardboard V1" align="center" anchor="center" width="1.8"
-                        color="#ffffff" position="0 0.10 0.012"></a-text>
-                      <a-text value="Olhe para um controle por 1 segundo para seleciona-lo."
-                        align="center" anchor="center" width="1.55" wrap-count="34"
-                        color="#e8eee9" position="0 -0.08 0.012"></a-text>
-                      <a-text value="Centralize a divisao da tela entre as lentes do visor."
-                        align="center" anchor="center" width="1.55" wrap-count="34"
-                        color="#e8eee9" position="0 -0.25 0.012"></a-text>
-                      <a-plane id="vr-settings-close" class="interactive" position="0 -0.39 0.025"
-                        width="0.72" height="0.22"
-                        material="shader: flat; color: #c6df91; side: double">
-                        <a-text value="FECHAR" align="center" anchor="center" width="1.8"
-                          color="#102b27" position="0 0 0.012"></a-text>
-                      </a-plane>
-                    </a-entity>
-                  </a-entity>
                 </a-camera>
               </a-entity>
               <a-entity light="type: ambient; intensity: 1.15"></a-entity>
@@ -775,67 +743,21 @@
     });
     document.querySelector("#close-modal").addEventListener("click",()=>document.querySelector("#info-modal").classList.remove("open"));
     document.querySelector("#info-modal").addEventListener("click",e=>{if(e.target.id==="info-modal")e.currentTarget.classList.remove("open")});
-    // No APK, os panoramas e vídeos são abertos por um visualizador Android nativo.
-    // No site, o A-Frame continua utilizando a entrada WebXR existente.
-    const capacitorRuntime=window.Capacitor;
-    const capacitorPlatform=capacitorRuntime&&typeof capacitorRuntime.getPlatform==="function"
-      ?capacitorRuntime.getPlatform():"web";
-    const isAndroidApk=!!(capacitorRuntime&&capacitorPlatform==="android"&&
-      typeof capacitorRuntime.isNativePlatform==="function"&&capacitorRuntime.isNativePlatform());
-    const NativePanoramaViewer=isAndroidApk&&typeof capacitorRuntime.registerPlugin==="function"
-      ?capacitorRuntime.registerPlugin("ImmersiveMode"):null;
+    // No APK, o botão VOLTAR é um controle nativo Android sobreposto à cena A-Frame.
+    // O navegador continua usando normalmente os controles do Cardboard/WebXR.
     const isOfflineApk=window.BRASIL_IMERSIVO_APK===true;
+    const VrBackButton=isOfflineApk&&window.Capacitor&&
+      typeof window.Capacitor.registerPlugin==="function"
+        ?window.Capacitor.registerPlugin("VrBackButton"):null;
 
     if(isOfflineApk){
       document.querySelector("#scene-hint").textContent=
-        "No modo VR, olhe para VOLTAR ou AJUSTES por 1 segundo para selecionar.";
+        "Durante o VR, toque em VOLTAR no canto superior esquerdo para sair.";
       document.querySelector(".control-legend span").innerHTML=
-        "<b>Controles VR por direção do olhar</b> Fixe o olhar em VOLTAR ou AJUSTES durante 1 segundo. Não é necessário tocar na tela com o celular encaixado no visor.";
-      const vrSceneForControls=document.querySelector("a-scene");
-      document.querySelector("#vr-exit-button").addEventListener("click",()=>{
-        if(vrSceneForControls.is("vr-mode"))vrSceneForControls.exitVR();
-      });
-      document.querySelector("#vr-settings-button").addEventListener("click",()=>{
-        document.querySelector("#vr-settings-panel").setAttribute("visible",true);
-        document.querySelector("#vr-settings-button").setAttribute("visible",false);
-      });
-      document.querySelector("#vr-settings-close").addEventListener("click",()=>{
-        document.querySelector("#vr-settings-panel").setAttribute("visible",false);
-        document.querySelector("#vr-settings-button").setAttribute("visible",true);
-      });
-    }
-
-    async function openNativePanorama(path,title,mediaType){
-      if(!isAndroidApk)throw new Error("Este comando deve ser executado pelo APK Android.");
-      if(!NativePanoramaViewer)throw new Error("Runtime Capacitor não carregado. Reinstale a versão atualizada do APK.");
-      if(typeof capacitorRuntime.isPluginAvailable==="function"&&
-        !capacitorRuntime.isPluginAvailable("ImmersiveMode")){
-        throw new Error("Plugin Android ImmersiveMode não registrado no aplicativo.");
-      }
-      await NativePanoramaViewer.openPanorama({path,title,mediaType});
-    }
-
-    if(isAndroidApk){
-      document.querySelector("#enter-vr").textContent="◉ Entrar em VR (duas lentes)";
-      document.querySelector("#scene-hint").textContent="No APK, o modo VR usa duas imagens lado a lado e giroscópio.";
-      document.querySelector(".control-legend span").innerHTML=
-        "<b>VR nativo para óculos de duas lentes</b> A imagem 360° é exibida em duas metades lado a lado. Mova a cabeça para explorar; pressione Voltar para retornar ao projeto.";
+        "<b>Controle de saída do VR</b> Toque no botão VOLTAR no canto superior esquerdo da tela para retornar ao projeto.";
     }
 
     faunaVRButton.addEventListener("click",async()=>{
-      if(isAndroidApk){
-        try{
-          await openNativePanorama(
-            faunaVideos[current],
-            biomes[current].name+" · Fauna 360°",
-            "video"
-          );
-        }catch(error){
-          alert("Não foi possível abrir o vídeo 360° da fauna. "+(error&&error.message?error.message:""));
-        }
-        return;
-      }
-
       const scene=document.querySelector("a-scene");
       showFaunaVideo(current);
       if(!scene.is("vr-mode")){
@@ -849,25 +771,10 @@
     });
 
     document.querySelector("#enter-vr").addEventListener("click",async()=>{
-      if(isAndroidApk){
-        const panorama=panoramas[current];
-        if(!panorama){
-          alert("Não há panorama 360° cadastrado para este bioma.");
-          return;
-        }
-        try{
-          await openNativePanorama(
-            panorama.file,
-            biomes[current].name+" · Panorama 360°",
-            "image"
-          );
-        }catch(error){
-          alert("Não foi possível abrir o panorama 360° nativo. "+(error&&error.message?error.message:""));
-        }
-        return;
-      }
-
       const scene=document.querySelector("a-scene");
+    window.__brasilImersivoExitVR=()=>{
+      if(scene.is("vr-mode"))scene.exitVR();
+    };
       if(scene.is("vr-mode")){scene.exitVR();return;}
       const vrRequest=scene.enterVR();
       if(vrRequest&&typeof vrRequest.catch==="function")vrRequest.catch(()=>alert("Não foi possível iniciar o modo VR. Verifique se o navegador e o dispositivo oferecem suporte a WebXR e se o acesso está em HTTPS."));
@@ -876,19 +783,15 @@
     const scene=document.querySelector("a-scene");
     scene.addEventListener("enter-vr",()=>{
       document.querySelector("#mode-chip").textContent=faunaVRActive?"MODO FAUNA VR":"MODO REALIDADE VIRTUAL";
-      if(isOfflineApk){
-        document.querySelector("#vr-hud").setAttribute("visible",true);
-        document.querySelector("#vr-settings-panel").setAttribute("visible",false);
-        document.querySelector("#vr-settings-button").setAttribute("visible",true);
+      if(isOfflineApk&&VrBackButton){
+        VrBackButton.show().catch(error=>console.error("Não foi possível mostrar o botão VOLTAR:",error));
       }
     });
     scene.addEventListener("exit-vr",()=>{
       stopFaunaVideo();
       document.querySelector("#mode-chip").textContent="MODO EXPLORAÇÃO";
-      if(isOfflineApk){
-        document.querySelector("#vr-hud").setAttribute("visible",false);
-        document.querySelector("#vr-settings-panel").setAttribute("visible",false);
-        document.querySelector("#vr-settings-button").setAttribute("visible",true);
+      if(isOfflineApk&&VrBackButton){
+        VrBackButton.hide().catch(error=>console.error("Não foi possível ocultar o botão VOLTAR:",error));
       }
     });selectBiome("amazonia");
   
