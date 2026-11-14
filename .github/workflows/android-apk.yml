@@ -165,6 +165,9 @@ jobs:
                       new VrBackButtonBridge(this, webView),
                       "AndroidVrBackButton"
                   );
+                  // Recarrega a página para que a interface nativa esteja disponível
+                  // desde o início dos scripts do projeto.
+                  webView.reload();
               }
           }
 
